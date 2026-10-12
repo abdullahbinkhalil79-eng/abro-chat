@@ -155,6 +155,46 @@
     .room strong { font-size: 14px; }
     .room small { color: var(--muted); font-size: 11px; }
 
+    .room-tools { padding: 0 22px 12px; }
+    .room-actions { display: flex; gap: 8px; }
+    .room-actions button, .private-panel button {
+      border: 1px solid var(--border);
+      background: #ffffff0b;
+      color: white;
+      border-radius: 10px;
+      padding: 9px 12px;
+      cursor: pointer;
+    }
+    .room-actions button.active {
+      background: #a78bfa26;
+      border-color: #a78bfa88;
+      color: #ddd6fe;
+    }
+    .private-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .private-panel[hidden] { display: none; }
+    #roomCode {
+      flex: 1;
+      min-width: 140px;
+      background: #ffffff08;
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      outline: none;
+      text-transform: uppercase;
+    }
+    #roomHelp {
+      flex-basis: 100%;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
     #messages {
       flex: 1;
       min-height: 300px;
@@ -279,6 +319,7 @@
     }
 
     @media (max-width: 480px) {
+
       body { padding: 0; }
       .app {
         min-height: 100dvh;
@@ -288,6 +329,7 @@
       header { padding: 18px 16px; }
       .identity { padding: 13px 15px; }
       .room { padding-left: 16px; padding-right: 16px; }
+      .room-tools { padding-left: 16px; padding-right: 16px; }
       #messages { padding-left: 15px; padding-right: 15px; }
       form { padding: 12px; }
       #send { padding: 0 16px; }
@@ -324,9 +366,22 @@
     </section>
 
     <div class="room">
-      <strong>🌐 Public Lounge</strong>
-      <small>Everyone shares this room</small>
+      <strong id="roomTitle">🌐 Public Lounge</strong>
+      <small id="roomDescription">Everyone shares this room</small>
     </div>
+    <section class="room-tools" aria-label="Chat rooms">
+      <div class="room-actions">
+        <button id="groupRoom" class="active" type="button">Group chat</button>
+        <button id="personalRoom" type="button">Personal chat</button>
+      </div>
+      <div class="private-panel" id="privatePanel" hidden>
+        <input id="roomCode" maxlength="24" placeholder="Enter your shared code" aria-label="Personal chat code">
+        <button id="joinRoom" type="button">Connect</button>
+        <button id="createRoom" type="button">Create code</button>
+        <button id="copyRoomCode" type="button" hidden>Copy code</button>
+        <div id="roomHelp">Create a code and share it with the person you want to chat with.</div>
+      </div>
+    </section>
 
     <section id="messages" aria-live="polite">
       <div class="empty">Loading the conversation…</div>
@@ -362,10 +417,19 @@
     const messageInput = document.getElementById("messageInput");
     const sendButton = document.getElementById("send");
     const noticeEl = document.getElementById("notice");
+    const roomTitleEl = document.getElementById("roomTitle");
+    const roomDescriptionEl = document.getElementById("roomDescription");
+    const roomCodeEl = document.getElementById("roomCode");
+    const roomHelpEl = document.getElementById("roomHelp");
+    const privatePanelEl = document.getElementById("privatePanel");
+    const copyRoomCodeButton = document.getElementById("copyRoomCode");
 
     let client = null;
     let lastSentAt = 0;
     let realtimeChannel = null;
+    let activeRoomCode = null;
+    let privatePanelOpen = false;
+    let roomLoadId = 0;
     const displayedIds = new Set();
 
     nicknameEl.value = localStorage.getItem("abro_nickname") || "";
@@ -455,6 +519,123 @@
       messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
+    async function loadRoomMessages() {
+      if (!client) return;
+
+      const requestId = ++roomLoadId;
+      const requestedRoomCode = activeRoomCode;
+      messagesEl.replaceChildren();
+      displayedIds.clear();
+
+      const query = client
+        .from("chat_messages")
+        .select("id,nickname,message,created_at")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      const { data, error } = requestedRoomCode
+        ? await query.eq("room_code", requestedRoomCode)
+        : await query.is("room_code", null);
+
+      if (error) throw error;
+      if (requestId !== roomLoadId) return;
+
+      if (!data || data.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = requestedRoomCode
+          ? "No messages here yet. Say hello!"
+          : "It’s quiet here… Start the first conversation ✨";
+        messagesEl.appendChild(empty);
+      } else {
+        data.reverse().forEach(renderMessage);
+      }
+    }
+
+    function selectRoom(roomCode) {
+      activeRoomCode = roomCode;
+      const isPersonal = Boolean(roomCode);
+      document.getElementById("groupRoom").classList.toggle("active", !isPersonal);
+      document.getElementById("personalRoom").classList.toggle("active", isPersonal || privatePanelOpen);
+      privatePanelEl.hidden = !privatePanelOpen;
+      roomTitleEl.textContent = isPersonal
+        ? `🔒 Personal chat · ${roomCode}`
+        : "🌐 Public Lounge";
+      roomDescriptionEl.textContent = isPersonal
+        ? "Only people with this code can join"
+        : "Everyone shares this room";
+      messageInput.placeholder = isPersonal
+        ? "Message this person…"
+        : "Write a message…";
+      messagesEl.replaceChildren();
+      messagesEl.innerHTML = '<div class="empty">Loading the conversation…</div>';
+      if (client) {
+        loadRoomMessages().catch(showRoomLoadError);
+      }
+    }
+
+    function showRoomLoadError(error) {
+      console.error("ABRO CHAT room load error:", error);
+      connectionEl.textContent = "Connection error";
+      messagesEl.replaceChildren();
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "Could not load messages. Check the room_code column and Supabase policies.";
+      messagesEl.appendChild(empty);
+      showNotice("Could not load this chat room.");
+    }
+
+    document.getElementById("groupRoom").addEventListener("click", () => {
+      privatePanelOpen = false;
+      selectRoom(null);
+    });
+
+    document.getElementById("personalRoom").addEventListener("click", () => {
+      privatePanelOpen = !privatePanelOpen;
+      privatePanelEl.hidden = !privatePanelOpen;
+      document.getElementById("personalRoom").classList.toggle("active", privatePanelOpen || Boolean(activeRoomCode));
+      if (!privatePanelOpen && !activeRoomCode) {
+        document.getElementById("personalRoom").classList.remove("active");
+      }
+    });
+
+    document.getElementById("joinRoom").addEventListener("click", () => {
+      const code = roomCodeEl.value.trim().replace(/\s+/g, "").toUpperCase();
+      if (code.length < 4 || code.length > 24) {
+        showNotice("Enter a valid chat code (4–24 characters).");
+        roomCodeEl.focus();
+        return;
+      }
+      roomCodeEl.value = code;
+      privatePanelOpen = true;
+      copyRoomCodeButton.hidden = false;
+      roomHelpEl.textContent = `Share this code with the other person: ${code}`;
+      showNotice("Connected to the personal chat.");
+      selectRoom(code);
+    });
+
+    document.getElementById("createRoom").addEventListener("click", () => {
+      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const randomValues = new Uint32Array(6);
+      crypto.getRandomValues(randomValues);
+      const code = "ABRO-" + Array.from(randomValues, value => alphabet[value % alphabet.length]).join("");
+      roomCodeEl.value = code;
+      copyRoomCodeButton.hidden = false;
+      privatePanelOpen = true;
+      roomHelpEl.textContent = `Your code is ${code}. Share it with one person to chat together.`;
+      showNotice("Personal chat code created. Share it with the other person.");
+      selectRoom(code);
+    });
+
+    copyRoomCodeButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(roomCodeEl.value);
+        showNotice("Chat code copied.");
+      } catch (error) {
+        roomCodeEl.select();
+        showNotice("Copy the selected code and send it to the other person.");
+      }
+    });
+
     async function startChat() {
       if (!window.supabase) {
         connectionEl.textContent = "Library error";
@@ -467,68 +648,32 @@
         SUPABASE_PUBLISHABLE_KEY
       );
 
-      try {
-        const { data, error } = await client
-          .from("chat_messages")
-          .select("id,nickname,message,created_at")
-          .order("created_at", { ascending: false })
-          .limit(100);
-
-        if (error) throw error;
-
-        messagesEl.replaceChildren();
-        displayedIds.clear();
-
-        if (!data || data.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty";
-          empty.innerHTML =
-            "It’s quiet here…<br>Start the first conversation ✨";
-          messagesEl.appendChild(empty);
-        } else {
-          data.reverse().forEach(renderMessage);
-        }
-
-        connectionEl.textContent = "Connected";
-
-        realtimeChannel = client
-          .channel("abro-chat-live")
-          .on(
-            "postgres_changes",
-            {
-              event: "INSERT",
-              schema: "public",
-              table: "chat_messages"
-            },
-            payload => renderMessage(payload.new)
-          )
-          .subscribe(status => {
-            if (status === "SUBSCRIBED") {
-              connectionEl.textContent = "Live";
-            } else if (
-              status === "CHANNEL_ERROR" ||
-              status === "TIMED_OUT"
-            ) {
-              connectionEl.textContent = "Reconnecting";
-            } else if (status === "CLOSED") {
-              connectionEl.textContent = "Disconnected";
+      realtimeChannel = client
+        .channel("abro-chat-live")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "chat_messages" },
+          payload => {
+            if ((payload.new.room_code || null) === activeRoomCode) {
+              renderMessage(payload.new);
             }
-          });
+          }
+        )
+        .subscribe(status => {
+          if (status === "SUBSCRIBED") {
+            connectionEl.textContent = "Live";
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+            connectionEl.textContent = "Reconnecting";
+          } else if (status === "CLOSED") {
+            connectionEl.textContent = "Disconnected";
+          }
+        });
 
+      try {
+        await loadRoomMessages();
+        connectionEl.textContent = "Connected";
       } catch (error) {
-        console.error("ABRO CHAT connection error:", error);
-        connectionEl.textContent = "Connection error";
-        messagesEl.replaceChildren();
-
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent =
-          "Could not load messages. Check your Supabase table and policies.";
-        messagesEl.appendChild(empty);
-
-        showNotice(
-          "Connection failed. Check the browser console for details."
-        );
+        showRoomLoadError(error);
       }
     }
 
@@ -566,7 +711,7 @@
 
           const { error } = await client
             .from("chat_messages")
-            .insert([{ nickname, message }]);
+            .insert([{ nickname, message, room_code: activeRoomCode }]);
 
           if (error) throw error;
 
