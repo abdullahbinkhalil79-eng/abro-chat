@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#09090d">
+  <title>ABRO CHAT</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      color-scheme: dark;
+      --bg: #09090d;
+      --panel: rgba(255,255,255,.055);
+      --border: rgba(255,255,255,.10);
+      --muted: #9999aa;
+      --accent: #a78bfa;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 15% 0%, #35205a55, transparent 42%),
+        radial-gradient(ellipse at 100% 100%, #173c5250, transparent 40%),
+        var(--bg);
+      color: #f6f4ff;
+      font-family: Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 24px 14px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 48px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      background: rgba(15,15,22,.76);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 25px 100px #0008;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 23px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #c4b5fd, #7c3aed);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 900;
+      box-shadow: 0 5px 28px #8b5cf655;
+    }
+
+    h1 {
+      font-size: 19px;
+      margin: 0 0 4px;
+      letter-spacing: 1.5px;
+    }
+
+    .subtitle { color: var(--muted); font-size: 12px; }
+
+    .status {
+      font-size: 11px;
+      color: #a7f3d0;
+      background: #10b98118;
+      border: 1px solid #10b98135;
+      padding: 8px 10px;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: #34d399;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .identity {
+      padding: 15px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .identity label { color: var(--muted); font-size: 12px; }
+
+    input, button { font: inherit; }
+
+    #nickname {
+      min-width: 0;
+      width: 100%;
+      background: #ffffff08;
+      color: white;
+      border: 1px solid var(--border);
+      padding: 11px 13px;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    input:focus { border-color: #a78bfa88; }
+
+    button { transition: .2s ease; }
+
+    .save {
+      border: 1px solid var(--border);
+      background: #ffffff0b;
+      color: white;
+      border-radius: 12px;
+      padding: 11px 13px;
+      cursor: pointer;
+    }
+
+    .save:hover {
+      background: #ffffff16;
+      border-color: #a78bfa77;
+    }
+
+    .room {
+      padding: 17px 22px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .room strong { font-size: 14px; }
+    .room small { color: var(--muted); font-size: 11px; }
+
+    #messages {
+      flex: 1;
+      min-height: 300px;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding: 12px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    #messages::-webkit-scrollbar { width: 5px; }
+    #messages::-webkit-scrollbar-thumb {
+      background: #ffffff20;
+      border-radius: 10px;
+    }
+
+    .empty {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      padding: 35px 0;
+    }
+
+    .message {
+      align-self: flex-start;
+      max-width: 88%;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 12px 14px;
+      border-radius: 7px 18px 18px 18px;
+      overflow-wrap: anywhere;
+      animation: appear .2s ease-out;
+    }
+
+    .message.mine {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #8b5cf626, #6366f11b);
+      border-color: #a78bfa55;
+      border-radius: 18px 7px 18px 18px;
+    }
+
+    .meta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .sender {
+      font-size: 12px;
+      font-weight: 700;
+      color: #c4b5fd;
+    }
+
+    .time { font-size: 10px; color: var(--muted); }
+
+    .text {
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: #ffffff04;
+    }
+
+    #messageInput {
+      flex: 1;
+      min-width: 0;
+      background: #ffffff08;
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 14px;
+      outline: none;
+    }
+
+    #send {
+      border: 0;
+      border-radius: 15px;
+      padding: 0 20px;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 22px #8b5cf626;
+    }
+
+    #send:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 26px #8b5cf655;
+    }
+
+    #send:disabled { opacity: .5; cursor: wait; }
+
+    #notice {
+      min-height: 18px;
+      padding: 0 20px 12px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 0 12px 16px;
+      color: #777786;
+      font-size: 10px;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 0; }
+      .app {
+        min-height: 100dvh;
+        border-radius: 0;
+        border: 0;
+      }
+      header { padding: 18px 16px; }
+      .identity { padding: 13px 15px; }
+      .room { padding-left: 16px; padding-right: 16px; }
+      #messages { padding-left: 15px; padding-right: 15px; }
+      form { padding: 12px; }
+      #send { padding: 0 16px; }
+      .status { font-size: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <h1>ABRO CHAT</h1>
+          <div class="subtitle">One room. Real conversations.</div>
+        </div>
+      </div>
+      <div class="status" id="connection">Connecting</div>
+    </header>
+
+    <section class="identity">
+      <label for="nickname">YOU</label>
+      <input id="nickname" maxlength="24" placeholder="Choose a nickname">
+      <button class="save" id="saveName" type="button">Save</button>
+    </section>
+
+    <div class="room">
+      <strong>🌐 Public Lounge</strong>
+      <small>Everyone shares this room</small>
+    </div>
+
+    <section id="messages" aria-live="polite">
+      <div class="empty">Loading the conversation…</div>
+    </section>
+
+    <form id="chatForm">
+      <input
+        id="messageInput"
+        maxlength="500"
+        placeholder="Write a message…"
+        autocomplete="off"
+        aria-label="Your message"
+        required
+      >
+      <button id="send" type="submit">Send ↗</button>
+    </form>
+
+    <div id="notice" role="status"></div>
+    <footer>Be kind. Respect everyone. Never share private information.</footer>
+  </main>
+
+  <script>
+    // Your Supabase project configuration
+    const SUPABASE_URL =
+      "https://tmazfyakptuzquhqwrmb.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
+
+    const connectionEl = document.getElementById("connection");
+    const messagesEl = document.getElementById("messages");
+    const nicknameEl = document.getElementById("nickname");
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("send");
+    const noticeEl = document.getElementById("notice");
+
+    let client = null;
+    let lastSentAt = 0;
+    let realtimeChannel = null;
+    const displayedIds = new Set();
+
+    nicknameEl.value = localStorage.getItem("abro_nickname") || "";
+
+    function showNotice(message) {
+      noticeEl.textContent = message;
+    }
+
+    function getNickname() {
+      return nicknameEl.value.trim().replace(/\s+/g, " ");
+    }
+
+    document.getElementById("saveName").addEventListener("click", () => {
+      const name = getNickname();
+
+      if (name.length < 1 || name.length > 24) {
+        showNotice("Choose a nickname between 1 and 24 characters.");
+        return;
+      }
+
+      nicknameEl.value = name;
+      localStorage.setItem("abro_nickname", name);
+      showNotice("Nickname saved on this device.");
+      refreshMineStyles();
+    });
+
+    function refreshMineStyles() {
+      document.querySelectorAll(".message").forEach(box => {
+        box.classList.toggle(
+          "mine",
+          box.dataset.nickname === getNickname()
+        );
+      });
+    }
+
+    function renderMessage(item) {
+      if (displayedIds.has(item.id)) return;
+
+      displayedIds.add(item.id);
+
+      const empty = messagesEl.querySelector(".empty");
+      if (empty) empty.remove();
+
+      const box = document.createElement("article");
+      box.className = "message";
+      box.dataset.id = String(item.id);
+      box.dataset.nickname = item.nickname;
+
+      if (item.nickname === getNickname()) {
+        box.classList.add("mine");
+      }
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+
+      const sender = document.createElement("span");
+      sender.className = "sender";
+      sender.textContent = item.nickname;
+
+      const time = document.createElement("span");
+      time.className = "time";
+
+      const date = new Date(item.created_at);
+      time.textContent = Number.isNaN(date.getTime())
+        ? ""
+        : date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+
+      const content = document.createElement("div");
+      content.className = "text";
+      content.textContent = item.message;
+
+      meta.append(sender, time);
+      box.append(meta, content);
+      messagesEl.appendChild(box);
+
+      while (messagesEl.children.length > 120) {
+        const first = messagesEl.firstElementChild;
+        if (first.dataset.id) {
+          displayedIds.delete(Number(first.dataset.id));
+        }
+        first.remove();
+      }
+
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    async function startChat() {
+      if (!window.supabase) {
+        connectionEl.textContent = "Library error";
+        showNotice("Could not load Supabase. Check your internet and refresh.");
+        return;
+      }
+
+      client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      try {
+        const { data, error } = await client
+          .from("chat_messages")
+          .select("id,nickname,message,created_at")
+          .order("created_at", { ascending: false })
+          .limit(100);
+
+        if (error) throw error;
+
+        messagesEl.replaceChildren();
+        displayedIds.clear();
+
+        if (!data || data.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.innerHTML =
+            "It’s quiet here…<br>Start the first conversation ✨";
+          messagesEl.appendChild(empty);
+        } else {
+          data.reverse().forEach(renderMessage);
+        }
+
+        connectionEl.textContent = "Connected";
+
+        realtimeChannel = client
+          .channel("abro-chat-live")
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "chat_messages"
+            },
+            payload => renderMessage(payload.new)
+          )
+          .subscribe(status => {
+            if (status === "SUBSCRIBED") {
+              connectionEl.textContent = "Live";
+            } else if (
+              status === "CHANNEL_ERROR" ||
+              status === "TIMED_OUT"
+            ) {
+              connectionEl.textContent = "Reconnecting";
+            } else if (status === "CLOSED") {
+              connectionEl.textContent = "Disconnected";
+            }
+          });
+
+      } catch (error) {
+        console.error("ABRO CHAT connection error:", error);
+        connectionEl.textContent = "Connection error";
+        messagesEl.replaceChildren();
+
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent =
+          "Could not load messages. Check your Supabase table and policies.";
+        messagesEl.appendChild(empty);
+
+        showNotice(
+          "Connection failed. Check the browser console for details."
+        );
+      }
+    }
+
+    document.getElementById("chatForm").addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+
+        if (!client) {
+          showNotice("Chat is not connected yet.");
+          return;
+        }
+
+        const nickname = getNickname();
+        const message = messageInput.value.trim();
+
+        if (!nickname || nickname.length > 24) {
+          showNotice("Save a nickname first (1–24 characters).");
+          nicknameEl.focus();
+          return;
+        }
+
+        if (!message || message.length > 500) return;
+
+        if (Date.now() - lastSentAt < 1500) {
+          showNotice("Please wait a moment before sending again.");
+          return;
+        }
+
+        lastSentAt = Date.now();
+        sendButton.disabled = true;
+
+        try {
+          localStorage.setItem("abro_nickname", nickname);
+
+          const { error } = await client
+            .from("chat_messages")
+            .insert([{ nickname, message }]);
+
+          if (error) throw error;
+
+          messageInput.value = "";
+          showNotice("");
+        } catch (error) {
+          console.error("Message send error:", error);
+          showNotice("Message could not be sent. Please try again.");
+          lastSentAt = 0;
+        } finally {
+          sendButton.disabled = false;
+          messageInput.focus();
+        }
+      }
+    );
+
+    startChat();
+  </script>
+</body>
+</html>
