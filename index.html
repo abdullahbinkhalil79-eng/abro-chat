@@ -33,9 +33,9 @@
     }
     input, button { font: inherit; }
     button { transition: transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease; }
-    button:focus-visible, input:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
 
-    input[type=text], input[type=password], input[type=search] {
+    input[type=text], input[type=email], input[type=password], input[type=search] {
       width: 100%;
       min-width: 0;
       background: rgba(255,255,255,.05);
@@ -67,7 +67,7 @@
     }
     .btn.danger:hover:not(:disabled) { border-color: rgba(251,113,133,.6); }
 
-    /* ---------- sign-in screen ---------- */
+    /* ---------- sign-in and iOS-inspired PIN lock screen ---------- */
     .screen {
       position: fixed;
       inset: 0;
@@ -75,17 +75,58 @@
       display: grid;
       place-items: center;
       overflow-y: auto;
-      padding: 28px 20px;
+      padding: max(26px, env(safe-area-inset-top)) 20px max(26px, env(safe-area-inset-bottom));
       background:
-        radial-gradient(ellipse at 50% 8%, rgba(164,130,255,.32), transparent 38%),
-        radial-gradient(ellipse at 8% 88%, rgba(45,170,255,.17), transparent 35%),
-        linear-gradient(155deg, #151321 0%, #090a11 56%, #111522 100%);
-      transition: opacity .45s ease, transform .45s ease, visibility .45s;
+        radial-gradient(ellipse at 50% 19%, rgba(179,164,255,.52), transparent 30%),
+        radial-gradient(ellipse at 13% 76%, rgba(67,181,255,.35), transparent 34%),
+        radial-gradient(ellipse at 88% 68%, rgba(238,116,204,.22), transparent 32%),
+        linear-gradient(155deg, #171d3b 0%, #10172b 48%, #090d19 100%);
+      isolation: isolate;
+      transition: opacity .55s ease, transform .65s cubic-bezier(.2,.8,.2,1), visibility .55s;
     }
-    .screen.gone { opacity: 0; visibility: hidden; transform: scale(1.03); pointer-events: none; }
+    .screen::before, .screen::after {
+      content: ""; position: absolute; z-index: -1; width: min(78vw, 460px); aspect-ratio: 1;
+      border-radius: 50%; filter: blur(54px); opacity: .42; pointer-events: none;
+      animation: aurora 12s ease-in-out infinite alternate;
+    }
+    .screen::before { top: 8%; left: -28%; background: radial-gradient(circle, rgba(50,170,255,.58), transparent 68%); }
+    .screen::after { right: -30%; bottom: 2%; background: radial-gradient(circle, rgba(169,105,255,.62), transparent 68%); animation-delay: -6s; }
+    @keyframes aurora { from { transform: translate3d(0,-2%,0) scale(.92); } to { transform: translate3d(9%,5%,0) scale(1.12); } }
+    .screen.gone { opacity: 0; visibility: hidden; transform: scale(1.035); pointer-events: none; }
 
-    .screen-content { width: min(100%, 350px); text-align: center; animation: arrive .6s cubic-bezier(.2,.8,.2,1) both; }
-    @keyframes arrive { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+    .screen-content { width: min(100%, 350px); text-align: center; animation: arrive .7s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
+
+    .lock-card { width: min(100%, 340px); padding: 14px 10px; }
+    .lock-brand { margin: 0 0 28px; }
+    .lock-brand .mark { margin-bottom: 12px; }
+    .lock-brand h2 { font-size: 23px; letter-spacing: 2px; }
+    .lock-prompt { margin: 0 0 18px; color: rgba(255,255,255,.83); font-size: 14px; }
+    .pin-dots { min-height: 18px; display: flex; justify-content: center; gap: 16px; margin: 0 auto 14px; }
+    .pin-dot { width: 11px; height: 11px; border: 1px solid rgba(255,255,255,.75); border-radius: 50%; background: rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(0,0,0,.14); transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease; }
+    .pin-dot.filled { transform: scale(1.12); background: #fff; box-shadow: 0 0 13px rgba(255,255,255,.8); }
+    .pin-store { position: absolute; width: 1px; height: 1px; padding: 0 !important; opacity: 0; pointer-events: none; }
+    .lock-card.shake { animation: pinShake .38s ease-in-out; }
+    @keyframes pinShake { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
+    .lock-card .form-error { min-height: 18px; margin: 0 0 10px; color: #ffd0db; text-shadow: 0 1px 10px rgba(255,80,120,.5); }
+    .keypad { width: min(100%, 280px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 17px; margin: 0 auto; }
+    .key {
+      width: 72px; height: 72px; justify-self: center; display: grid; place-items: center;
+      border: 1px solid rgba(255,255,255,.32); border-radius: 50%; color: #fff;
+      background: linear-gradient(145deg, rgba(255,255,255,.27), rgba(255,255,255,.095));
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.44), inset 0 -9px 18px rgba(12,19,40,.16), 0 9px 24px rgba(0,0,0,.17);
+      -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
+      font-size: 28px; font-weight: 400; cursor: pointer;
+      transition: transform .16s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease;
+      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    }
+    .key small { display: block; margin-top: -18px; font-size: 8px; font-weight: 700; letter-spacing: .19em; }
+    .key:hover { background: linear-gradient(145deg, rgba(255,255,255,.38), rgba(255,255,255,.16)); }
+    .key:active { transform: scale(.91); background: rgba(255,255,255,.43); box-shadow: inset 0 2px 8px rgba(0,0,0,.18); }
+    .key.utility { border: 0; background: transparent; box-shadow: none; font-size: 13px; }
+    .key.utility:active { transform: scale(.94); background: rgba(255,255,255,.1); }
+    .key-spacer { width: 72px; height: 72px; }
+    .lock-foot { margin: 18px 0 0; color: rgba(255,255,255,.56); font-size: 11px; letter-spacing: .04em; }
 
     .mark {
       width: 58px; height: 58px;
@@ -162,16 +203,16 @@
 
     .surface { position: relative; isolation: isolate; flex: 1; min-height: 0; overflow: hidden; background: linear-gradient(135deg, rgba(4,12,28,.86), rgba(7,13,27,.78)); }
     .earth-background, .earth-shade { position: absolute; inset: 0; pointer-events: none; }
-    .earth-background { z-index: 0; overflow: hidden; opacity: .94; }
+    .earth-background { z-index: 0; overflow: hidden; opacity: 1; }
     .earth-background::before {
-      content: ""; position: absolute; width: clamp(180px, 46%, 340px); aspect-ratio: 1; top: 50%; right: 5%; transform: translateY(-50%);
+      content: ""; position: absolute; width: clamp(190px, 49%, 360px); aspect-ratio: 1; top: 50%; right: 5%; transform: translateY(-50%);
       border-radius: 50%;
-      background: radial-gradient(circle at 36% 38%, #2375ad 0%, #10365c 48%, #061426 72%);
-      box-shadow: 0 0 30px rgba(55,160,255,.2), inset -22px -8px 38px rgba(0,0,0,.55);
+      background: radial-gradient(circle at 34% 30%, #62c8ff 0%, #197fc4 30%, #10406f 62%, #061426 82%);
+      box-shadow: 0 0 42px rgba(55,160,255,.34), inset -24px -10px 40px rgba(0,0,0,.46), inset 8px 8px 24px rgba(198,235,255,.2);
     }
     .earth-background.ready::before { display: none; }
     .earth-background canvas { position: relative; display: block; width: 100%; height: 100%; }
-    .earth-shade { z-index: 1; background: linear-gradient(135deg, rgba(3,10,25,.12), rgba(5,12,28,.2) 48%, rgba(3,9,22,.28)); }
+    .earth-shade { z-index: 1; background: linear-gradient(135deg, rgba(3,10,25,.04), rgba(5,12,28,.10) 48%, rgba(3,9,22,.16)); }
 
     #messages { position: absolute; inset: 0; z-index: 2; overflow-y: auto; padding: 12px 22px 20px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
     #messages::-webkit-scrollbar { width: 5px; }
@@ -206,6 +247,64 @@
 
     /* ---------- friends ---------- */
     #friendsPanel { overflow-y: auto; padding: 4px 22px 18px; }
+    #feedPanel { overflow-y: auto; padding: 4px 22px 18px; }
+    .feed-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0 14px; }
+    .feed-toolbar h2 { margin: 0; font-size: 20px; letter-spacing: -.4px; }
+    .feed-plus { width: 42px; height: 42px; padding: 0; border-radius: 14px; font-size: 25px; line-height: 1; }
+    .feed-composer, .feed-card, .story-composer { padding: 14px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 17px; background: rgba(255,255,255,.045); }
+    .feed-composer, .story-composer { position: relative; }
+    .feed-composer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .feed-composer-head .section-title { margin: 0; }
+    .feed-close { padding: 5px 9px; }
+    .feed-card { padding: 0; overflow: hidden; background: rgba(255,255,255,.055); }
+    .feed-card-head { padding: 13px 14px 10px; margin: 0; }
+    .feed-card-body { padding: 0 14px 14px; }
+    .feed-post-actions { margin-left: auto; }
+    .feed-delete { padding: 5px 9px; color: #fecdd3; }
+    .feed-create-modal { width: min(100%, 360px); padding: 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 22px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); }
+    .feed-create-modal h2 { margin: 0 0 6px; font-size: 20px; }
+    .feed-create-modal p { margin: 0 0 18px; color: var(--muted); font-size: 12px; }
+    .feed-create-options { display: grid; gap: 10px; }
+    .feed-create-options .btn { padding: 14px; text-align: left; }
+    .feed-create-options strong, .feed-create-options small { display: block; }
+    .feed-create-options small { margin-top: 4px; color: var(--muted); white-space: normal; }
+    .feed-composer textarea, .story-composer textarea, #bioInput { width: 100%; min-height: 76px; padding: 12px 13px; resize: vertical; border: 1px solid var(--border); border-radius: 13px; background: rgba(255,255,255,.05); color: #fff; font: inherit; }
+    .feed-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
+    .feed-upload { color: #d8d1ed; font-size: 12px; cursor: pointer; }
+    .feed-upload input { max-width: 175px; font-size: 11px; }
+    .feed-card-head { display: flex; align-items: center; gap: 10px; margin: 0; }
+    .feed-card-head .pinfo small { display: block; margin-top: 3px; }
+    .feed-photo { display: block; width: 100%; max-height: 460px; margin-top: 10px; border-radius: 13px; object-fit: contain; background: rgba(0,0,0,.2); }
+    .stories-block { margin: 0 -22px 12px; padding: 13px 22px 3px; border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); background: linear-gradient(110deg, rgba(139,92,246,.10), rgba(56,189,248,.04)); }
+    .stories-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 0 10px; color: #eeeaff; font-size: 14px; font-weight: 700; }
+    .stories-heading small { color: var(--muted); font-size: 10px; font-weight: 500; }
+    .story-row { display: flex; gap: 14px; overflow-x: auto; padding: 3px 1px 13px; scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.35) transparent; }
+    .story-item { flex: 0 0 76px; min-width: 0; border: 0; padding: 0; background: transparent; color: #fff; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .story-ring { position: relative; isolation: isolate; width: 70px; height: 70px; margin: 0 auto 7px; padding: 3px; border-radius: 50%; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); box-shadow: 0 0 16px rgba(167,139,250,.36); transition: filter .2s ease, box-shadow .2s ease; }
+    .story-ring::before { content: ""; position: absolute; z-index: -1; inset: -3px; border-radius: inherit; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); filter: blur(9px); opacity: .82; animation: storyGlow 2.4s ease-in-out infinite alternate; }
+    @keyframes storyGlow { from { opacity: .52; transform: scale(.98); } to { opacity: .95; transform: scale(1.06); } }
+    .story-ring .avatar { width: 100%; height: 100%; border: 2px solid #151321; }
+    .story-item.seen .story-ring { background: #626174; box-shadow: none; filter: saturate(.25); }
+    .story-item.seen .story-ring::before { display: none; }
+    .story-item:active { transform: scale(.96); }
+    .story-item small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd6fe; font-size: 11px; }
+    .story-own { position: relative; flex: 0 0 76px; }
+    .story-own .story-item { width: 76px; }
+    .story-add { position: absolute; right: 3px; top: 46px; width: 25px; height: 25px; display: grid; place-items: center; padding: 0; border: 2px solid #171522; border-radius: 50%; background: linear-gradient(145deg,#c4b5fd,#7c3aed); color: white; font-size: 17px; line-height: 1; box-shadow: 0 0 12px rgba(167,139,250,.65); cursor: pointer; }
+    .story-view { position: relative; width: min(100%, 420px); height: min(86dvh, 720px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 22px; border: 1px solid rgba(196,181,253,.38); border-radius: 24px; background: radial-gradient(ellipse at 50% 0%, #342557, #10111d 65%); box-shadow: 0 0 32px rgba(139,92,246,.22), 0 28px 90px rgba(0,0,0,.55); }
+    .story-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .story-view::after { content: ""; position: absolute; inset: 25% 0 0; background: linear-gradient(transparent,rgba(0,0,0,.78)); pointer-events: none; }
+    .story-progress { position: absolute; z-index: 2; top: 12px; left: 14px; right: 14px; height: 3px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.32); }
+    .story-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: #fff; animation: storyProgress 6s linear forwards; }
+    @keyframes storyProgress { to { width: 100%; } }
+    .story-view-head, .story-view-caption { position: relative; z-index: 1; }
+    .story-view-head { display: flex; align-items: center; gap: 10px; align-self: stretch; margin-bottom: auto; padding-top: 8px; text-shadow: 0 1px 8px #000; }
+    .story-view-head .avatar { width: 36px; height: 36px; border: 2px solid #d8ccff; }
+    .story-view-head strong { flex: 1; }
+    .story-view-head small { color: rgba(255,255,255,.76); font-size: 11px; }
+    .story-view-head .btn { background: rgba(0,0,0,.28); }
+    .story-view-caption { font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
+    .bio-text { color: #d2cde2; font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
     .search-wrap { position: sticky; top: 0; z-index: 3; padding: 4px 0 10px; background: linear-gradient(rgba(20,19,30,.98) 70%, transparent); }
     .section-title { margin: 16px 0 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
     .person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.04); }
@@ -216,6 +315,32 @@
     .pinfo small { color: var(--muted); font-size: 11px; }
     .pactions { display: flex; gap: 6px; }
     .note { color: var(--muted); font-size: 12px; line-height: 1.6; padding: 6px 2px; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+    .user-profile-btn { display: flex; align-items: center; gap: 8px; }
+    .user-profile-btn .avatar { width: 30px; height: 30px; font-size: 15px; }
+    .profile-view-card { width: min(100%, 360px); text-align: center; padding: 26px 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); animation: arrive .3s ease both; }
+    .profile-view-card .profile-modal-head { text-align: left; }
+    .profile-view-avatar { width: 128px; height: 128px; margin: 24px auto 15px; border: 2px solid rgba(196,181,253,.55); box-shadow: 0 10px 38px rgba(139,92,246,.24); font-size: 66px; }
+    .profile-view-avatar img { display: block; }
+    .profile-view-name { margin: 0; font-size: 20px; overflow-wrap: anywhere; }
+    .profile-view-caption { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .profile-view-btn { padding: 5px 9px; font-size: 11px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 1300; display: grid; place-items: center; padding: 18px; background: rgba(3,5,13,.72); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+    .profile-modal { width: min(100%, 420px); max-height: min(88dvh, 650px); overflow-y: auto; padding: 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); animation: arrive .3s ease both; }
+    .profile-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .profile-modal h2 { margin: 0; font-size: 19px; }
+    .profile-preview { width: 76px; height: 76px; margin: 18px auto; border-radius: 50%; font-size: 39px; }
+    .avatar-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .avatar-option { min-width: 0; padding: 9px 3px; display: grid; justify-items: center; gap: 5px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.045); color: #fff; cursor: pointer; }
+    .avatar-option.selected { border-color: rgba(196,181,253,.85); background: rgba(139,92,246,.22); box-shadow: 0 0 0 2px rgba(167,139,250,.16); }
+    .avatar-option .avatar { width: 44px; height: 44px; font-size: 25px; }
+    .avatar-option small { color: #d2cde2; font-size: 10px; }
+    .profile-modal .section-title { margin-top: 18px; }
+    .upload-label { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-top: 14px; padding: 12px; border: 1px dashed rgba(196,181,253,.48); border-radius: 13px; color: #e9ddff; background: rgba(167,139,250,.08); cursor: pointer; }
+    .upload-label input { display: none; }
+    .profile-modal-actions { display: flex; gap: 9px; margin-top: 18px; }
+    .profile-modal-actions .btn { flex: 1; }
+    #profileSettingsError { min-height: 18px; margin: 10px 0 0; color: #ff9dba; font-size: 12px; text-align: center; }
 
     #notice { min-height: 18px; padding: 6px 20px 10px; text-align: center; color: var(--muted); font-size: 11px; }
 
@@ -225,35 +350,91 @@
     .toast strong { display: block; font-size: 13px; margin-bottom: 3px; }
     .toast span.msg { color: #c5c2d6; font-size: 11px; line-height: 1.45; }
 
+    @media (max-height: 740px) {
+      .lock-card { padding-top: 4px; padding-bottom: 4px; }
+      .lock-brand { margin-bottom: 18px; }
+      .keypad { gap: 8px 14px; }
+      .key, .key-spacer { width: 64px; height: 64px; }
+      .lock-foot { margin-top: 12px; }
+    }
     @media (max-width: 480px) {
       body { padding: 0; }
       .app { height: 100dvh; border-radius: 0; border: 0; }
       header, .userbar, .tabs, .chat-head { padding-left: 15px; padding-right: 15px; }
       #messages { padding-left: 14px; padding-right: 14px; }
-      #friendsPanel { padding-left: 15px; padding-right: 15px; }
+      #friendsPanel, #feedPanel { padding-left: 15px; padding-right: 15px; }
+      .stories-block { margin-left: -15px; margin-right: -15px; padding-left: 15px; padding-right: 15px; }
+      .story-view { height: min(88dvh, 760px); }
       .typing { margin-left: 15px; }
       #chatForm { padding: 10px 12px; }
       .pills { flex-direction: column; align-items: flex-end; gap: 5px; }
       .pill { padding: 6px 8px; font-size: 10px; }
+      .userbar { gap: 6px; padding-left: 10px; padding-right: 10px; font-size: 11px; }
+      .userbar .pactions { gap: 4px; }
+      .userbar .btn { padding: 8px; }
+      .user-profile-btn { gap: 5px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
 
-  <!-- Choose a public profile name -->
-  <section class="screen" id="authScreen" aria-label="Create your profile">
+  <section class="screen" id="lockScreen" aria-label="Enter app PIN">
+    <form class="screen-content lock-card" id="lockForm" autocomplete="off">
+      <div class="lock-brand">
+        <div class="mark" aria-hidden="true">A</div>
+        <h2>ABROO CHAT</h2>
+      </div>
+      <p class="lock-prompt">Enter passcode</p>
+      <div class="pin-dots" id="pinDots" aria-hidden="true">
+        <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+      </div>
+      <input id="lockPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="4-digit PIN" hidden>
+      <p class="form-error" id="lockError" role="alert" aria-live="polite"></p>
+      <div class="keypad" id="keypad" aria-label="PIN keypad">
+        <button class="key" type="button" data-digit="1">1</button>
+        <button class="key" type="button" data-digit="2">2<small>ABC</small></button>
+        <button class="key" type="button" data-digit="3">3<small>DEF</small></button>
+        <button class="key" type="button" data-digit="4">4<small>GHI</small></button>
+        <button class="key" type="button" data-digit="5">5<small>JKL</small></button>
+        <button class="key" type="button" data-digit="6">6<small>MNO</small></button>
+        <button class="key" type="button" data-digit="7">7<small>PQRS</small></button>
+        <button class="key" type="button" data-digit="8">8<small>TUV</small></button>
+        <button class="key" type="button" data-digit="9">9<small>WXYZ</small></button>
+        <span class="key-spacer" aria-hidden="true"></span>
+        <button class="key" type="button" data-digit="0">0</button>
+        <button class="key utility" type="button" id="keyDelete" aria-label="Delete last digit">⌫</button>
+      </div>
+      <p class="lock-foot">Protected with your personal passcode</p>
+    </form>
+  </section>
+
+  <!-- Sign up, log in, or secure an existing anonymous account -->
+  <section class="screen" id="authScreen" aria-label="Account access" hidden>
     <form class="screen-content auth-card" id="authForm" autocomplete="on">
       <div class="mark" aria-hidden="true">A</div>
       <h2>ABRO CHAT</h2>
-      <p class="caption">Choose a name so friends can find you</p>
-      <div class="field">
+      <p class="caption" id="authCaption">Create an account to keep your profile safe</p>
+      <div class="auth-switch" id="authSwitch" role="tablist" aria-label="Account access mode">
+        <button class="active" id="authSignupTab" type="button" role="tab" aria-selected="true">Sign up</button>
+        <button id="authLoginTab" type="button" role="tab" aria-selected="false">Log in</button>
+      </div>
+      <div class="field" id="authUserField">
         <label for="authUser">Your profile name</label>
         <input id="authUser" type="text" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Choose a username" required>
       </div>
-      <p class="form-error" id="authError" role="alert"></p>
-      <button class="btn primary" id="authSubmit" type="submit">Continue</button>
-      <p class="hint">Use 3–20 letters, numbers, _ or . Your friends can search this name.</p>
+      <div class="field">
+        <label for="authEmail">Email</label>
+        <input id="authEmail" type="email" maxlength="254" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="authPassword">Password</label>
+        <input id="authPassword" type="password" minlength="6" autocomplete="new-password" placeholder="At least 6 characters" required>
+      </div>
+      <p class="form-error" id="authError" role="alert" aria-live="polite"></p>
+      <button class="btn primary" id="authSubmit" type="submit">Create account</button>
+      <button class="btn" id="authCancelLink" type="button" hidden>Back to chat</button>
+      <p class="hint" id="authHint">Use 3–20 letters, numbers, _ or . for your profile name.</p>
     </form>
   </section>
 
@@ -274,13 +455,50 @@
 
     <div class="userbar">
       <div><span>Signed in as</span> <strong id="meName"></strong></div>
-      <button class="btn" id="logout" type="button">Log out</button>
+      <div class="pactions">
+        <button class="btn user-profile-btn" id="openMyProfile" type="button" aria-label="View my profile">
+          <span id="userAvatar"></span><span>My profile</span>
+        </button>
+        <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
+        <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
+        <button class="btn" id="logout" type="button">Log out</button>
+      </div>
     </div>
 
     <nav class="tabs" aria-label="Sections">
       <button class="btn tab active" id="tabLounge" type="button">🌐 Lounge</button>
+      <button class="btn tab" id="tabFeed" type="button">📰 Feed</button>
       <button class="btn tab" id="tabFriends" type="button">👥 Friends<span class="badge" id="friendsBadge" hidden>0</span></button>
     </nav>
+
+    <section class="panel" id="feedPanel" hidden aria-label="Community feed">
+      <div class="feed-toolbar">
+        <h2>Feed</h2>
+        <button class="btn primary feed-plus" id="openFeedCreate" type="button" aria-label="Create a post or story">＋</button>
+      </div>
+      <div class="stories-block">
+        <div class="stories-heading"><span>Stories</span><small>24 hours</small></div>
+        <div class="story-row" id="storyList"></div>
+      </div>
+      <form class="story-composer" id="storyForm" hidden>
+        <div class="feed-composer-head"><div class="section-title">Add a story · 24 hours</div><button class="btn feed-close" type="button" data-close-composer="storyForm" aria-label="Close story composer">✕</button></div>
+        <textarea id="storyCaption" maxlength="240" placeholder="Add a short story caption…" aria-label="Story caption"></textarea>
+        <div class="feed-actions">
+          <label class="feed-upload">Photo <input id="storyPhoto" type="file" accept="image/*"></label>
+          <button class="btn primary" type="submit">Share story</button>
+        </div>
+      </form>
+      <form class="feed-composer" id="postForm" hidden>
+        <div class="feed-composer-head"><div class="section-title">Create a post · stays until you delete it</div><button class="btn feed-close" type="button" data-close-composer="postForm" aria-label="Close post composer">✕</button></div>
+        <textarea id="postText" maxlength="1000" placeholder="What's on your mind?" aria-label="Write a post"></textarea>
+        <div class="feed-actions">
+          <label class="feed-upload">Add photo <input id="postPhoto" type="file" accept="image/*"></label>
+          <button class="btn primary" id="publishPost" type="submit">Share post</button>
+        </div>
+      </form>
+      <div class="section-title">Posts</div>
+      <div id="feedPosts"></div>
+    </section>
 
     <!-- Friends -->
     <section class="panel" id="friendsPanel" hidden aria-label="Friends">
@@ -328,6 +546,69 @@
     <div id="notice" role="status"></div>
   </main>
 
+  <div class="modal-backdrop" id="feedCreateModal" hidden>
+    <section class="feed-create-modal" role="dialog" aria-modal="true" aria-labelledby="feedCreateTitle">
+      <div class="profile-modal-head"><h2 id="feedCreateTitle">Create</h2><button class="btn" id="closeFeedCreate" type="button" aria-label="Close create menu">✕</button></div>
+      <p>What would you like to share?</p>
+      <div class="feed-create-options">
+        <button class="btn" type="button" data-create="post"><strong>▧ &nbsp;Photo or post</strong><small>Share a photo or update with everyone. It stays until you delete it.</small></button>
+        <button class="btn" type="button" data-create="story"><strong>◉ &nbsp;Story</strong><small>Share a photo or moment that disappears after 24 hours.</small></button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="profileViewModal" hidden>
+    <section class="profile-view-card" role="dialog" aria-modal="true" aria-labelledby="profileViewName">
+      <div class="profile-modal-head">
+        <h2>Profile</h2>
+        <button class="btn" id="closeProfileView" type="button" aria-label="Close profile">✕</button>
+      </div>
+      <div class="avatar profile-view-avatar" id="profileViewAvatar"></div>
+      <h3 class="profile-view-name" id="profileViewName"></h3>
+      <p class="profile-view-caption">ABRO CHAT member</p>
+      <p class="bio-text" id="profileViewBio"></p>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="profileSettingsModal" hidden>
+    <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileSettingsTitle">
+      <div class="profile-modal-head">
+        <h2 id="profileSettingsTitle">Profile picture</h2>
+        <button class="btn" id="closeProfileSettings" type="button" aria-label="Close profile settings">✕</button>
+      </div>
+      <p class="hint">Choose a cartoon avatar or pick a photo from your gallery.</p>
+      <div class="avatar profile-preview" id="profileAvatarPreview" aria-label="Avatar preview"></div>
+      <div class="section-title">Cartoon avatars</div>
+      <div class="avatar-options" id="avatarOptions">
+        <button class="avatar-option" type="button" data-avatar="boy1"><span class="avatar">👦🏻</span><small>Boy 1</small></button>
+        <button class="avatar-option" type="button" data-avatar="boy2"><span class="avatar">👨🏻‍🦱</span><small>Boy 2</small></button>
+        <button class="avatar-option" type="button" data-avatar="boy3"><span class="avatar">🧑🏻‍🎤</span><small>Boy 3</small></button>
+        <button class="avatar-option" type="button" data-avatar="girl1"><span class="avatar">👧🏻</span><small>Girl 1</small></button>
+        <button class="avatar-option" type="button" data-avatar="girl2"><span class="avatar">👩🏻‍🎤</span><small>Girl 2</small></button>
+      </div>
+      <label class="upload-label" for="avatarUpload">▧ Choose from gallery
+        <input id="avatarUpload" type="file" accept="image/*">
+      </label>
+      <p class="hint">Photos are resized before saving. Choose an image under 8 MB.</p>
+      <label class="section-title" for="bioInput">Your bio</label>
+      <textarea id="bioInput" maxlength="240" placeholder="Write a little about yourself…"></textarea>
+      <p id="profileSettingsError" role="status" aria-live="polite"></p>
+      <div class="profile-modal-actions">
+        <button class="btn" id="cancelAvatarChange" type="button">Cancel</button>
+        <button class="btn primary" id="saveAvatar" type="button">Save picture</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="storyModal" hidden>
+    <section class="story-view" role="dialog" aria-modal="true" aria-label="Story">
+      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
+      <img id="storyViewImage" alt="">
+      <div class="story-view-head"><span id="storyViewAvatar"></span><strong id="storyViewName"></strong><small id="storyViewTime"></small><button class="btn" id="closeStory" type="button" aria-label="Close story">✕</button></div>
+      <p class="story-view-caption" id="storyViewCaption"></p>
+    </section>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite">
     <span class="toast-icon" aria-hidden="true">✦</span>
     <div><strong id="toastTitle"></strong><span class="msg" id="toastMsg"></span></div>
@@ -342,9 +623,13 @@
     const SUPABASE_URL = "https://tmazfyakptuzquhqwrmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
     const USERNAME_RE = /^[A-Za-z0-9_.]{3,20}$/;
+    const APP_PIN = "6767";
     const MAX_MESSAGES_ON_SCREEN = 150;
 
     const $ = id => document.getElementById(id);
+    const AVATAR_PRESETS = {
+      boy1: "👦🏻", boy2: "👨🏻‍🦱", boy3: "🧑🏻‍🎤", girl1: "👧🏻", girl2: "👩🏻‍🎤"
+    };
     const h = (tag, props = {}, ...kids) => {
       const el = document.createElement(tag);
       for (const [k, v] of Object.entries(props)) {
@@ -366,6 +651,41 @@
       document.body.innerHTML = '<p style="padding:30px;font-family:sans-serif">Could not load Supabase. Check your internet and refresh.</p>';
       return;
     }
+
+    const lockForm = $("lockForm");
+    const lockPin = $("lockPin");
+    function refreshPinDots() {
+      $("pinDots").querySelectorAll(".pin-dot").forEach((dot, i) => dot.classList.toggle("filled", i < lockPin.value.length));
+    }
+    $("keypad").addEventListener("click", e => {
+      const key = e.target.closest("button");
+      if (!key || lockPin.value.length >= 4) return;
+      lockPin.value += key.dataset.digit || "";
+      refreshPinDots();
+      $("lockError").textContent = "";
+      if (lockPin.value.length === 4) setTimeout(() => lockForm.requestSubmit(), 160);
+    });
+    $("keyDelete").addEventListener("click", () => {
+      lockPin.value = lockPin.value.slice(0, -1);
+      refreshPinDots();
+      $("lockError").textContent = "";
+    });
+    lockForm.addEventListener("submit", e => {
+      e.preventDefault();
+      if (lockPin.value !== APP_PIN) {
+        $("lockError").textContent = "Incorrect passcode. Try again.";
+        lockPin.value = "";
+        refreshPinDots();
+        lockForm.classList.remove("shake");
+        void lockForm.offsetWidth;
+        lockForm.classList.add("shake");
+        return;
+      }
+      $("lockScreen").classList.add("gone");
+      $("authScreen").hidden = false;
+      route();
+    });
+    lockPin.addEventListener("input", refreshPinDots);
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       realtime: { params: { eventsPerSecond: 10 } }
     });
@@ -391,6 +711,11 @@
     let lastSent = 0;
     let searchId = 0;
     let lastResults = [];
+    let feedLoadId = 0;
+    let feedPosts = [];
+    let activeStories = [];
+    let viewedStories = new Set();
+    let pendingPostImage = null, pendingStoryImage = null, storyTimer = null;
 
     /* ================= small UI helpers ================= */
     let toastTimer, toastAction = null;
@@ -425,38 +750,136 @@
       updateTitle();
     }
 
-    /* ================= anonymous profile setup ================= */
-    function showAuth(message = "") {
+    function avatarNode(profile, online = false) {
+      const avatar = h("div", { class: "avatar" + (online ? " on" : "") });
+      const value = profile?.avatar || "";
+      if (/^data:image\/(?:jpeg|png|webp);base64,/i.test(value)) {
+        avatar.append(h("img", { src: value, alt: `${profile.username} profile picture` }));
+      } else if (AVATAR_PRESETS[value]) {
+        avatar.textContent = AVATAR_PRESETS[value];
+      } else {
+        avatar.textContent = profile?.username?.[0]?.toUpperCase() || "?";
+      }
+      return avatar;
+    }
+
+    /* ================= account setup, login, and recovery ================= */
+    let authMode = "signup";
+    let linkingAccount = false;
+    let authUserIsAnonymous = false;
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      const isSignup = mode === "signup";
+      const isLink = mode === "link";
+      $("authSwitch").hidden = isLink;
+      $("authUserField").hidden = !isSignup;
+      $("authUser").disabled = !isSignup;
+      $("authUser").required = isSignup;
+      $("authPassword").autocomplete = isLink || isSignup ? "new-password" : "current-password";
+      $("authCancelLink").hidden = !isLink;
+      $("authSignupTab").classList.toggle("active", isSignup);
+      $("authSignupTab").setAttribute("aria-selected", String(isSignup));
+      $("authLoginTab").classList.toggle("active", mode === "login");
+      $("authLoginTab").setAttribute("aria-selected", String(mode === "login"));
+      $("authCaption").textContent = isLink ? "Add email and password to keep this same account" : isSignup ? "Create an account to keep your profile safe" : "Log in to return to your account";
+      $("authSubmit").textContent = isLink ? "Secure this account" : isSignup ? "Create account" : "Log in";
+      $("authHint").textContent = isSignup
+        ? "Use 3–20 letters, numbers, _ or . for your profile name."
+        : isLink ? "Your existing username, chats, friends, and posts stay on this account."
+        : "Use the email and password you registered with.";
+    }
+
+    function showAuth(message = "", mode = "signup") {
+      linkingAccount = false;
       $("chatApp").hidden = true;
       $("chatApp").setAttribute("aria-hidden", "true");
+      $("authScreen").hidden = false;
       $("authScreen").classList.remove("gone");
+      setAuthMode(mode);
       $("authError").textContent = message;
-      setTimeout(() => $("authUser").focus(), 50);
+      setTimeout(() => (mode === "signup" ? $("authUser") : $("authEmail")).focus(), 50);
     }
 
     function authMessage(err) {
       const m = (err?.message || "").toLowerCase();
-      if (m.includes("already") || m.includes("duplicate") || m.includes("unique")) return "This name is already taken. Try another one.";
-      if (m.includes("anonymous") || m.includes("disabled")) return "Anonymous sign-in is disabled. Enable it in Supabase Auth settings.";
+      if (m.includes("already") || m.includes("duplicate") || m.includes("unique")) return "That username or email is already in use.";
+      if (m.includes("invalid login") || m.includes("invalid credentials")) return "Email or password is incorrect.";
+      if (m.includes("password") && (m.includes("length") || m.includes("short"))) return "Use a password with at least 6 characters.";
+      if (m.includes("anonymous") || m.includes("disabled")) return "This sign-in option is disabled in Supabase Auth settings.";
       if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a minute and try again.";
       if (m.includes("network") || m.includes("fetch")) return "No connection. Check your internet.";
-      return err?.message ? `Could not create profile: ${err.message}` : "Something went wrong. Please try again.";
+      return err?.message ? `Account error: ${err.message}` : "Something went wrong. Please try again.";
     }
+
+    $("authSignupTab").addEventListener("click", () => { setAuthMode("signup"); $("authError").textContent = ""; });
+    $("authLoginTab").addEventListener("click", () => { setAuthMode("login"); $("authError").textContent = ""; });
+
+    $("authCancelLink").addEventListener("click", () => {
+      linkingAccount = false;
+      $("authScreen").classList.add("gone");
+      $("chatApp").hidden = false;
+      $("chatApp").setAttribute("aria-hidden", "false");
+    });
+
+    $("secureAccount").addEventListener("click", () => {
+      linkingAccount = true;
+      $("authScreen").hidden = false;
+      $("authScreen").classList.remove("gone");
+      $("chatApp").hidden = true;
+      $("chatApp").setAttribute("aria-hidden", "true");
+      setAuthMode("link");
+      $("authError").textContent = "";
+      $("authEmail").value = "";
+      $("authPassword").value = "";
+      $("authEmail").focus();
+    });
 
     $("authForm").addEventListener("submit", async e => {
       e.preventDefault();
       const username = $("authUser").value.trim();
+      const email = $("authEmail").value.trim();
+      const password = $("authPassword").value;
       const err = $("authError");
       err.textContent = "";
-      if (!USERNAME_RE.test(username)) { err.textContent = "Name must be 3–20 letters, numbers, _ or . (no spaces)."; return; }
+      if (authMode === "signup" && !USERNAME_RE.test(username)) {
+        err.textContent = "Name must be 3–20 letters, numbers, _ or . (no spaces).";
+        return;
+      }
+      if (password.length < 6) { err.textContent = "Use a password with at least 6 characters."; return; }
 
       $("authSubmit").disabled = true;
       try {
-        const { error } = await sb.auth.signInAnonymously({ options: { data: { username } } });
-        if (error) throw error;
-        await route();
+        if (authMode === "link" && linkingAccount) {
+          const { data, error } = await sb.auth.updateUser({ email, password });
+          if (error) throw error;
+          authUserIsAnonymous = data.user?.is_anonymous || false;
+          $("secureAccount").hidden = !authUserIsAnonymous;
+          $("authError").textContent = "Account secured. If asked, confirm the email before logging in again.";
+          $("authPassword").value = "";
+          setTimeout(() => {
+            $("authScreen").classList.add("gone");
+            $("chatApp").hidden = false;
+            $("chatApp").setAttribute("aria-hidden", "false");
+            notice("Account secured with email and password.");
+          }, 1400);
+        } else if (authMode === "login") {
+          const { error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await route();
+        } else {
+          const { data, error } = await sb.auth.signUp({
+            email, password, options: { data: { username } }
+          });
+          if (error) throw error;
+          if (data.session) await route();
+          else {
+            setAuthMode("login");
+            err.textContent = "Check your email to confirm your account, then log in here.";
+          }
+        }
       } catch (ex) {
-        console.error("Profile setup error:", ex);
+        console.error("Account setup error:", ex);
         err.textContent = authMessage(ex);
       } finally {
         $("authSubmit").disabled = false;
@@ -474,11 +897,11 @@
     }
 
     async function boot(user) {
-      let { data, error } = await sb.from("profiles").select("id,username").eq("id", user.id).single();
-      if ((!data || error) && user.is_anonymous) {
+      let { data, error } = await sb.from("profiles").select("id,username,avatar,bio").eq("id", user.id).single();
+      if (!data || error) {
         const username = user.user_metadata?.username;
         if (username && USERNAME_RE.test(username)) {
-          const created = await sb.from("profiles").insert({ id: user.id, username }).select("id,username").single();
+          const created = await sb.from("profiles").insert({ id: user.id, username }).select("id,username,avatar,bio").single();
           data = created.data;
           error = created.error;
         }
@@ -490,8 +913,12 @@
         return;
       }
       state.me = data;
+      authUserIsAnonymous = !!user.is_anonymous;
+      $("secureAccount").hidden = !authUserIsAnonymous;
+      loadViewedStories();
       state.profiles.set(data.id, data);
       $("meName").textContent = data.username;
+      $("userAvatar").replaceChildren(avatarNode(data));
       $("authScreen").classList.add("gone");
       $("chatApp").hidden = false;
       $("chatApp").setAttribute("aria-hidden", "false");
@@ -500,6 +927,111 @@
       connectRealtime();
       await loadFriendships();
       openLounge();
+    }
+
+    let stagedAvatar = null;
+    function updateAvatarPreview() {
+      const preview = $("profileAvatarPreview");
+      const node = avatarNode({ username: state.me.username, avatar: stagedAvatar });
+      preview.replaceChildren(...node.childNodes);
+      $("avatarOptions").querySelectorAll("[data-avatar]").forEach(button => {
+        button.classList.toggle("selected", button.dataset.avatar === stagedAvatar);
+      });
+    }
+    function openProfileView(profile) {
+      if (!profile) return;
+      const avatar = avatarNode(profile);
+      $("profileViewAvatar").replaceChildren(...avatar.childNodes);
+      $("profileViewName").textContent = profile.username || "ABRO CHAT member";
+      $("profileViewBio").textContent = profile.bio || "";
+      $("profileViewBio").hidden = !profile.bio;
+      $("profileViewModal").hidden = false;
+      $("closeProfileView").focus();
+    }
+    function closeProfileView() { $("profileViewModal").hidden = true; }
+    $("openMyProfile").addEventListener("click", () => openProfileView(state.me));
+    $("closeProfileView").addEventListener("click", closeProfileView);
+    $("profileViewModal").addEventListener("click", e => {
+      if (e.target === $("profileViewModal")) closeProfileView();
+    });
+
+    function closeProfileSettings() { $("profileSettingsModal").hidden = true; }
+    $("openProfileSettings").addEventListener("click", () => {
+      stagedAvatar = state.me?.avatar || null;
+      $("bioInput").value = state.me?.bio || "";
+      $("profileSettingsError").textContent = "";
+      $("avatarUpload").value = "";
+      updateAvatarPreview();
+      $("profileSettingsModal").hidden = false;
+      $("closeProfileSettings").focus();
+    });
+    $("closeProfileSettings").addEventListener("click", closeProfileSettings);
+    $("cancelAvatarChange").addEventListener("click", closeProfileSettings);
+    $("profileSettingsModal").addEventListener("click", e => {
+      if (e.target === $("profileSettingsModal")) closeProfileSettings();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key !== "Escape") return;
+      if (!$("profileViewModal").hidden) closeProfileView();
+      if (!$("profileSettingsModal").hidden) closeProfileSettings();
+    });
+    $("avatarOptions").addEventListener("click", e => {
+      const option = e.target.closest("[data-avatar]");
+      if (!option) return;
+      stagedAvatar = option.dataset.avatar;
+      $("profileSettingsError").textContent = "";
+      updateAvatarPreview();
+    });
+    $("avatarUpload").addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const error = $("profileSettingsError");
+      error.textContent = "";
+      if (!file.type.startsWith("image/")) { error.textContent = "Choose an image file."; return; }
+      if (file.size > 8 * 1024 * 1024) { error.textContent = "That image is over 8 MB. Choose a smaller one."; return; }
+      try {
+        const image = await createImageBitmap(file);
+        const scale = Math.min(1, 256 / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+        image.close?.();
+        stagedAvatar = canvas.toDataURL("image/jpeg", .82);
+        updateAvatarPreview();
+      } catch (err) {
+        console.error("Avatar image error:", err);
+        error.textContent = "Could not read that image. Try another photo.";
+      }
+    });
+    $("saveAvatar").addEventListener("click", async () => {
+      const button = $("saveAvatar"), error = $("profileSettingsError");
+      button.disabled = true;
+      error.textContent = "";
+      try {
+        const { data, error: updateError } = await sb.from("profiles").update({ avatar: stagedAvatar, bio: $("bioInput").value.trim() }).eq("id", state.me.id).select("id,username,avatar,bio").single();
+        if (updateError) throw updateError;
+        onProfileUpdate(data);
+        closeProfileSettings();
+        notice("Profile picture saved.");
+      } catch (err) {
+        console.error("Avatar save error:", err);
+        error.textContent = "Couldn't save. Check the profile bio SQL setup and try again.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    function onProfileUpdate(profile) {
+      if (!profile?.id) return;
+      state.profiles.set(profile.id, profile);
+      if (profile.id === state.me?.id) {
+        state.me = profile;
+        $("userAvatar").replaceChildren(avatarNode(profile));
+      }
+      lastResults = lastResults.map(p => p.id === profile.id ? profile : p);
+      if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
+      if ($("profileSettingsModal") && !$("profileSettingsModal").hidden && profile.id === state.me?.id) updateAvatarPreview();
     }
 
     function teardown() {
@@ -527,6 +1059,9 @@
       channel = sb.channel("abro-live", { config: { presence: { key: state.me.id } } })
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "lounge_messages" }, p => onLounge(p.new))
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, p => onDM(p.new))
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles" }, p => { onProfileUpdate(p.new); if (state.view === "feed") loadFeed(); })
+        .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, () => { if (state.view === "feed") loadFeed(); })
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "stories" }, () => { if (state.view === "feed") loadFeed(); })
         .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, scheduleFriendsReload)
         .on("broadcast", { event: "typing" }, onTyping)
         .on("presence", { event: "sync" }, onPresence)
@@ -544,6 +1079,7 @@
     async function resync() {
       await loadFriendships();
       if (state.view === "dm" && state.peer) loadConversation();
+      if (state.view === "feed") loadFeed();
     }
 
     function onPresence() {
@@ -712,9 +1248,11 @@
       stopTyping();
       state.view = view;
       $("friendsPanel").hidden = view !== "friends";
-      $("chatPanel").hidden = view === "friends";
+      $("feedPanel").hidden = view !== "feed";
+      $("chatPanel").hidden = view === "friends" || view === "feed";
       $("tabLounge").classList.toggle("active", view === "lounge");
-      $("tabFriends").classList.toggle("active", view !== "lounge");
+      $("tabFeed").classList.toggle("active", view === "feed");
+      $("tabFriends").classList.toggle("active", view === "friends" || view === "dm");
       $("backBtn").hidden = view !== "dm";
       renderTyping();
       notice("");
@@ -735,6 +1273,219 @@
       renderSearchResults(lastResults);
     }
 
+    async function imageDataFromFile(file) {
+      if (!file || !file.type.startsWith("image/")) throw new Error("Choose an image file.");
+      if (file.size > 8 * 1024 * 1024) throw new Error("Choose an image under 8 MB.");
+      const image = await createImageBitmap(file);
+      const scale = Math.min(1, 1000 / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+      image.close?.();
+      return canvas.toDataURL("image/jpeg", .78);
+    }
+
+    function openFeed() {
+      state.peer = null;
+      setView("feed");
+      loadFeed();
+    }
+
+    function closeFeedCreate() { $("feedCreateModal").hidden = true; }
+    function openFeedComposer(kind) {
+      closeFeedCreate();
+      const formId = kind === "story" ? "storyForm" : "postForm";
+      const form = $(formId);
+      form.hidden = false;
+      form.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      form.querySelector("textarea")?.focus({ preventScroll: true });
+    }
+    $("openFeedCreate").addEventListener("click", () => {
+      $("feedCreateModal").hidden = false;
+      $("closeFeedCreate").focus();
+    });
+    $("closeFeedCreate").addEventListener("click", closeFeedCreate);
+    $("feedCreateModal").addEventListener("click", e => { if (e.target === $("feedCreateModal")) closeFeedCreate(); });
+    $("feedCreateModal").querySelectorAll("[data-create]").forEach(button => {
+      button.addEventListener("click", () => openFeedComposer(button.dataset.create));
+    });
+    $("feedPanel").addEventListener("click", e => {
+      const close = e.target.closest("[data-close-composer]");
+      if (close) $(close.dataset.closeComposer).hidden = true;
+    });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("feedCreateModal").hidden) closeFeedCreate(); });
+
+    async function loadFeed() {
+      if (!state.me) return;
+      const id = ++feedLoadId;
+      const now = new Date().toISOString();
+      const [postResult, storyResult] = await Promise.all([
+        sb.from("posts").select("id,author_id,body,image_data,created_at").order("created_at", { ascending: false }).limit(50),
+        sb.from("stories").select("id,author_id,caption,image_data,created_at,expires_at").gt("expires_at", now).order("created_at", { ascending: false }).limit(100)
+      ]);
+      if (id !== feedLoadId) return;
+      if (postResult.error || storyResult.error) {
+        console.error("Feed load error:", postResult.error || storyResult.error);
+        $("feedPosts").replaceChildren(h("div", { class: "note", text: "Couldn't load the feed. Check the feed SQL setup and refresh." }));
+        return;
+      }
+      feedPosts = postResult.data || [];
+      activeStories = storyResult.data || [];
+      const authorIds = new Set([...feedPosts, ...activeStories].map(item => item.author_id));
+      const missing = [...authorIds].filter(authorId => !state.profiles.has(authorId));
+      if (missing.length) {
+        const { data } = await sb.from("profiles").select("id,username,avatar,bio").in("id", missing);
+        (data || []).forEach(profile => state.profiles.set(profile.id, profile));
+      }
+      if (id !== feedLoadId) return;
+      renderStories();
+      renderFeedPosts();
+    }
+
+    function loadViewedStories() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(`abro-viewed-stories-${state.me.id}`) || "[]");
+        viewedStories = new Set(Array.isArray(saved) ? saved : []);
+      } catch { viewedStories = new Set(); }
+    }
+
+    function markStoryViewed(story) {
+      viewedStories.add(story.id);
+      try {
+        localStorage.setItem(`abro-viewed-stories-${state.me.id}`, JSON.stringify([...viewedStories].slice(-500)));
+      } catch { /* Keep the current-session viewed state if storage is unavailable. */ }
+      renderStories();
+    }
+
+    function showAuthorStories(authorId) {
+      const stories = activeStories.filter(story => story.author_id === authorId);
+      if (!stories.length) return;
+      const next = stories.find(story => !viewedStories.has(story.id)) || stories[0];
+      showStory(next, state.profiles.get(authorId) || state.me);
+    }
+
+    function renderStories() {
+      const stories = $("storyList");
+      const ownStories = activeStories.filter(story => story.author_id === state.me.id);
+      const ownSeen = ownStories.length > 0 && ownStories.every(story => viewedStories.has(story.id));
+      const ownButton = h("button", { type: "button", class: "story-item" + (ownSeen ? " seen" : ""), "aria-label": ownStories.length ? "View your story" : "Add a story" },
+        h("span", { class: "story-ring" }, avatarNode(state.me)), h("small", { text: ownStories.length ? "Your story" : "Add story" }));
+      ownButton.addEventListener("click", () => ownStories.length ? showAuthorStories(state.me.id) : openFeedComposer("story"));
+      const own = h("div", { class: "story-own" }, ownButton);
+      const addButton = h("button", { type: "button", class: "story-add", text: "+", "aria-label": "Add another story" });
+      addButton.addEventListener("click", e => { e.stopPropagation(); openFeedComposer("story"); });
+      own.append(addButton);
+
+      const authors = [...new Set(activeStories.map(story => story.author_id).filter(id => id !== state.me.id))];
+      const items = authors.map(authorId => {
+        const profile = state.profiles.get(authorId) || { id: authorId, username: "ABRO CHAT member" };
+        const authorStories = activeStories.filter(story => story.author_id === authorId);
+        const seen = authorStories.every(story => viewedStories.has(story.id));
+        const item = h("button", { type: "button", class: "story-item" + (seen ? " seen" : ""), "aria-label": `View ${profile.username}'s story` },
+          h("span", { class: "story-ring" }, avatarNode(profile)), h("small", { text: profile.username }));
+        item.addEventListener("click", () => showAuthorStories(authorId));
+        return item;
+      });
+      stories.replaceChildren(own, ...items);
+    }
+
+    function renderFeedPosts() {
+      const container = $("feedPosts");
+      if (!feedPosts.length) {
+        container.replaceChildren(h("div", { class: "note", text: "No posts yet. Tap ＋ to share the first one." }));
+        return;
+      }
+      container.replaceChildren(...feedPosts.map(post => {
+        const profile = state.profiles.get(post.author_id) || { username: "ABRO CHAT member" };
+        const head = h("div", { class: "feed-card-head" }, avatarNode(profile),
+          h("div", { class: "pinfo" }, h("strong", { text: profile.username }), h("small", { text: new Date(post.created_at).toLocaleString() })));
+        if (post.author_id === state.me.id) {
+          const remove = h("button", { class: "btn feed-delete", type: "button", text: "Delete" });
+          remove.addEventListener("click", async () => {
+            if (!confirm("Delete this post? This can't be undone.")) return;
+            remove.disabled = true;
+            const { error } = await sb.from("posts").delete().eq("id", post.id).eq("author_id", state.me.id);
+            if (error) { console.error("Post delete error:", error); notice("Couldn't delete this post."); remove.disabled = false; return; }
+            feedPosts = feedPosts.filter(item => item.id !== post.id);
+            renderFeedPosts();
+            notice("Post deleted.");
+          });
+          head.append(h("div", { class: "feed-post-actions" }, remove));
+        }
+        const card = h("article", { class: "feed-card" }, head);
+        const body = h("div", { class: "feed-card-body" });
+        if (post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data)) body.append(h("img", { class: "feed-photo", src: post.image_data, alt: `Photo shared by ${profile.username}`, loading: "lazy" }));
+        if (post.body) body.append(h("div", { class: "text", text: post.body }));
+        card.append(body);
+        return card;
+      }));
+    }
+
+    function showStory(story, profile) {
+      $("storyViewName").textContent = profile.username || "ABRO CHAT member";
+      $("storyViewTime").textContent = new Date(story.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+      const avatar = avatarNode(profile);
+      $("storyViewAvatar").replaceChildren(...avatar.childNodes);
+      $("storyViewCaption").textContent = story.caption || "";
+      $("storyViewImage").hidden = !story.image_data;
+      if (story.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(story.image_data)) $("storyViewImage").src = story.image_data;
+      const progress = $("storyProgressBar");
+      progress.style.animation = "none";
+      void progress.offsetWidth;
+      progress.style.animation = "";
+      $("storyModal").hidden = false;
+      markStoryViewed(story);
+      clearTimeout(storyTimer);
+      storyTimer = setTimeout(closeStory, 6000);
+    }
+    function closeStory() { clearTimeout(storyTimer); $("storyModal").hidden = true; }
+    $("closeStory").addEventListener("click", closeStory);
+    $("storyModal").addEventListener("click", e => { if (e.target === $("storyModal")) closeStory(); });
+
+    $("postPhoto").addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      pendingPostImage = null;
+      if (!file) return;
+      try { pendingPostImage = await imageDataFromFile(file); }
+      catch (err) { notice(err.message || "Couldn't read that photo."); e.target.value = ""; }
+    });
+    $("storyPhoto").addEventListener("change", async e => {
+      const file = e.target.files?.[0];
+      pendingStoryImage = null;
+      if (!file) return;
+      try { pendingStoryImage = await imageDataFromFile(file); }
+      catch (err) { notice(err.message || "Couldn't read that photo."); e.target.value = ""; }
+    });
+    $("postForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const body = $("postText").value.trim();
+      if (!body && !pendingPostImage) { notice("Write something or choose a photo first."); return; }
+      const button = $("publishPost"); button.disabled = true;
+      try {
+        const { error } = await sb.from("posts").insert({ author_id: state.me.id, body, image_data: pendingPostImage });
+        if (error) throw error;
+        $("postText").value = ""; $("postPhoto").value = ""; pendingPostImage = null;
+        $("postForm").hidden = true;
+        notice("Your post is shared with everyone."); await loadFeed();
+      } catch (err) { console.error("Post error:", err); notice("Couldn't share the post. Check the feed SQL setup."); }
+      finally { button.disabled = false; }
+    });
+    $("storyForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const caption = $("storyCaption").value.trim();
+      if (!caption && !pendingStoryImage) { notice("Add a caption or choose a story photo first."); return; }
+      const button = $("storyForm").querySelector("button[type=submit]"); button.disabled = true;
+      try {
+        const { error } = await sb.from("stories").insert({ author_id: state.me.id, caption, image_data: pendingStoryImage });
+        if (error) throw error;
+        $("storyCaption").value = ""; $("storyPhoto").value = ""; pendingStoryImage = null;
+        $("storyForm").hidden = true;
+        notice("Story shared — it will disappear after 24 hours."); await loadFeed();
+      } catch (err) { console.error("Story error:", err); notice("Couldn't share the story. Check the feed SQL setup."); }
+      finally { button.disabled = false; }
+    });
+
     function updateChatHead() {
       if (!state.peer) return;
       $("chatTitle").textContent = `🔒 ${state.peer.username}`;
@@ -754,6 +1505,7 @@
     }
 
     $("tabLounge").addEventListener("click", openLounge);
+    $("tabFeed").addEventListener("click", openFeed);
     $("tabFriends").addEventListener("click", showFriends);
     $("backBtn").addEventListener("click", showFriends);
 
@@ -769,7 +1521,7 @@
       state.friendships.forEach(f => { ids.add(f.requester); ids.add(f.addressee); });
       const missing = [...ids].filter(id => !state.profiles.has(id));
       if (missing.length) {
-        const { data: ps } = await sb.from("profiles").select("id,username").in("id", missing);
+        const { data: ps } = await sb.from("profiles").select("id,username,avatar,bio").in("id", missing);
         (ps || []).forEach(p => state.profiles.set(p.id, p));
       }
 
@@ -811,7 +1563,7 @@
 
     function personRow(p, sub, ...actions) {
       return h("div", { class: "person" },
-        h("div", { class: "avatar" + (state.online.has(p.id) ? " on" : ""), text: p.username[0].toUpperCase() }),
+        avatarNode(p, state.online.has(p.id)),
         h("div", { class: "pinfo" }, h("strong", { text: p.username }), h("small", { text: sub })),
         h("div", { class: "pactions" }, ...actions));
     }
@@ -856,9 +1608,10 @@
       friends.sort((a, b) => (state.online.has(b.p.id) - state.online.has(a.p.id)) || a.p.username.localeCompare(b.p.username));
       const list = friends.map(({ p }) => {
         const unread = state.unread.get(p.id) || 0;
+        const view = actionBtn("Profile", () => openProfileView(p), "profile-view-btn");
         const open = actionBtn("Message", async () => openDM(p), "primary");
         if (unread) open.append(h("span", { class: "badge", text: String(unread) }));
-        return personRow(p, state.online.has(p.id) ? "Online now" : "Offline", open);
+        return personRow(p, state.online.has(p.id) ? "Online now" : "Offline", view, open);
       });
       $("friendList").replaceChildren(...(list.length ? list
         : [h("div", { class: "note", text: "No friends yet. Search a name above and send a request." })]));
@@ -869,7 +1622,7 @@
       const id = ++searchId;
       if (raw.length < 2) { lastResults = []; renderSearchResults([]); return; }
       const pattern = raw.replace(/[\\%_]/g, "\\$&");
-      const { data, error } = await sb.from("profiles").select("id,username")
+      const { data, error } = await sb.from("profiles").select("id,username,avatar,bio")
         .ilike("username", `%${pattern}%`).neq("id", state.me.id).order("username").limit(8);
       if (id !== searchId) return;
       if (error) { console.error(error); notice("Search failed. Try again."); return; }
@@ -885,10 +1638,11 @@
       if (!list.length) { box.replaceChildren(h("div", { class: "note", text: "No one found with that name." })); return; }
       box.replaceChildren(h("div", { class: "section-title", text: "Search results" }), ...list.map(p => {
         const rel = relationWith(p.id);
-        if (!rel) return personRow(p, "Not connected", actionBtn("Send request", () => sendRequest(p.id), "primary"));
-        if (rel.type === "friend") return personRow(p, "Friend", actionBtn("Message", async () => openDM(p), "primary"));
-        if (rel.type === "sent") return personRow(p, "Request sent", actionBtn("Cancel", () => removeFriendship(rel.f), "danger"));
-        return personRow(p, "Sent you a request", actionBtn("Accept", () => acceptRequest(rel.f), "primary"));
+        const view = actionBtn("Profile", () => openProfileView(p), "profile-view-btn");
+        if (!rel) return personRow(p, "Not connected", view, actionBtn("Send request", () => sendRequest(p.id), "primary"));
+        if (rel.type === "friend") return personRow(p, "Friend", view, actionBtn("Message", async () => openDM(p), "primary"));
+        if (rel.type === "sent") return personRow(p, "Request sent", view, actionBtn("Cancel", () => removeFriendship(rel.f), "danger"));
+        return personRow(p, "Sent you a request", view, actionBtn("Accept", () => acceptRequest(rel.f), "primary"));
       }));
     }
 
@@ -905,9 +1659,10 @@
       const THREE = window.THREE, host = $("earthBackground");
       if (!THREE) return;
       let renderer;
-      try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power" }); }
+      try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" }); }
       catch { return; }
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.setClearColor(0x000000, 0);
       host.appendChild(renderer.domElement);
 
@@ -917,11 +1672,14 @@
       const group = new THREE.Group();
       scene.add(group);
 
-      const mat = new THREE.MeshPhongMaterial({ color: 0x2b6fa8, shininess: 18, transparent: true, opacity: .86 });
-      group.add(new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), mat));
+      const mat = new THREE.MeshPhongMaterial({
+        color: 0xffffff, specular: new THREE.Color(0x9ccfff), shininess: 42
+      });
+      group.add(new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), mat));
       new THREE.TextureLoader().load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg", tex => {
         tex.colorSpace = THREE.SRGBColorSpace;
-        mat.map = tex; mat.color.set(0x9fc8e8); mat.needsUpdate = true;
+        tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        mat.map = tex; mat.needsUpdate = true;
       }, undefined, () => {});
 
       const glow = new THREE.ShaderMaterial({
@@ -962,7 +1720,6 @@
       requestAnimationFrame(frame);
     }
 
-    route();
   })();
   </script>
 </body>
