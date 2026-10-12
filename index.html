@@ -2,608 +2,73 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#09090d">
   <title>ABRO CHAT</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
   <style>
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
 
     :root {
       color-scheme: dark;
       --bg: #09090d;
-      --panel: rgba(255,255,255,.055);
-      --border: rgba(255,255,255,.10);
-      --muted: #9999aa;
+      --border: rgba(255,255,255,.11);
+      --muted: #9a9aae;
       --accent: #a78bfa;
+      --ok: #34d399;
     }
 
+    html, body { height: 100%; }
     body {
       margin: 0;
-      min-height: 100vh;
       background:
-        radial-gradient(ellipse at 15% 0%, #35205a55, transparent 42%),
-        radial-gradient(ellipse at 100% 100%, #173c5250, transparent 40%),
+        radial-gradient(ellipse at 12% 4%, rgba(139,92,246,.24), transparent 38%),
+        radial-gradient(ellipse at 92% 92%, rgba(56,189,248,.12), transparent 36%),
         var(--bg);
       color: #f6f4ff;
-      font-family: Inter, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       display: flex;
       justify-content: center;
       padding: 24px 14px;
     }
-
-    .app {
-      width: 100%;
-      max-width: 760px;
-      display: flex;
-      flex-direction: column;
-      min-height: calc(100vh - 48px);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      background: rgba(15,15,22,.76);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 25px 100px #0008;
-      overflow: hidden;
-    }
-
-    header {
-      padding: 23px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .brand { display: flex; align-items: center; gap: 12px; }
-
-    .logo {
-      width: 46px;
-      height: 46px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #c4b5fd, #7c3aed);
-      color: #fff;
-      font-size: 19px;
-      font-weight: 900;
-      box-shadow: 0 5px 28px #8b5cf655;
-    }
-
-    h1 {
-      font-size: 19px;
-      margin: 0 0 4px;
-      letter-spacing: 1.5px;
-    }
-
-    .subtitle { color: var(--muted); font-size: 12px; }
-
-    .status {
-      font-size: 11px;
-      color: #a7f3d0;
-      background: #10b98118;
-      border: 1px solid #10b98135;
-      padding: 8px 10px;
-      border-radius: 30px;
-      white-space: nowrap;
-    }
-
-    .header-indicators {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .online-count {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 10px;
-      border: 1px solid rgba(52,211,153,.24);
-      border-radius: 30px;
-      background: rgba(16,185,129,.08);
-      color: #a7f3d0;
-      font-size: 11px;
-      white-space: nowrap;
-    }
-
-    .online-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #34d399;
-      box-shadow: 0 0 7px #34d399, 0 0 14px rgba(52,211,153,.75);
-    }
-
-    .status::before {
-      content: "";
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: #34d399;
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-
-    .identity {
-      padding: 15px 22px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .identity label { color: var(--muted); font-size: 12px; }
-
     input, button { font: inherit; }
+    button { transition: transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease; }
+    button:focus-visible, input:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
 
-    #nickname {
-      min-width: 0;
+    input[type=text], input[type=password], input[type=search] {
       width: 100%;
-      background: #ffffff08;
-      color: white;
-      border: 1px solid var(--border);
-      padding: 11px 13px;
-      border-radius: 12px;
-      outline: none;
-    }
-
-    input:focus { border-color: #a78bfa88; }
-
-    button { transition: .2s ease; }
-
-    .save {
-      border: 1px solid var(--border);
-      background: #ffffff0b;
-      color: white;
-      border-radius: 12px;
-      padding: 11px 13px;
-      cursor: pointer;
-    }
-
-    .save:hover {
-      background: #ffffff16;
-      border-color: #a78bfa77;
-    }
-
-    .room {
-      padding: 17px 22px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .room strong { font-size: 14px; }
-    .room small { color: var(--muted); font-size: 11px; }
-
-    .room-tools { padding: 0 22px 12px; }
-    .room-actions { display: flex; gap: 8px; }
-    .room-actions button, .private-panel button {
-      border: 1px solid var(--border);
-      background: #ffffff0b;
-      color: white;
-      border-radius: 10px;
-      padding: 9px 12px;
-      cursor: pointer;
-    }
-    .room-actions button.active {
-      background: #a78bfa26;
-      border-color: #a78bfa88;
-      color: #ddd6fe;
-    }
-    .private-panel {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .private-panel[hidden] { display: none; }
-    .saved-rooms {
-      flex-basis: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .saved-rooms:empty { display: none; }
-    .saved-rooms button.active {
-      border-color: rgba(196,181,253,.55);
-      color: #ddd6fe;
-    }
-    #roomCode {
-      flex: 1;
-      min-width: 140px;
-      background: #ffffff08;
-      color: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
-      outline: none;
-      text-transform: uppercase;
-    }
-    #roomHelp {
-      flex-basis: 100%;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .conversation-surface {
-      position: relative;
-      isolation: isolate;
-      flex: 1;
-      min-height: 300px;
-      max-height: 55vh;
-      overflow: hidden;
-      background: linear-gradient(135deg, rgba(4,12,28,.86), rgba(7,13,27,.78));
-    }
-
-    #messages {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      min-height: 0;
-      max-height: none;
-      overflow-y: auto;
-      padding: 12px 22px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      scroll-behavior: smooth;
-      background: transparent;
-    }
-
-    #messages::-webkit-scrollbar { width: 5px; }
-    #messages::-webkit-scrollbar-thumb {
-      background: #ffffff20;
-      border-radius: 10px;
-    }
-
-    .typing-indicator {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      min-height: 34px;
-      margin: 0 22px 8px;
-      padding: 7px 12px;
-      width: fit-content;
-      max-width: calc(100% - 44px);
-      border: 1px solid rgba(167,139,250,.2);
-      border-radius: 14px;
-      background: linear-gradient(110deg, rgba(167,139,250,.1), rgba(56,189,248,.045));
-      box-shadow: 0 0 22px rgba(139,92,246,.08), inset 0 1px 0 rgba(255,255,255,.08);
-      color: #d8d1ed;
-      font-size: 11px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .typing-indicator.show { display: flex; animation: typing-arrive .22s ease-out; }
-
-    .typing-dots { display: inline-flex; align-items: center; gap: 4px; }
-    .typing-dots span {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #c4b5fd;
-      box-shadow: 0 0 8px rgba(196,181,253,.9);
-      animation: typing-pulse 1s ease-in-out infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: .15s; }
-    .typing-dots span:nth-child(3) { animation-delay: .3s; }
-
-    @keyframes typing-pulse {
-      0%, 60%, 100% { opacity: .35; transform: translateY(0) scale(.8); }
-      30% { opacity: 1; transform: translateY(-3px) scale(1); }
-    }
-
-    @keyframes typing-arrive {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .empty {
-      margin: auto;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.8;
-      padding: 35px 0;
-    }
-
-    .message {
-      align-self: flex-start;
-      max-width: 88%;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      padding: 12px 14px;
-      border-radius: 7px 18px 18px 18px;
-      overflow-wrap: anywhere;
-      animation: appear .2s ease-out;
-    }
-
-    .message.mine {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #8b5cf626, #6366f11b);
-      border-color: #a78bfa55;
-      border-radius: 18px 7px 18px 18px;
-    }
-
-    .meta {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .sender {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #c4b5fd;
-    }
-
-    .sender.online::after {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 6px #4ade80, 0 0 12px rgba(74,222,128,.8);
-    }
-
-    .time { font-size: 10px; color: var(--muted); }
-
-    .text {
-      font-size: 14px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
-
-    form {
-      display: flex;
-      gap: 10px;
-      padding: 16px;
-      border-top: 1px solid var(--border);
-      background: #ffffff04;
-    }
-
-    #messageInput {
-      flex: 1;
       min-width: 0;
-      background: #ffffff08;
-      color: white;
+      background: rgba(255,255,255,.05);
+      color: #fff;
       border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 14px;
-      outline: none;
-    }
-
-    #send {
-      border: 0;
-      border-radius: 15px;
-      padding: 0 20px;
-      background: linear-gradient(135deg, #a78bfa, #7c3aed);
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 5px 22px #8b5cf626;
-    }
-
-    #send:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 7px 26px #8b5cf655;
-    }
-
-    #send:disabled { opacity: .5; cursor: wait; }
-
-    #notice {
-      min-height: 18px;
-      padding: 0 20px 12px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .welcome-toast {
-      position: fixed;
-      z-index: 1200;
-      right: 24px;
-      bottom: 24px;
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      width: min(360px, calc(100vw - 32px));
-      padding: 16px 18px;
-      border: 1px solid rgba(196,181,253,.38);
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(37,31,58,.94), rgba(14,20,34,.94));
-      box-shadow: 0 16px 48px rgba(0,0,0,.42), 0 0 32px rgba(139,92,246,.2), inset 0 1px 0 rgba(255,255,255,.16);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(14px) scale(.98);
-      transition: opacity .3s ease, transform .3s ease, visibility .3s;
-      pointer-events: none;
-    }
-
-    .welcome-toast.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-    }
-
-    .toast-icon {
-      display: grid;
-      place-items: center;
-      flex: 0 0 38px;
-      height: 38px;
-      border: 1px solid rgba(221,214,254,.35);
       border-radius: 13px;
-      background: linear-gradient(145deg, rgba(196,181,253,.34), rgba(124,58,237,.22));
-      color: #e9ddff;
-      font-size: 20px;
-      box-shadow: 0 0 20px rgba(167,139,250,.2);
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
     }
+    input:focus { border-color: rgba(196,181,253,.72); box-shadow: 0 0 0 3px rgba(167,139,250,.14); }
 
-    .toast-copy { display: grid; gap: 4px; }
-    .toast-copy strong { color: #fff; font-size: 13px; }
-    .toast-copy span { color: #c5c2d6; font-size: 11px; line-height: 1.45; }
-
-    footer {
-      text-align: center;
-      padding: 0 12px 16px;
-      color: #777786;
-      font-size: 10px;
+    .btn {
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      color: #fff;
+      border-radius: 11px;
+      padding: 9px 13px;
+      cursor: pointer;
+      white-space: nowrap;
     }
-
-    @keyframes appear {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 480px) {
-
-      body { padding: 0; }
-      .app {
-        min-height: 100dvh;
-        border-radius: 0;
-        border: 0;
-      }
-      header { padding: 18px 16px; }
-      .identity { padding: 13px 15px; }
-      .room { padding-left: 16px; padding-right: 16px; }
-      .room-tools { padding-left: 16px; padding-right: 16px; }
-      #messages { padding-left: 15px; padding-right: 15px; }
-      form { padding: 12px; }
-      #send { padding: 0 16px; }
-      .status { font-size: 10px; padding: 7px 8px; }
-      .header-indicators { flex-direction: column; align-items: flex-end; gap: 5px; }
-      .online-count { gap: 5px; padding: 7px 8px; font-size: 10px; }
-    }
-
-    /* Refined glass surfaces and soft, native-feeling highlights */
-    body {
-      background:
-        radial-gradient(ellipse at 12% 4%, rgba(139,92,246,.24), transparent 38%),
-        radial-gradient(ellipse at 92% 92%, rgba(56,189,248,.12), transparent 36%),
-        #09090d;
-    }
-
-    .app {
-      border-color: rgba(255,255,255,.14);
-      background: linear-gradient(145deg, rgba(28,25,41,.88), rgba(12,14,23,.82));
-      box-shadow: 0 30px 100px rgba(0,0,0,.55),
-        inset 0 1px 0 rgba(255,255,255,.10),
-        0 0 60px rgba(139,92,246,.08);
-    }
-
-    header, .identity, form {
-      background: linear-gradient(110deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
-      border-color: rgba(255,255,255,.09);
-    }
-
-    .logo {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(145deg, #d8ccff 0%, #a78bfa 42%, #6d28d9 100%);
-      box-shadow: 0 8px 28px rgba(139,92,246,.38),
-        inset 0 1px 0 rgba(255,255,255,.55);
-    }
-
-    .logo::after {
-      content: "";
-      position: absolute;
-      inset: 1px 1px 50%;
-      border-radius: inherit;
-      background: linear-gradient(rgba(255,255,255,.3), transparent);
-      pointer-events: none;
-    }
-
-    .status, .room-actions button, .private-panel button, .save {
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .room-actions button, .private-panel button, .save {
-      border-color: rgba(255,255,255,.12);
-      background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-    }
-
-    .room-actions button:hover, .private-panel button:hover, .save:hover {
-      transform: translateY(-1px);
-      border-color: rgba(196,181,253,.48);
-      background: rgba(255,255,255,.12);
-    }
-
-    .room-actions button.active {
-      background: linear-gradient(135deg, rgba(167,139,250,.28), rgba(124,58,237,.16));
-      border-color: rgba(196,181,253,.48);
-      box-shadow: 0 4px 18px rgba(139,92,246,.12), inset 0 1px 0 rgba(255,255,255,.12);
-    }
-
-    #nickname, #roomCode, #messageInput {
-      border-color: rgba(255,255,255,.12);
-      background: rgba(255,255,255,.045);
-      box-shadow: inset 0 1px 3px rgba(0,0,0,.14);
-      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
-    }
-
-    #nickname:focus, #roomCode:focus, #messageInput:focus {
-      border-color: rgba(196,181,253,.72);
-      background: rgba(255,255,255,.065);
-      box-shadow: 0 0 0 3px rgba(167,139,250,.12);
-    }
-
-    .message {
-      background: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
-      border-color: rgba(255,255,255,.12);
-      box-shadow: 0 8px 24px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.06);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .message.mine {
-      background: linear-gradient(135deg, rgba(139,92,246,.30), rgba(99,102,241,.16));
-      border-color: rgba(196,181,253,.34);
-      box-shadow: 0 8px 26px rgba(91,33,182,.16), inset 0 1px 0 rgba(255,255,255,.11);
-    }
-
-    #send {
+    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(196,181,253,.5); }
+    .btn:disabled { opacity: .55; cursor: default; }
+    .btn.primary {
+      border: 0;
       background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9);
+      font-weight: 700;
       box-shadow: 0 7px 24px rgba(124,58,237,.28), inset 0 1px 0 rgba(255,255,255,.4);
     }
+    .btn.danger:hover:not(:disabled) { border-color: rgba(251,113,133,.6); }
 
-    #send:hover {
-      box-shadow: 0 9px 30px rgba(139,92,246,.42), inset 0 1px 0 rgba(255,255,255,.4);
-    }
-
-    button:focus-visible {
-      outline: 2px solid #c4b5fd;
-      outline-offset: 3px;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-      }
-    }
-
-    /* iOS-inspired PIN lock screen */
-    body.locked { overflow: hidden; }
-
-    .lock-screen {
+    /* ---------- sign-in screen ---------- */
+    .screen {
       position: fixed;
       inset: 0;
       z-index: 1000;
@@ -615,1251 +80,890 @@
         radial-gradient(ellipse at 50% 8%, rgba(164,130,255,.32), transparent 38%),
         radial-gradient(ellipse at 8% 88%, rgba(45,170,255,.17), transparent 35%),
         linear-gradient(155deg, #151321 0%, #090a11 56%, #111522 100%);
-      transition: opacity .55s ease, transform .55s ease, visibility .55s;
+      transition: opacity .45s ease, transform .45s ease, visibility .45s;
     }
+    .screen.gone { opacity: 0; visibility: hidden; transform: scale(1.03); pointer-events: none; }
 
-    .lock-screen::before,
-    .lock-screen::after {
-      content: "";
-      position: absolute;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;
-      filter: blur(65px);
-      opacity: .34;
-      pointer-events: none;
-    }
+    .screen-content { width: min(100%, 350px); text-align: center; animation: arrive .6s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes arrive { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
 
-    .lock-screen::before { top: 12%; left: -120px; background: #7650ed; }
-    .lock-screen::after { right: -125px; bottom: 8%; background: #167eae; }
-
-    .lock-screen.unlocked {
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(1.035);
-      pointer-events: none;
-    }
-
-    .lock-content {
-      position: relative;
-      z-index: 1;
-      width: min(100%, 350px);
-      text-align: center;
-      animation: lock-arrive .8s cubic-bezier(.2,.8,.2,1) both;
-    }
-
-    .lock-mark {
-      width: 58px;
-      height: 58px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 22px;
+    .mark {
+      width: 58px; height: 58px;
+      display: grid; place-items: center;
+      margin: 0 auto 20px;
       border: 1px solid rgba(255,255,255,.25);
       border-radius: 20px;
       background: linear-gradient(145deg, rgba(255,255,255,.25), rgba(255,255,255,.06));
       box-shadow: 0 12px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.34);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      color: #fff;
-      font-size: 23px;
-      font-weight: 800;
+      font-size: 23px; font-weight: 800;
     }
+    .screen h2 { margin: 0; font-size: clamp(27px, 8vw, 33px); font-weight: 650; letter-spacing: -.8px; }
+    .caption { margin: 9px 0 24px; color: rgba(231,230,242,.65); font-size: 13px; }
 
-    .lock-eyebrow {
-      margin: 0 0 7px;
-      color: rgba(232,227,255,.67);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 3px;
-    }
+    .form-error { min-height: 20px; margin: 0 0 12px; color: #ff9dba; font-size: 12px; }
 
-    .lock-content h2 {
-      margin: 0;
-      color: #fff;
-      font-size: clamp(28px, 8vw, 35px);
-      font-weight: 650;
-      letter-spacing: -.8px;
-    }
+    .auth-card { text-align: left; }
+    .auth-card .mark, .auth-card h2, .auth-card .caption { text-align: center; }
+    .auth-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 18px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.04); }
+    .auth-switch button { border: 0; border-radius: 10px; padding: 10px; background: transparent; color: var(--muted); cursor: pointer; }
+    .auth-switch button.active { background: rgba(167,139,250,.25); color: #fff; }
+    .auth-card label { display: block; margin: 0 0 6px 2px; color: var(--muted); font-size: 12px; }
+    .auth-card .field { margin-bottom: 14px; }
+    .auth-card .btn.primary { width: 100%; padding: 13px; }
+    .hint { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; text-align: center; }
 
-    .lock-caption {
-      margin: 9px 0 27px;
-      color: rgba(231,230,242,.65);
-      font-size: 13px;
-    }
-
-    .pin-dots {
-      display: flex;
-      justify-content: center;
-      gap: 17px;
-      margin: 0 auto 13px;
-    }
-
-    .pin-dot {
-      width: 11px;
-      height: 11px;
-      border: 1px solid rgba(255,255,255,.65);
-      border-radius: 50%;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 12px rgba(255,255,255,.08);
-      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
-    }
-
-    .pin-dot.filled {
-      transform: scale(1.12);
-      border-color: #fff;
-      background: #fff;
-      box-shadow: 0 0 14px rgba(210,197,255,.75);
-    }
-
-    .pin-error {
-      height: 20px;
-      margin: 0 0 12px;
-      color: #ff9dba;
-      font-size: 12px;
-    }
-
-    .pin-keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 13px 18px;
-      width: min(100%, 292px);
-      margin: 0 auto;
-    }
-
-    .pin-key {
-      width: 76px;
-      height: 76px;
-      justify-self: center;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(255,255,255,.22);
-      border-radius: 50%;
-      background: linear-gradient(145deg, rgba(255,255,255,.19), rgba(255,255,255,.065));
-      box-shadow: 0 9px 24px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.24);
-      color: #fff;
-      cursor: pointer;
-      font-size: 27px;
-      font-weight: 400;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      -webkit-tap-highlight-color: transparent;
-      transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
-    }
-
-    .pin-key:hover {
-      border-color: rgba(255,255,255,.48);
-      background: linear-gradient(145deg, rgba(255,255,255,.29), rgba(255,255,255,.12));
-      box-shadow: 0 12px 29px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.35);
-      transform: translateY(-2px);
-    }
-
-    .pin-key:active { transform: scale(.92); }
-    .pin-key.utility { border-color: transparent; background: transparent; box-shadow: none; font-size: 13px; }
-    .pin-key.utility:hover { border-color: rgba(255,255,255,.14); background: rgba(255,255,255,.08); }
-    .lock-content.shake { animation: pin-shake .36s ease; }
-
-    @keyframes lock-arrive {
-      from { opacity: 0; transform: translateY(15px) scale(.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @keyframes pin-shake {
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-
-    @media (max-height: 700px) {
-      .lock-content { transform: scale(.88); }
-      .lock-content h2 { font-size: 29px; }
-      .lock-caption { margin-bottom: 17px; }
-      .pin-keypad { gap: 8px 15px; }
-      .pin-key { width: 66px; height: 66px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .lock-screen, .lock-content, .pin-key, .pin-dot { transition-duration: .01ms; animation-duration: .01ms; }
-    }
-
-    /* The animated wallpaper is clipped to the conversation viewport only. */
-    .earth-background, .earth-shade {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .earth-background {
-      z-index: 0;
-      overflow: hidden;
-      opacity: .96;
-    }
-
-    .earth-background::before {
-      content: "";
-      position: absolute;
-      width: clamp(190px, 48%, 350px);
-      aspect-ratio: 1;
-      top: 50%;
-      right: 5%;
-      transform: translateY(-50%);
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 32% 30%, rgba(88,184,255,.68), transparent 8%),
-        radial-gradient(circle at 60% 65%, rgba(34,139,190,.62), transparent 17%),
-        radial-gradient(circle at 38% 42%, #2375ad 0%, #10365c 48%, #061426 72%);
-      box-shadow: 0 0 30px rgba(55,160,255,.2), inset -22px -8px 38px rgba(0,0,0,.55);
-      pointer-events: none;
-    }
-
-    .earth-background canvas {
-      position: relative;
-      z-index: 1;
-      display: block;
+    /* ---------- app shell ---------- */
+    .app {
       width: 100%;
-      height: 100%;
+      max-width: 760px;
+      height: calc(100dvh - 48px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(28,25,41,.88), rgba(12,14,23,.84));
+      box-shadow: 0 30px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
+      overflow: hidden;
     }
 
-    .earth-shade {
-      z-index: 1;
-      background: linear-gradient(135deg,
-        rgba(3,10,25,.12),
-        rgba(5,12,28,.19) 48%,
-        rgba(3,9,22,.27));
+    header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .logo {
+      flex: none; width: 44px; height: 44px; display: grid; place-items: center;
+      border-radius: 15px; font-size: 19px; font-weight: 900;
+      background: linear-gradient(145deg, #d8ccff 0%, #a78bfa 42%, #6d28d9 100%);
+      box-shadow: 0 8px 28px rgba(139,92,246,.38), inset 0 1px 0 rgba(255,255,255,.55);
     }
+    h1 { font-size: 18px; margin: 0 0 3px; letter-spacing: 1.5px; }
+    .subtitle { color: var(--muted); font-size: 12px; }
 
-    .message, .empty { position: relative; z-index: 2; }
+    .pills { display: flex; align-items: center; gap: 8px; }
+    .pill { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid rgba(52,211,153,.26); border-radius: 30px; background: rgba(16,185,129,.09); color: #a7f3d0; font-size: 11px; white-space: nowrap; }
+    .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .pill.warn { border-color: rgba(251,191,36,.3); background: rgba(251,191,36,.08); color: #fde68a; }
+    .pill.warn::before { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
 
-    @media (max-width: 600px) {
-      .earth-background { opacity: .76; }
+    .userbar { padding: 11px 22px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .userbar span { color: var(--muted); }
+    .userbar strong { color: #ddd6fe; }
+
+    .tabs { display: flex; gap: 8px; padding: 12px 22px; }
+    .tab { position: relative; flex: 1; }
+    .tab.active { background: linear-gradient(135deg, rgba(167,139,250,.30), rgba(124,58,237,.16)); border-color: rgba(196,181,253,.5); color: #ede9fe; }
+    .badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: 700; }
+
+    .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+    /* ---------- chat ---------- */
+    .chat-head { display: flex; align-items: center; gap: 10px; padding: 4px 22px 10px; }
+    .chat-head .titles { min-width: 0; flex: 1; }
+    .chat-head strong { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chat-head small { color: var(--muted); font-size: 11px; }
+
+    .surface { position: relative; isolation: isolate; flex: 1; min-height: 0; overflow: hidden; background: linear-gradient(135deg, rgba(4,12,28,.86), rgba(7,13,27,.78)); }
+    .earth-background, .earth-shade { position: absolute; inset: 0; pointer-events: none; }
+    .earth-background { z-index: 0; overflow: hidden; opacity: .94; }
+    .earth-background::before {
+      content: ""; position: absolute; width: clamp(180px, 46%, 340px); aspect-ratio: 1; top: 50%; right: 5%; transform: translateY(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 38%, #2375ad 0%, #10365c 48%, #061426 72%);
+      box-shadow: 0 0 30px rgba(55,160,255,.2), inset -22px -8px 38px rgba(0,0,0,.55);
     }
+    .earth-background.ready::before { display: none; }
+    .earth-background canvas { position: relative; display: block; width: 100%; height: 100%; }
+    .earth-shade { z-index: 1; background: linear-gradient(135deg, rgba(3,10,25,.12), rgba(5,12,28,.2) 48%, rgba(3,9,22,.28)); }
 
-    @media (prefers-reduced-motion: reduce) {
-      .earth-background { opacity: .68; }
+    #messages { position: absolute; inset: 0; z-index: 2; overflow-y: auto; padding: 12px 22px 20px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
+    #messages::-webkit-scrollbar { width: 5px; }
+    #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 10px; }
+
+    .empty { margin: auto; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8; padding: 30px 0; }
+
+    .message {
+      align-self: flex-start; max-width: 88%; padding: 11px 14px;
+      border: 1px solid rgba(255,255,255,.12); border-radius: 7px 18px 18px 18px;
+      background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      overflow-wrap: anywhere; animation: appear .18s ease-out;
     }
+    .message.mine { align-self: flex-end; border-radius: 18px 7px 18px 18px; border-color: rgba(196,181,253,.34); background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(99,102,241,.17)); }
+    @keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .meta { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
+    .sender { font-size: 12px; font-weight: 700; color: #c4b5fd; }
+    .time { font-size: 10px; color: var(--muted); }
+    .text { font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+
+    .typing { display: none; align-items: center; gap: 9px; margin: 8px 22px 0; padding: 6px 12px; width: fit-content; max-width: calc(100% - 44px); border: 1px solid rgba(167,139,250,.22); border-radius: 14px; background: rgba(167,139,250,.09); color: #d8d1ed; font-size: 11px; }
+    .typing.show { display: flex; }
+    .dots { display: inline-flex; gap: 4px; }
+    .dots i { width: 5px; height: 5px; border-radius: 50%; background: #c4b5fd; animation: pulse 1s ease-in-out infinite; }
+    .dots i:nth-child(2) { animation-delay: .15s; }
+    .dots i:nth-child(3) { animation-delay: .3s; }
+    @keyframes pulse { 0%, 60%, 100% { opacity: .35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+    #chatForm { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--border); }
+    #messageInput { flex: 1; border-radius: 15px; padding: 14px; }
+    #send { border-radius: 15px; padding: 0 20px; }
+
+    /* ---------- friends ---------- */
+    #friendsPanel { overflow-y: auto; padding: 4px 22px 18px; }
+    .search-wrap { position: sticky; top: 0; z-index: 3; padding: 4px 0 10px; background: linear-gradient(rgba(20,19,30,.98) 70%, transparent); }
+    .section-title { margin: 16px 0 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.04); }
+    .avatar { position: relative; flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #7c3aed, #4338ca); font-weight: 700; }
+    .avatar.on::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: var(--ok); border: 2px solid #14131e; box-shadow: 0 0 8px var(--ok); }
+    .pinfo { flex: 1; min-width: 0; }
+    .pinfo strong { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pinfo small { color: var(--muted); font-size: 11px; }
+    .pactions { display: flex; gap: 6px; }
+    .note { color: var(--muted); font-size: 12px; line-height: 1.6; padding: 6px 2px; }
+
+    #notice { min-height: 18px; padding: 6px 20px 10px; text-align: center; color: var(--muted); font-size: 11px; }
+
+    .toast { position: fixed; z-index: 1200; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 13px; width: min(360px, calc(100vw - 32px)); padding: 15px 18px; border: 1px solid rgba(196,181,253,.38); border-radius: 18px; background: linear-gradient(135deg, rgba(37,31,58,.96), rgba(14,20,34,.96)); box-shadow: 0 16px 48px rgba(0,0,0,.42), 0 0 32px rgba(139,92,246,.2); opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .3s ease, transform .3s ease, visibility .3s; cursor: pointer; }
+    .toast.show { opacity: 1; visibility: visible; transform: none; }
+    .toast-icon { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px; background: linear-gradient(145deg, rgba(196,181,253,.34), rgba(124,58,237,.22)); color: #e9ddff; font-size: 20px; }
+    .toast strong { display: block; font-size: 13px; margin-bottom: 3px; }
+    .toast span.msg { color: #c5c2d6; font-size: 11px; line-height: 1.45; }
+
+    @media (max-width: 480px) {
+      body { padding: 0; }
+      .app { height: 100dvh; border-radius: 0; border: 0; }
+      header, .userbar, .tabs, .chat-head { padding-left: 15px; padding-right: 15px; }
+      #messages { padding-left: 14px; padding-right: 14px; }
+      #friendsPanel { padding-left: 15px; padding-right: 15px; }
+      .typing { margin-left: 15px; }
+      #chatForm { padding: 10px 12px; }
+      .pills { flex-direction: column; align-items: flex-end; gap: 5px; }
+      .pill { padding: 6px 8px; font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
+<body>
 
-<body class="locked">
-  <section class="lock-screen" id="lockScreen" aria-label="PIN lock screen">
-    <div class="lock-content" id="lockContent">
-      <div class="lock-mark" aria-hidden="true">A</div>
-      <p class="lock-eyebrow">ABRO CHAT</p>
-      <h2>Welcome back</h2>
-      <p class="lock-caption">Enter your 4-digit passcode to continue</p>
-      <div class="pin-dots" id="pinDots" aria-label="0 of 4 digits entered">
-        <span class="pin-dot"></span><span class="pin-dot"></span>
-        <span class="pin-dot"></span><span class="pin-dot"></span>
+  <!-- Choose a public profile name -->
+  <section class="screen" id="authScreen" aria-label="Create your profile">
+    <form class="screen-content auth-card" id="authForm" autocomplete="on">
+      <div class="mark" aria-hidden="true">A</div>
+      <h2>ABRO CHAT</h2>
+      <p class="caption">Choose a name so friends can find you</p>
+      <div class="field">
+        <label for="authUser">Your profile name</label>
+        <input id="authUser" type="text" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Choose a username" required>
       </div>
-      <p class="pin-error" id="pinError" role="status" aria-live="polite"></p>
-      <div class="pin-keypad" aria-label="Passcode keypad">
-        <button class="pin-key" type="button" data-digit="1" aria-label="1">1</button>
-        <button class="pin-key" type="button" data-digit="2" aria-label="2">2</button>
-        <button class="pin-key" type="button" data-digit="3" aria-label="3">3</button>
-        <button class="pin-key" type="button" data-digit="4" aria-label="4">4</button>
-        <button class="pin-key" type="button" data-digit="5" aria-label="5">5</button>
-        <button class="pin-key" type="button" data-digit="6" aria-label="6">6</button>
-        <button class="pin-key" type="button" data-digit="7" aria-label="7">7</button>
-        <button class="pin-key" type="button" data-digit="8" aria-label="8">8</button>
-        <button class="pin-key" type="button" data-digit="9" aria-label="9">9</button>
-        <span aria-hidden="true"></span>
-        <button class="pin-key" type="button" data-digit="0" aria-label="0">0</button>
-        <button class="pin-key utility" id="pinDelete" type="button" aria-label="Delete last digit">⌫</button>
-      </div>
-    </div>
+      <p class="form-error" id="authError" role="alert"></p>
+      <button class="btn primary" id="authSubmit" type="submit">Continue</button>
+      <p class="hint">Use 3–20 letters, numbers, _ or . Your friends can search this name.</p>
+    </form>
   </section>
 
-  <main class="app" id="chatApp" aria-hidden="true">
+  <main class="app" id="chatApp" aria-hidden="true" hidden>
     <header>
       <div class="brand">
         <div class="logo">A</div>
         <div>
           <h1>ABRO CHAT</h1>
-          <div class="subtitle">One room. Real conversations.</div>
+          <div class="subtitle">Real conversations.</div>
         </div>
       </div>
-      <div class="header-indicators">
-        <div class="online-count" aria-live="polite">
-          <span class="online-dot" aria-hidden="true"></span>
-          <span><strong id="onlineCount">0</strong> online</span>
-        </div>
-        <div class="status" id="connection">Connecting</div>
+      <div class="pills">
+        <div class="pill" aria-live="polite"><span><strong id="onlineCount">0</strong> online</span></div>
+        <div class="pill" id="connection">Connecting</div>
       </div>
     </header>
 
-    <section class="identity">
-      <label for="nickname">YOU</label>
-      <input id="nickname" maxlength="24" placeholder="Choose a nickname">
-      <button class="save" id="saveName" type="button">Save</button>
+    <div class="userbar">
+      <div><span>Signed in as</span> <strong id="meName"></strong></div>
+      <button class="btn" id="logout" type="button">Log out</button>
+    </div>
+
+    <nav class="tabs" aria-label="Sections">
+      <button class="btn tab active" id="tabLounge" type="button">🌐 Lounge</button>
+      <button class="btn tab" id="tabFriends" type="button">👥 Friends<span class="badge" id="friendsBadge" hidden>0</span></button>
+    </nav>
+
+    <!-- Friends -->
+    <section class="panel" id="friendsPanel" hidden aria-label="Friends">
+      <div class="search-wrap">
+        <input id="searchInput" type="search" maxlength="20" placeholder="Search by username" aria-label="Search people by name" autocomplete="off">
+      </div>
+      <div id="searchResults"></div>
+
+      <div id="reqSection" hidden>
+        <div class="section-title">Message requests</div>
+        <div id="reqList"></div>
+      </div>
+      <div id="sentSection" hidden>
+        <div class="section-title">Requests you sent</div>
+        <div id="sentList"></div>
+      </div>
+      <div class="section-title">Friends</div>
+      <div id="friendList"></div>
     </section>
 
-    <div class="room">
-      <strong id="roomTitle">🌐 Public Lounge</strong>
-      <small id="roomDescription">Everyone shares this room</small>
-    </div>
-    <section class="room-tools" aria-label="Chat rooms">
-      <div class="room-actions">
-        <button id="groupRoom" class="active" type="button">Group chat</button>
-        <button id="personalRoom" type="button">Personal chat</button>
+    <!-- Chat (lounge or one friend) -->
+    <section class="panel" id="chatPanel" aria-label="Conversation">
+      <div class="chat-head">
+        <button class="btn" id="backBtn" type="button" hidden aria-label="Back to friends">←</button>
+        <div class="titles">
+          <strong id="chatTitle">🌐 Public Lounge</strong>
+          <small id="chatSub">Everyone who is signed in</small>
+        </div>
       </div>
-      <div class="private-panel" id="privatePanel" hidden>
-        <input id="roomCode" maxlength="24" placeholder="Enter your shared code" aria-label="Personal chat code">
-        <button id="joinRoom" type="button">Connect</button>
-        <button id="createRoom" type="button">Create code</button>
-        <button id="copyRoomCode" type="button" hidden>Copy code</button>
-        <div id="roomHelp">Create a code and share it with the person you want to chat with.</div>
-        <div class="saved-rooms" id="savedRooms" aria-label="Saved personal chats"></div>
+      <div class="surface">
+        <div class="earth-background" id="earthBackground" aria-hidden="true"></div>
+        <div class="earth-shade" aria-hidden="true"></div>
+        <section id="messages" aria-live="polite"></section>
       </div>
+      <div class="typing" id="typing" aria-live="polite">
+        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span id="typingLabel"></span>
+      </div>
+      <form id="chatForm">
+        <input id="messageInput" type="text" maxlength="500" placeholder="Write a message…" autocomplete="off" aria-label="Your message" required>
+        <button class="btn primary" id="send" type="submit">Send ↗</button>
+      </form>
     </section>
-
-    <div class="conversation-surface">
-      <div class="earth-background" id="earthBackground" aria-hidden="true"></div>
-      <div class="earth-shade" aria-hidden="true"></div>
-      <section id="messages" aria-live="polite">
-        <div class="empty">Loading the conversation…</div>
-      </section>
-    </div>
-
-    <div class="typing-indicator" id="typingIndicator" aria-live="polite" aria-hidden="true">
-      <span class="typing-dots" aria-hidden="true"><span></span><span></span><span></span></span>
-      <span id="typingLabel"></span>
-    </div>
-
-    <form id="chatForm">
-      <input
-        id="messageInput"
-        maxlength="500"
-        placeholder="Write a message…"
-        autocomplete="off"
-        aria-label="Your message"
-        required
-      >
-      <button id="send" type="submit">Send ↗</button>
-    </form>
 
     <div id="notice" role="status"></div>
-    <footer>Group messages are hidden after refresh; personal chat history remains on the server. Never share private information.</footer>
   </main>
 
-  <div class="welcome-toast" id="welcomeToast" role="status" aria-live="polite" aria-hidden="true">
+  <div class="toast" id="toast" role="status" aria-live="polite">
     <span class="toast-icon" aria-hidden="true">✦</span>
-    <div class="toast-copy">
-      <strong id="welcomeTitle">Welcome!</strong>
-      <span id="welcomeMessage">Your profile is ready.</span>
-    </div>
+    <div><strong id="toastTitle"></strong><span class="msg" id="toastMsg"></span></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script>
-    (function initEarthBackground() {
-      const THREE = window.THREE;
-      const host = document.getElementById("earthBackground");
-      if (!THREE || !host) return;
+  (() => {
+    "use strict";
 
-      let renderer;
+    /* ================= config ================= */
+    const SUPABASE_URL = "https://tmazfyakptuzquhqwrmb.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
+    const USERNAME_RE = /^[A-Za-z0-9_.]{3,20}$/;
+    const MAX_MESSAGES_ON_SCREEN = 150;
+
+    const $ = id => document.getElementById(id);
+    const h = (tag, props = {}, ...kids) => {
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(props)) {
+        if (k === "class") el.className = v;
+        else if (k === "text") el.textContent = v;
+        else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+        else if (v !== false && v != null) el.setAttribute(k, v);
+      }
+      el.append(...kids.flat().filter(Boolean));
+      return el;
+    };
+    const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+    const fmtTime = iso => {
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    };
+
+    if (!window.supabase) {
+      document.body.innerHTML = '<p style="padding:30px;font-family:sans-serif">Could not load Supabase. Check your internet and refresh.</p>';
+      return;
+    }
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      realtime: { params: { eventsPerSecond: 10 } }
+    });
+
+    /* ================= state ================= */
+    const state = {
+      me: null,                    // { id, username }
+      view: "lounge",              // lounge | friends | dm
+      peer: null,                  // profile of the open friend
+      profiles: new Map(),         // id -> { id, username }
+      friendships: [],
+      unread: new Map(),           // friend id -> count
+      online: new Set()            // user ids currently online
+    };
+    let channel = null;
+    let everSubscribed = false;
+    let friendsLoadedOnce = false;
+    let knownIncoming = new Set();
+    let knownFriends = new Set();
+    let loungeCache = [];
+    const shown = new Set();
+    let loadId = 0;
+    let lastSent = 0;
+    let searchId = 0;
+    let lastResults = [];
+
+    /* ================= small UI helpers ================= */
+    let toastTimer, toastAction = null;
+    function toast(title, msg, onClick) {
+      $("toastTitle").textContent = title;
+      $("toastMsg").textContent = msg;
+      toastAction = onClick || null;
+      $("toast").classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $("toast").classList.remove("show"), 4200);
+    }
+    $("toast").addEventListener("click", () => { $("toast").classList.remove("show"); toastAction?.(); });
+
+    const notice = msg => { $("notice").textContent = msg || ""; };
+
+    function setStatus(text, ok) {
+      const el = $("connection");
+      el.textContent = text;
+      el.classList.toggle("warn", !ok);
+    }
+
+    function updateTitle() {
+      const total = [...state.unread.values()].reduce((a, b) => a + b, 0);
+      document.title = total ? `(${total}) ABRO CHAT` : "ABRO CHAT";
+    }
+
+    function updateBadge() {
+      const incoming = state.friendships.filter(f => f.status === "pending" && f.addressee === state.me?.id).length;
+      const total = incoming + [...state.unread.values()].reduce((a, b) => a + b, 0);
+      $("friendsBadge").hidden = !total;
+      $("friendsBadge").textContent = String(total);
+      updateTitle();
+    }
+
+    /* ================= anonymous profile setup ================= */
+    function showAuth(message = "") {
+      $("chatApp").hidden = true;
+      $("chatApp").setAttribute("aria-hidden", "true");
+      $("authScreen").classList.remove("gone");
+      $("authError").textContent = message;
+      setTimeout(() => $("authUser").focus(), 50);
+    }
+
+    function authMessage(err) {
+      const m = (err?.message || "").toLowerCase();
+      if (m.includes("already") || m.includes("duplicate") || m.includes("unique")) return "This name is already taken. Try another one.";
+      if (m.includes("anonymous") || m.includes("disabled")) return "Anonymous sign-in is disabled. Enable it in Supabase Auth settings.";
+      if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a minute and try again.";
+      if (m.includes("network") || m.includes("fetch")) return "No connection. Check your internet.";
+      return err?.message ? `Could not create profile: ${err.message}` : "Something went wrong. Please try again.";
+    }
+
+    $("authForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const username = $("authUser").value.trim();
+      const err = $("authError");
+      err.textContent = "";
+      if (!USERNAME_RE.test(username)) { err.textContent = "Name must be 3–20 letters, numbers, _ or . (no spaces)."; return; }
+
+      $("authSubmit").disabled = true;
       try {
-        renderer = new THREE.WebGLRenderer({
-          alpha: true,
-          antialias: true,
-          powerPreference: "high-performance"
-        });
-      } catch (error) {
+        const { error } = await sb.auth.signInAnonymously({ options: { data: { username } } });
+        if (error) throw error;
+        await route();
+      } catch (ex) {
+        console.error("Profile setup error:", ex);
+        err.textContent = authMessage(ex);
+      } finally {
+        $("authSubmit").disabled = false;
+      }
+    });
+
+    sb.auth.onAuthStateChange(event => {
+      if (event === "SIGNED_OUT" && state.me) setTimeout(() => { teardown(); showAuth(); }, 0);
+    });
+
+    async function route() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) await boot(session.user);
+      else showAuth();
+    }
+
+    async function boot(user) {
+      let { data, error } = await sb.from("profiles").select("id,username").eq("id", user.id).single();
+      if ((!data || error) && user.is_anonymous) {
+        const username = user.user_metadata?.username;
+        if (username && USERNAME_RE.test(username)) {
+          const created = await sb.from("profiles").insert({ id: user.id, username }).select("id,username").single();
+          data = created.data;
+          error = created.error;
+        }
+      }
+      if (error || !data) {
+        console.error("Profile error:", error);
+        await sb.auth.signOut();
+        showAuth(error ? authMessage(error) : "Could not load your profile. Check your Supabase profiles setup.");
         return;
       }
+      state.me = data;
+      state.profiles.set(data.id, data);
+      $("meName").textContent = data.username;
+      $("authScreen").classList.add("gone");
+      $("chatApp").hidden = false;
+      $("chatApp").setAttribute("aria-hidden", "false");
+      document.body.classList.add("chat-open");
+      initEarth();
+      connectRealtime();
+      await loadFriendships();
+      openLounge();
+    }
 
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.12;
+    function teardown() {
+      if (channel) { sb.removeChannel(channel); channel = null; }
+      everSubscribed = false;
+      friendsLoadedOnce = false;
+      knownIncoming = new Set();
+      knownFriends = new Set();
+      loungeCache = [];
+      typers.clear();
+      state.me = null; state.peer = null; state.friendships = [];
+      state.unread.clear(); state.online = new Set();
+      document.body.classList.remove("chat-open");
+      document.title = "ABRO CHAT";
+      $("onlineCount").textContent = "0";
+    }
+
+    $("logout").addEventListener("click", async () => {
+      await sb.auth.signOut();
+      if (state.me) { teardown(); showAuth(); }
+    });
+
+    /* ================= realtime ================= */
+    function connectRealtime() {
+      channel = sb.channel("abro-live", { config: { presence: { key: state.me.id } } })
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "lounge_messages" }, p => onLounge(p.new))
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, p => onDM(p.new))
+        .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, scheduleFriendsReload)
+        .on("broadcast", { event: "typing" }, onTyping)
+        .on("presence", { event: "sync" }, onPresence)
+        .subscribe(status => {
+          if (status === "SUBSCRIBED") {
+            setStatus("Live", true);
+            channel.track({ username: state.me.username }).catch(() => {});
+            if (everSubscribed) resync();   // we may have missed things while offline
+            everSubscribed = true;
+          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") setStatus("Reconnecting", false);
+          else if (status === "CLOSED") setStatus("Offline", false);
+        });
+    }
+
+    async function resync() {
+      await loadFriendships();
+      if (state.view === "dm" && state.peer) loadConversation();
+    }
+
+    function onPresence() {
+      state.online = new Set(Object.keys(channel.presenceState()));
+      $("onlineCount").textContent = String(state.online.size);
+      if (state.view === "friends") renderFriends();
+      if (state.view === "dm") updateChatHead();
+    }
+
+    /* ================= typing ================= */
+    const typers = new Map();   // from id -> { name, ctx, timer }
+    let typingOn = false, typingTimer = null, lastTypingSent = 0;
+
+    const currentCtx = () => state.view === "lounge" ? "lounge" : state.view === "dm" ? state.peer?.id : null;
+
+    function sendTyping(on) {
+      const ctx = currentCtx();
+      if (!channel || !ctx) return;
+      channel.send({
+        type: "broadcast", event: "typing",
+        payload: { from: state.me.id, name: state.me.username, to: ctx === "lounge" ? null : ctx, on }
+      }).catch(() => {});
+    }
+    function stopTyping() {
+      clearTimeout(typingTimer);
+      if (typingOn) sendTyping(false);
+      typingOn = false;
+    }
+    $("messageInput").addEventListener("input", () => {
+      if (!$("messageInput").value.trim()) return stopTyping();
+      const now = Date.now();
+      if (!typingOn || now - lastTypingSent > 1500) { sendTyping(true); lastTypingSent = now; }
+      typingOn = true;
+      clearTimeout(typingTimer);
+      typingTimer = setTimeout(stopTyping, 1800);
+    });
+    $("messageInput").addEventListener("blur", stopTyping);
+
+    function onTyping({ payload: p }) {
+      if (!p || !p.from || p.from === state.me.id) return;
+      const ctx = p.to === null ? "lounge" : p.to === state.me.id ? p.from : null;
+      if (!ctx) return;
+      const old = typers.get(p.from);
+      if (old) clearTimeout(old.timer);
+      if (!p.on) typers.delete(p.from);
+      else typers.set(p.from, { name: p.name || "Someone", ctx, timer: setTimeout(() => { typers.delete(p.from); renderTyping(); }, 3500) });
+      renderTyping();
+    }
+    function renderTyping() {
+      const ctx = currentCtx();
+      const names = [...typers.values()].filter(t => t.ctx === ctx).map(t => t.name);
+      $("typing").classList.toggle("show", names.length > 0);
+      $("typingLabel").textContent = names.length === 1 ? `${names[0]} is typing…`
+        : names.length === 2 ? `${names[0]} and ${names[1]} are typing…`
+        : names.length ? "Several people are typing…" : "";
+    }
+
+    /* ================= messages ================= */
+    const messagesEl = $("messages");
+
+    function buildMessage(m) {
+      return h("article", { class: "message" + (m.mine ? " mine" : "") },
+        h("div", { class: "meta" },
+          h("span", { class: "sender", text: m.name }),
+          h("span", { class: "time", text: fmtTime(m.at) })),
+        h("div", { class: "text", text: m.text }));
+    }
+    function scrollDown(smooth) {
+      requestAnimationFrame(() => messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: smooth ? "smooth" : "auto" }));
+    }
+    function showMessages(list, emptyText) {
+      shown.clear();
+      messagesEl.replaceChildren();
+      if (!list.length) { messagesEl.append(h("div", { class: "empty", text: emptyText })); return; }
+      const frag = document.createDocumentFragment();
+      for (const m of list) if (!shown.has(m.id)) { shown.add(m.id); frag.append(buildMessage(m)); }
+      messagesEl.append(frag);
+      scrollDown(false);
+    }
+    function pushMessage(m) {
+      if (shown.has(m.id)) return;
+      shown.add(m.id);
+      messagesEl.querySelector(".empty")?.remove();
+      const near = messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight < 140;
+      messagesEl.append(buildMessage(m));
+      while (messagesEl.children.length > MAX_MESSAGES_ON_SCREEN) messagesEl.firstElementChild.remove();
+      if (near || m.mine) scrollDown(true);
+    }
+
+    const fromLounge = r => ({ id: r.id, mine: r.sender === state.me.id, name: r.sender_name, text: r.body, at: r.created_at });
+    const fromDM = r => ({
+      id: r.id, mine: r.sender === state.me.id,
+      name: state.profiles.get(r.sender)?.username || "Friend", text: r.body, at: r.created_at
+    });
+
+    function onLounge(row) {
+      if (!state.me || loungeCache.some(m => m.id === row.id)) return;
+      const m = fromLounge(row);
+      loungeCache.push(m);
+      if (loungeCache.length > MAX_MESSAGES_ON_SCREEN) loungeCache.shift();
+      if (state.view === "lounge") pushMessage(m);
+    }
+
+    function onDM(row) {
+      if (!state.me) return;
+      const mine = row.sender === state.me.id;
+      const peerId = mine ? row.recipient : row.sender;
+      if (state.view === "dm" && state.peer?.id === peerId) { pushMessage(fromDM(row)); return; }
+      if (mine) return;
+      state.unread.set(peerId, (state.unread.get(peerId) || 0) + 1);
+      updateBadge();
+      if (state.view === "friends") renderFriends();
+      const p = state.profiles.get(peerId);
+      if (p) toast(p.username, row.body.length > 70 ? row.body.slice(0, 70) + "…" : row.body, () => openDM(p));
+      else loadFriendships();
+    }
+
+    async function loadConversation() {
+      const me = state.me.id, peer = state.peer.id, id = ++loadId;
+      const { data, error } = await sb.from("messages")
+        .select("id,sender,recipient,body,created_at")
+        .or(`and(sender.eq.${me},recipient.eq.${peer}),and(sender.eq.${peer},recipient.eq.${me})`)
+        .order("created_at", { ascending: false })
+        .limit(80);
+      if (id !== loadId) return;
+      if (error) { console.error(error); notice("Could not load this chat."); return; }
+      showMessages(data.reverse().map(fromDM), "No messages yet. Say hello!");
+    }
+
+    $("chatForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const input = $("messageInput");
+      const text = input.value.trim();
+      if (!text || !state.me) return;
+      if (Date.now() - lastSent < 800) { notice("Slow down a little."); return; }
+      lastSent = Date.now();
+      stopTyping();
+      input.value = "";
+      $("send").disabled = true;
+      try {
+        if (state.view === "lounge") {
+          const { data, error } = await sb.from("lounge_messages")
+            .insert({ sender_name: state.me.username, body: text }).select().single();
+          if (error) throw error;
+          onLounge(data);
+        } else if (state.view === "dm") {
+          const { data, error } = await sb.from("messages")
+            .insert({ recipient: state.peer.id, body: text }).select().single();
+          if (error) throw error;
+          onDM(data);
+        }
+        notice("");
+      } catch (err) {
+        console.error("Send error:", err);
+        input.value = text;
+        lastSent = 0;
+        notice(err.code === "42501" ? "You can only message friends who accepted your request." : "Message could not be sent. Try again.");
+      } finally {
+        $("send").disabled = false;
+        input.focus();
+      }
+    });
+
+    /* ================= views ================= */
+    function setView(view) {
+      stopTyping();
+      state.view = view;
+      $("friendsPanel").hidden = view !== "friends";
+      $("chatPanel").hidden = view === "friends";
+      $("tabLounge").classList.toggle("active", view === "lounge");
+      $("tabFriends").classList.toggle("active", view !== "lounge");
+      $("backBtn").hidden = view !== "dm";
+      renderTyping();
+      notice("");
+    }
+
+    function openLounge() {
+      setView("lounge");
+      state.peer = null;
+      $("chatTitle").textContent = "🌐 Public Lounge";
+      $("chatSub").textContent = "Everyone who is signed in";
+      $("messageInput").placeholder = "Write a message…";
+      showMessages(loungeCache, "It's quiet here… Start the first conversation ✨");
+    }
+
+    function showFriends() {
+      setView("friends");
+      renderFriends();
+      renderSearchResults(lastResults);
+    }
+
+    function updateChatHead() {
+      if (!state.peer) return;
+      $("chatTitle").textContent = `🔒 ${state.peer.username}`;
+      $("chatSub").textContent = state.online.has(state.peer.id) ? "Online now" : "Offline";
+    }
+
+    function openDM(peer) {
+      setView("dm");
+      state.peer = peer;
+      state.unread.delete(peer.id);
+      updateBadge();
+      updateChatHead();
+      $("messageInput").placeholder = `Message ${peer.username}…`;
+      messagesEl.replaceChildren(h("div", { class: "empty", text: "Loading…" }));
+      loadConversation();
+      $("messageInput").focus();
+    }
+
+    $("tabLounge").addEventListener("click", openLounge);
+    $("tabFriends").addEventListener("click", showFriends);
+    $("backBtn").addEventListener("click", showFriends);
+
+    /* ================= friends ================= */
+    async function loadFriendships() {
+      const { data, error } = await sb.from("friendships")
+        .select("id,requester,addressee,status,created_at")
+        .order("created_at", { ascending: false });
+      if (error) { console.error("Friends error:", error); notice("Could not load friends."); return; }
+      state.friendships = data || [];
+
+      const ids = new Set();
+      state.friendships.forEach(f => { ids.add(f.requester); ids.add(f.addressee); });
+      const missing = [...ids].filter(id => !state.profiles.has(id));
+      if (missing.length) {
+        const { data: ps } = await sb.from("profiles").select("id,username").in("id", missing);
+        (ps || []).forEach(p => state.profiles.set(p.id, p));
+      }
+
+      const me = state.me.id;
+      const incoming = new Set(state.friendships.filter(f => f.status === "pending" && f.addressee === me).map(f => f.id));
+      const friends = new Set(state.friendships.filter(f => f.status === "accepted").map(f => f.id));
+      if (friendsLoadedOnce) {
+        for (const f of state.friendships) {
+          const other = state.profiles.get(f.requester === me ? f.addressee : f.requester);
+          if (!other) continue;
+          if (incoming.has(f.id) && !knownIncoming.has(f.id)) toast("New message request", `${other.username} wants to chat with you.`, showFriends);
+          if (friends.has(f.id) && !knownFriends.has(f.id) && f.requester === me) toast("Request accepted", `${other.username} accepted. You can chat now!`, () => openDM(other));
+        }
+      }
+      knownIncoming = incoming; knownFriends = friends; friendsLoadedOnce = true;
+
+      updateBadge();
+      if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
+    }
+    const scheduleFriendsReload = debounce(loadFriendships, 300);
+
+    function relationWith(id) {
+      const me = state.me.id;
+      const f = state.friendships.find(x => x.requester === id || x.addressee === id);
+      if (!f) return null;
+      if (f.status === "accepted") return { type: "friend", f };
+      return { type: f.requester === me ? "sent" : "incoming", f };
+    }
+
+    const actionBtn = (label, fn, cls = "") => {
+      const b = h("button", { type: "button", class: "btn " + cls, text: label });
+      b.addEventListener("click", async () => {
+        b.disabled = true;
+        try { await fn(); } catch (err) { console.error(err); notice("That didn't work. Please try again."); }
+        finally { b.disabled = false; }
+      });
+      return b;
+    };
+
+    function personRow(p, sub, ...actions) {
+      return h("div", { class: "person" },
+        h("div", { class: "avatar" + (state.online.has(p.id) ? " on" : ""), text: p.username[0].toUpperCase() }),
+        h("div", { class: "pinfo" }, h("strong", { text: p.username }), h("small", { text: sub })),
+        h("div", { class: "pactions" }, ...actions));
+    }
+
+    async function sendRequest(id) {
+      const { error } = await sb.from("friendships").insert({ requester: state.me.id, addressee: id });
+      if (error && error.code !== "23505") throw error;
+      notice("");
+      await loadFriendships();
+    }
+    async function acceptRequest(f) {
+      const { error } = await sb.from("friendships").update({ status: "accepted" }).eq("id", f.id);
+      if (error) throw error;
+      await loadFriendships();
+    }
+    async function removeFriendship(f) {
+      const { error } = await sb.from("friendships").delete().eq("id", f.id);
+      if (error) throw error;
+      await loadFriendships();
+    }
+
+    function renderFriends() {
+      const me = state.me.id;
+      const incoming = [], sent = [], friends = [];
+      for (const f of state.friendships) {
+        const p = state.profiles.get(f.requester === me ? f.addressee : f.requester);
+        if (!p) continue;
+        if (f.status === "accepted") friends.push({ f, p });
+        else if (f.requester === me) sent.push({ f, p });
+        else incoming.push({ f, p });
+      }
+
+      $("reqSection").hidden = !incoming.length;
+      $("reqList").replaceChildren(...incoming.map(({ f, p }) => personRow(p, "wants to message you",
+        actionBtn("Accept", () => acceptRequest(f), "primary"),
+        actionBtn("Decline", () => removeFriendship(f), "danger"))));
+
+      $("sentSection").hidden = !sent.length;
+      $("sentList").replaceChildren(...sent.map(({ f, p }) => personRow(p, "waiting for reply",
+        actionBtn("Cancel", () => removeFriendship(f), "danger"))));
+
+      friends.sort((a, b) => (state.online.has(b.p.id) - state.online.has(a.p.id)) || a.p.username.localeCompare(b.p.username));
+      const list = friends.map(({ p }) => {
+        const unread = state.unread.get(p.id) || 0;
+        const open = actionBtn("Message", async () => openDM(p), "primary");
+        if (unread) open.append(h("span", { class: "badge", text: String(unread) }));
+        return personRow(p, state.online.has(p.id) ? "Online now" : "Offline", open);
+      });
+      $("friendList").replaceChildren(...(list.length ? list
+        : [h("div", { class: "note", text: "No friends yet. Search a name above and send a request." })]));
+    }
+
+    const runSearch = debounce(async () => {
+      const raw = $("searchInput").value.trim();
+      const id = ++searchId;
+      if (raw.length < 2) { lastResults = []; renderSearchResults([]); return; }
+      const pattern = raw.replace(/[\\%_]/g, "\\$&");
+      const { data, error } = await sb.from("profiles").select("id,username")
+        .ilike("username", `%${pattern}%`).neq("id", state.me.id).order("username").limit(8);
+      if (id !== searchId) return;
+      if (error) { console.error(error); notice("Search failed. Try again."); return; }
+      (data || []).forEach(p => state.profiles.set(p.id, p));
+      lastResults = data || [];
+      renderSearchResults(lastResults);
+    }, 250);
+    $("searchInput").addEventListener("input", runSearch);
+
+    function renderSearchResults(list) {
+      const box = $("searchResults");
+      if (!$("searchInput").value.trim() || $("searchInput").value.trim().length < 2) { box.replaceChildren(); return; }
+      if (!list.length) { box.replaceChildren(h("div", { class: "note", text: "No one found with that name." })); return; }
+      box.replaceChildren(h("div", { class: "section-title", text: "Search results" }), ...list.map(p => {
+        const rel = relationWith(p.id);
+        if (!rel) return personRow(p, "Not connected", actionBtn("Send request", () => sendRequest(p.id), "primary"));
+        if (rel.type === "friend") return personRow(p, "Friend", actionBtn("Message", async () => openDM(p), "primary"));
+        if (rel.type === "sent") return personRow(p, "Request sent", actionBtn("Cancel", () => removeFriendship(rel.f), "danger"));
+        return personRow(p, "Sent you a request", actionBtn("Accept", () => acceptRequest(rel.f), "primary"));
+      }));
+    }
+
+    /* ================= earth wallpaper (lazy, light) ================= */
+    function initEarth() {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
+      s.onload = startEarth;
+      document.head.appendChild(s);
+    }
+
+    function startEarth() {
+      const THREE = window.THREE, host = $("earthBackground");
+      if (!THREE) return;
+      let renderer;
+      try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power" }); }
+      catch { return; }
+      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
       renderer.setClearColor(0x000000, 0);
       host.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
       camera.position.z = 4.8;
+      const group = new THREE.Group();
+      scene.add(group);
 
-      const earthGroup = new THREE.Group();
-      scene.add(earthGroup);
-      const geometry = new THREE.SphereGeometry(1, 128, 96);
-      const fallbackMaterial = new THREE.MeshPhongMaterial({
-        color: 0x235b89,
-        shininess: 24,
-        transparent: true,
-        opacity: .68
+      const mat = new THREE.MeshPhongMaterial({ color: 0x2b6fa8, shininess: 18, transparent: true, opacity: .86 });
+      group.add(new THREE.Mesh(new THREE.SphereGeometry(1, 64, 48), mat));
+      new THREE.TextureLoader().load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg", tex => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        mat.map = tex; mat.color.set(0x9fc8e8); mat.needsUpdate = true;
+      }, undefined, () => {});
+
+      const glow = new THREE.ShaderMaterial({
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide,
+        vertexShader: "varying vec3 n; varying vec3 p; void main(){ vec4 w = modelMatrix*vec4(position,1.0); p = w.xyz; n = normalize(mat3(modelMatrix)*normal); gl_Position = projectionMatrix*viewMatrix*w; }",
+        fragmentShader: "varying vec3 n; varying vec3 p; void main(){ float r = pow(1.0 - max(dot(normalize(n), normalize(cameraPosition-p)), 0.0), 3.0); gl_FragColor = vec4(0.18,0.52,1.0, r*0.34); }"
       });
-      const earth = new THREE.Mesh(geometry, fallbackMaterial);
-      earthGroup.add(earth);
-      scene.add(new THREE.AmbientLight(0x7894bd, .65));
-      const fallbackSun = new THREE.DirectionalLight(0xbad9ff, 1.3);
-      fallbackSun.position.set(3, 1.5, 4);
-      scene.add(fallbackSun);
+      group.add(new THREE.Mesh(new THREE.SphereGeometry(1.075, 48, 32), glow));
+      scene.add(new THREE.AmbientLight(0x7894bd, .9));
+      const sun = new THREE.DirectionalLight(0xdbeaff, 1.6);
+      sun.position.set(-3, 1.5, 4);
+      scene.add(sun);
 
-      const atmosphereMaterial = new THREE.ShaderMaterial({
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        vertexShader: `
-          varying vec3 vNormalWorld;
-          varying vec3 vPositionWorld;
-          void main() {
-            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-            vPositionWorld = worldPosition.xyz;
-            vNormalWorld = normalize(mat3(modelMatrix) * normal);
-            gl_Position = projectionMatrix * viewMatrix * worldPosition;
-          }
-        `,
-        fragmentShader: `
-          varying vec3 vNormalWorld;
-          varying vec3 vPositionWorld;
-          void main() {
-            vec3 viewDirection = normalize(cameraPosition - vPositionWorld);
-            float rim = pow(1.0 - max(dot(normalize(vNormalWorld), viewDirection), 0.0), 3.0);
-            gl_FragColor = vec4(vec3(0.18, 0.52, 1.0), rim * 0.34);
-            #include <tonemapping_fragment>
-            #include <colorspace_fragment>
-          }
-        `
-      });
-      const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.075, 96, 64), atmosphereMaterial);
-      earthGroup.add(atmosphere);
-
-      const cloudMaterial = new THREE.ShaderMaterial({
-        uniforms: { uTime: { value: 0 } },
-        transparent: true,
-        depthWrite: false,
-        vertexShader: `
-          varying vec2 vUv;
-          varying vec3 vNormalWorld;
-          varying vec3 vPositionWorld;
-          void main() {
-            vUv = uv;
-            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-            vPositionWorld = worldPosition.xyz;
-            vNormalWorld = normalize(mat3(modelMatrix) * normal);
-            gl_Position = projectionMatrix * viewMatrix * worldPosition;
-          }
-        `,
-        fragmentShader: `
-          uniform float uTime;
-          varying vec2 vUv;
-          varying vec3 vNormalWorld;
-          varying vec3 vPositionWorld;
-          float hash(vec2 p) {
-            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-          }
-          float noise(vec2 p) {
-            vec2 i = floor(p);
-            vec2 f = fract(p);
-            f = f * f * (3.0 - 2.0 * f);
-            return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-                       mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-          }
-          void main() {
-            vec2 driftedUv = vUv + vec2(uTime * 0.0025, 0.0);
-            float cloudNoise = noise(driftedUv * vec2(34.0, 17.0));
-            cloudNoise = cloudNoise * 0.62 + noise(driftedUv * vec2(68.0, 34.0)) * 0.25;
-            float cloud = smoothstep(0.49, 0.72, cloudNoise);
-            vec3 normal = normalize(vNormalWorld);
-            vec3 viewDirection = normalize(cameraPosition - vPositionWorld);
-            float visibility = smoothstep(-0.22, 0.18, dot(normal, viewDirection));
-            float alpha = cloud * visibility * 0.28;
-            gl_FragColor = vec4(vec3(0.68, 0.88, 1.0), alpha);
-            #include <tonemapping_fragment>
-            #include <colorspace_fragment>
-          }
-        `
-      });
-      const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.014, 96, 64), cloudMaterial);
-      earthGroup.add(clouds);
-
-      let crystalMaterial = null;
-      const textureLoader = new THREE.TextureLoader();
-      textureLoader.load(
-        "https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg",
-        dayMap => {
-          dayMap.colorSpace = THREE.SRGBColorSpace;
-          textureLoader.load(
-            "https://threejs.org/examples/textures/planets/earth_lights_2048.png",
-            nightMap => {
-              nightMap.colorSpace = THREE.SRGBColorSpace;
-              const textureDetail = renderer.capabilities.getMaxAnisotropy();
-              dayMap.anisotropy = textureDetail;
-              nightMap.anisotropy = textureDetail;
-              earth.material.dispose();
-              crystalMaterial = new THREE.ShaderMaterial({
-                uniforms: {
-                  uDayMap: { value: dayMap },
-                  uNightMap: { value: nightMap },
-                  uSunDirection: { value: new THREE.Vector3(-0.8, 0.25, 0.55).normalize() },
-                  uTime: { value: 0 }
-                },
-                transparent: true,
-                depthWrite: true,
-                vertexShader: `
-                  varying vec2 vUv;
-                  varying vec3 vNormalWorld;
-                  varying vec3 vPositionWorld;
-                  void main() {
-                    vUv = uv;
-                    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-                    vPositionWorld = worldPosition.xyz;
-                    vNormalWorld = normalize(mat3(modelMatrix) * normal);
-                    gl_Position = projectionMatrix * viewMatrix * worldPosition;
-                  }
-                `,
-                fragmentShader: `
-                  uniform sampler2D uDayMap;
-                  uniform sampler2D uNightMap;
-                  uniform vec3 uSunDirection;
-                  uniform float uTime;
-                  varying vec2 vUv;
-                  varying vec3 vNormalWorld;
-                  varying vec3 vPositionWorld;
-                  void main() {
-                    vec3 normal = normalize(vNormalWorld);
-                    vec3 viewDirection = normalize(cameraPosition - vPositionWorld);
-                    vec3 lightDirection = normalize(uSunDirection);
-                    float sunlight = dot(normal, lightDirection);
-                    float daySide = smoothstep(-0.24, 0.18, sunlight);
-                    float fresnel = pow(1.0 - max(dot(normal, viewDirection), 0.0), 2.6);
-
-                    vec3 mapColor = texture2D(uDayMap, vUv).rgb;
-                    vec3 cityLights = texture2D(uNightMap, vUv).rgb;
-                    vec3 glassOcean = vec3(0.018, 0.20, 0.30) + mapColor * vec3(0.34, 0.56, 0.68);
-                    vec3 sunlitSurface = glassOcean * (0.30 + 0.78 * max(sunlight, 0.0));
-                    vec3 nightSurface = glassOcean * 0.16 + cityLights * vec3(1.15, 1.48, 1.8);
-                    vec3 color = mix(nightSurface, sunlitSurface, daySide);
-
-                    vec3 halfVector = normalize(lightDirection + viewDirection);
-                    float sharpReflection = pow(max(dot(normal, halfVector), 0.0), 72.0);
-                    float softReflection = pow(max(dot(normal, halfVector), 0.0), 12.0);
-                    float movingSheen = 0.5 + 0.5 * sin(vUv.y * 18.0 + uTime * 0.22);
-                    color += vec3(0.22, 0.78, 1.0) * (sharpReflection * 0.72 + softReflection * 0.10);
-                    color += vec3(0.035, 0.30, 0.48) * fresnel * (0.65 + movingSheen * 0.18);
-                    color += vec3(0.06, 0.32, 0.48) * (1.0 - daySide) * 0.12;
-
-                    float alpha = 0.62 + fresnel * 0.24 + sharpReflection * 0.08;
-                    gl_FragColor = vec4(color, alpha);
-                    #include <tonemapping_fragment>
-                    #include <colorspace_fragment>
-                  }
-                `
-              });
-              earth.material = crystalMaterial;
-            },
-            undefined,
-            () => {}
-          );
-        },
-        undefined,
-        () => {}
-      );
-
-      const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-      let frameId = 0;
-      let previousTime = 0;
-
-      function resizeEarth() {
-        const width = host.clientWidth || window.innerWidth;
-        const height = host.clientHeight || window.innerHeight;
-        renderer.setSize(width, height, false);
-        camera.aspect = width / Math.max(height, 1);
+      function resize() {
+        const w = host.clientWidth, hgt = host.clientHeight;
+        if (!w || !hgt) return;
+        renderer.setSize(w, hgt, false);
+        camera.aspect = w / hgt;
         camera.updateProjectionMatrix();
-
-        const visibleHeight = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-        const visibleWidth = visibleHeight * camera.aspect;
-        const radius = Math.min(1.45, Math.max(.82, visibleHeight * .34));
-        earthGroup.scale.setScalar(radius);
-        earthGroup.position.set(visibleWidth * (width < 600 ? .10 : .13), 0, 0);
-        renderEarth();
+        const vh = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        group.scale.setScalar(Math.min(1.45, Math.max(.82, vh * .34)));
+        group.position.set(vh * camera.aspect * (w < 600 ? .10 : .13), 0, 0);
       }
+      if ("ResizeObserver" in window) new ResizeObserver(resize).observe(host);
+      window.addEventListener("resize", resize, { passive: true });
+      resize();
 
-      function renderEarth() {
+      let prev = 0, first = true;
+      function frame(t) {
+        requestAnimationFrame(frame);
+        // skip all work while the tab is hidden or the chat panel is not on screen
+        if (document.hidden || !document.body.classList.contains("chat-open") || host.offsetParent === null) { prev = 0; return; }
+        if (prev) group.rotation.y += Math.min((t - prev) / 1000, .1) * .045;
+        prev = t;
         renderer.render(scene, camera);
+        if (first) { first = false; host.classList.add("ready"); }
       }
-
-      function animateEarth(time) {
-        if (document.hidden || motionPreference.matches || !document.body.classList.contains("chat-open")) return;
-        if (previousTime) {
-          earthGroup.rotation.y += Math.min((time - previousTime) / 1000, 0.1) * 0.045;
-        }
-        previousTime = time;
-        cloudMaterial.uniforms.uTime.value = time / 1000;
-        if (crystalMaterial) {
-          crystalMaterial.uniforms.uTime.value = time / 1000;
-          crystalMaterial.uniforms.uSunDirection.value.set(
-            -0.8 + Math.sin(time * 0.00008) * 0.06,
-            0.25 + Math.cos(time * 0.00006) * 0.035,
-            0.55
-          ).normalize();
-        }
-        renderEarth();
-        frameId = window.requestAnimationFrame(animateEarth);
-      }
-
-      function updateAnimation() {
-        window.cancelAnimationFrame(frameId);
-        previousTime = 0;
-        renderEarth();
-        if (!document.hidden && !motionPreference.matches && document.body.classList.contains("chat-open")) {
-          frameId = window.requestAnimationFrame(animateEarth);
-        }
-      }
-
-      window.addEventListener("resize", resizeEarth, { passive: true });
-      if ("ResizeObserver" in window) new ResizeObserver(resizeEarth).observe(host);
-      document.addEventListener("visibilitychange", updateAnimation);
-      document.addEventListener("chat-open", updateAnimation);
-      motionPreference.addEventListener?.("change", updateAnimation);
-      resizeEarth();
-      updateAnimation();
-    })();
-
-    const LOCK_PIN = "5378";
-    const lockScreenEl = document.getElementById("lockScreen");
-    const lockContentEl = document.getElementById("lockContent");
-    const pinDotsEl = document.getElementById("pinDots");
-    const pinErrorEl = document.getElementById("pinError");
-    const chatAppEl = document.getElementById("chatApp");
-    let enteredPin = "";
-    let isUnlocked = false;
-
-    function updatePinDisplay() {
-      pinDotsEl.querySelectorAll(".pin-dot").forEach((dot, index) => {
-        dot.classList.toggle("filled", index < enteredPin.length);
-      });
-      pinDotsEl.setAttribute("aria-label", `${enteredPin.length} of 4 digits entered`);
+      requestAnimationFrame(frame);
     }
 
-    function enterPinDigit(digit) {
-      if (isUnlocked || enteredPin.length >= 4) return;
-      pinErrorEl.textContent = "";
-      enteredPin += digit;
-      updatePinDisplay();
-
-      if (enteredPin.length === 4) {
-        if (enteredPin === LOCK_PIN) {
-          isUnlocked = true;
-          chatAppEl.setAttribute("aria-hidden", "false");
-          document.body.classList.add("chat-open");
-          document.dispatchEvent(new Event("chat-open"));
-          lockScreenEl.classList.add("unlocked");
-          document.body.classList.remove("locked");
-          window.setTimeout(() => lockScreenEl.remove(), 600);
-        } else {
-          pinErrorEl.textContent = "Incorrect passcode. Try again.";
-          lockContentEl.classList.remove("shake");
-          void lockContentEl.offsetWidth;
-          lockContentEl.classList.add("shake");
-          enteredPin = "";
-          window.setTimeout(updatePinDisplay, 180);
-        }
-      }
-    }
-
-    document.querySelectorAll(".pin-key[data-digit]").forEach(button => {
-      button.addEventListener("click", () => enterPinDigit(button.dataset.digit));
-    });
-
-    document.getElementById("pinDelete").addEventListener("click", () => {
-      if (isUnlocked) return;
-      enteredPin = enteredPin.slice(0, -1);
-      pinErrorEl.textContent = "";
-      updatePinDisplay();
-    });
-
-    window.addEventListener("keydown", event => {
-      if (isUnlocked) return;
-      if (/^\\d$/.test(event.key)) enterPinDigit(event.key);
-      else if (event.key === "Backspace") {
-        enteredPin = enteredPin.slice(0, -1);
-        pinErrorEl.textContent = "";
-        updatePinDisplay();
-      }
-    });
-
-    // Your Supabase project configuration
-    const SUPABASE_URL =
-      "https://tmazfyakptuzquhqwrmb.supabase.co";
-
-    const SUPABASE_PUBLISHABLE_KEY =
-      "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
-
-    const connectionEl = document.getElementById("connection");
-    const onlineCountEl = document.getElementById("onlineCount");
-    const messagesEl = document.getElementById("messages");
-    const typingIndicatorEl = document.getElementById("typingIndicator");
-    const typingLabelEl = document.getElementById("typingLabel");
-    const nicknameEl = document.getElementById("nickname");
-    const messageInput = document.getElementById("messageInput");
-    const sendButton = document.getElementById("send");
-    const noticeEl = document.getElementById("notice");
-    const welcomeToastEl = document.getElementById("welcomeToast");
-    const welcomeTitleEl = document.getElementById("welcomeTitle");
-    const welcomeMessageEl = document.getElementById("welcomeMessage");
-    const roomTitleEl = document.getElementById("roomTitle");
-    const roomDescriptionEl = document.getElementById("roomDescription");
-    const roomCodeEl = document.getElementById("roomCode");
-    const roomHelpEl = document.getElementById("roomHelp");
-    const privatePanelEl = document.getElementById("privatePanel");
-    const copyRoomCodeButton = document.getElementById("copyRoomCode");
-    const savedRoomsEl = document.getElementById("savedRooms");
-    const SAVED_ROOMS_KEY = "abro_personal_rooms";
-    const ACTIVE_ROOM_KEY = "abro_active_personal_room";
-
-    let client = null;
-    let lastSentAt = 0;
-    let realtimeChannel = null;
-    let typingStopTimer = null;
-    let lastTypingBroadcastAt = 0;
-    let isTypingLocally = false;
-    const remoteTypingUsers = new Map();
-    let activeRoomCode = localStorage.getItem(ACTIVE_ROOM_KEY);
-    let privatePanelOpen = Boolean(activeRoomCode);
-    let roomLoadId = 0;
-    const displayedIds = new Set();
-    const onlineNicknames = new Set();
-    const presenceKey = crypto.randomUUID
-      ? crypto.randomUUID()
-      : `guest-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const sessionStartedAt = new Date().toISOString();
-    let welcomeToastTimer;
-
-    nicknameEl.value = localStorage.getItem("abro_nickname") || "";
-
-    function showNotice(message) {
-      noticeEl.textContent = message;
-    }
-
-    function showWelcomeToast(name) {
-      welcomeTitleEl.textContent = `Welcome, ${name}!`;
-      welcomeMessageEl.textContent = "Your profile is ready. Jump into the conversation.";
-      welcomeToastEl.classList.add("show");
-      welcomeToastEl.setAttribute("aria-hidden", "false");
-      window.clearTimeout(welcomeToastTimer);
-      welcomeToastTimer = window.setTimeout(() => {
-        welcomeToastEl.classList.remove("show");
-        welcomeToastEl.setAttribute("aria-hidden", "true");
-      }, 4000);
-    }
-
-    function getNickname() {
-      return nicknameEl.value.trim().replace(/\s+/g, " ");
-    }
-
-    function renderTypingIndicator() {
-      const typers = Array.from(remoteTypingUsers.values())
-        .filter(user => user.roomCode === activeRoomCode);
-      if (!typers.length) {
-        typingIndicatorEl.classList.remove("show");
-        typingIndicatorEl.setAttribute("aria-hidden", "true");
-        return;
-      }
-
-      const names = typers.map(user => user.name || "Someone");
-      typingLabelEl.textContent = names.length === 1
-        ? `${names[0]} is typing…`
-        : names.length === 2
-          ? `${names[0]} and ${names[1]} are typing…`
-          : "Several people are typing…";
-      typingIndicatorEl.classList.add("show");
-      typingIndicatorEl.setAttribute("aria-hidden", "false");
-    }
-
-    function sendTypingState(typing) {
-      if (!realtimeChannel) return;
-      realtimeChannel.send({
-        type: "broadcast",
-        event: "typing",
-        payload: {
-          userId: presenceKey,
-          nickname: getNickname() || "Someone",
-          roomCode: activeRoomCode,
-          isTyping: typing
-        }
-      }).catch(() => {});
-    }
-
-    function stopTypingBroadcast() {
-      window.clearTimeout(typingStopTimer);
-      if (isTypingLocally) sendTypingState(false);
-      isTypingLocally = false;
-    }
-
-    function handleTypingEvent(event) {
-      const data = event.payload;
-      if (!data || !data.userId || data.userId === presenceKey) return;
-
-      const existing = remoteTypingUsers.get(data.userId);
-      if (!data.isTyping) {
-        if (existing && existing.roomCode === data.roomCode) {
-          window.clearTimeout(existing.timeout);
-          remoteTypingUsers.delete(data.userId);
-          renderTypingIndicator();
-        }
-        return;
-      }
-
-      if (existing) window.clearTimeout(existing.timeout);
-      const user = {
-        name: data.nickname || "Someone",
-        roomCode: data.roomCode || null,
-        timeout: null
-      };
-      user.timeout = window.setTimeout(() => {
-        if (remoteTypingUsers.get(data.userId) === user) {
-          remoteTypingUsers.delete(data.userId);
-          renderTypingIndicator();
-        }
-      }, 3500);
-      remoteTypingUsers.set(data.userId, user);
-      renderTypingIndicator();
-    }
-
-    messageInput.addEventListener("input", () => {
-      if (!messageInput.value.trim()) {
-        stopTypingBroadcast();
-        return;
-      }
-
-      const now = Date.now();
-      if (!isTypingLocally || now - lastTypingBroadcastAt > 1000) {
-        sendTypingState(true);
-        lastTypingBroadcastAt = now;
-      }
-      isTypingLocally = true;
-      window.clearTimeout(typingStopTimer);
-      typingStopTimer = window.setTimeout(stopTypingBroadcast, 1600);
-    });
-    messageInput.addEventListener("blur", stopTypingBroadcast);
-
-    function getSavedRooms() {
-      try {
-        const rooms = JSON.parse(localStorage.getItem(SAVED_ROOMS_KEY) || "[]");
-        return Array.isArray(rooms)
-          ? rooms.filter(room => room && typeof room.code === "string")
-          : [];
-      } catch (error) {
-        return [];
-      }
-    }
-
-    function savePersonalRoom(code) {
-      const rooms = getSavedRooms();
-      if (!rooms.some(room => room.code === code)) {
-        rooms.push({ code, peerName: "" });
-        localStorage.setItem(SAVED_ROOMS_KEY, JSON.stringify(rooms));
-      }
-      renderSavedRooms();
-    }
-
-    function updateSavedPeerName(code, messages) {
-      const ownName = getNickname().toLocaleLowerCase();
-      const peerMessage = messages.find(item =>
-        item.nickname && item.nickname.trim().replace(/\s+/g, " ").toLocaleLowerCase() !== ownName
-      );
-      if (!peerMessage) return;
-
-      const rooms = getSavedRooms();
-      const room = rooms.find(item => item.code === code);
-      if (!room || room.peerName === peerMessage.nickname) return;
-      room.peerName = peerMessage.nickname;
-      localStorage.setItem(SAVED_ROOMS_KEY, JSON.stringify(rooms));
-      renderSavedRooms();
-      if (activeRoomCode === code) updateRoomHeading();
-    }
-
-    function renderSavedRooms() {
-      savedRoomsEl.replaceChildren();
-      getSavedRooms().forEach(room => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "saved-room" + (room.code === activeRoomCode ? " active" : "");
-        button.dataset.roomCode = room.code;
-        button.textContent = room.peerName || room.code;
-        button.title = room.code;
-        savedRoomsEl.appendChild(button);
-      });
-    }
-
-    function updateRoomHeading() {
-      const room = getSavedRooms().find(item => item.code === activeRoomCode);
-      const label = room && room.peerName ? room.peerName : "Personal chat";
-      roomTitleEl.textContent = activeRoomCode
-        ? `🔒 ${label} · ${activeRoomCode}`
-        : "🌐 Public Lounge";
-      roomDescriptionEl.textContent = activeRoomCode
-        ? "Only people with this code can join"
-        : "Everyone shares this room";
-    }
-
-    function updatePresenceNickname() {
-      if (!realtimeChannel) return;
-      realtimeChannel.track({ nickname: getNickname(), room_code: activeRoomCode }).catch(error => {
-        console.error("Presence tracking error:", error);
-      });
-    }
-
-    function updateOnlineUsers() {
-      if (!realtimeChannel) return;
-
-      const presenceState = realtimeChannel.presenceState();
-      const activeNames = new Set();
-      const onlineCount = Object.values(presenceState).reduce((count, presences) => {
-        presences.forEach(presence => {
-          const name = (presence.nickname || "").trim().replace(/\s+/g, " ");
-          if (name) activeNames.add(name.toLocaleLowerCase());
-        });
-        return count + presences.length;
-      }, 0);
-
-      onlineNicknames.clear();
-      activeNames.forEach(name => onlineNicknames.add(name));
-      onlineCountEl.textContent = String(onlineCount);
-
-      document.querySelectorAll(".sender").forEach(sender => {
-        const isOnline = onlineNicknames.has(sender.textContent.trim().toLocaleLowerCase());
-        sender.classList.toggle("online", isOnline);
-        sender.title = isOnline ? "Online now" : "";
-      });
-
-      if (activeRoomCode) {
-        const roomPresences = Object.values(presenceState)
-          .flat()
-          .filter(presence => presence.room_code === activeRoomCode);
-        updateSavedPeerName(activeRoomCode, roomPresences);
-      }
-    }
-
-    document.getElementById("saveName").addEventListener("click", () => {
-      const name = getNickname();
-
-      if (name.length < 1 || name.length > 24) {
-        showNotice("Choose a nickname between 1 and 24 characters.");
-        return;
-      }
-
-      nicknameEl.value = name;
-      localStorage.setItem("abro_nickname", name);
-      showNotice("");
-      showWelcomeToast(name);
-      updatePresenceNickname();
-      refreshMineStyles();
-    });
-
-    function refreshMineStyles() {
-      document.querySelectorAll(".message").forEach(box => {
-        box.classList.toggle(
-          "mine",
-          box.dataset.nickname === getNickname()
-        );
-      });
-    }
-
-    function renderMessage(item) {
-      if (displayedIds.has(item.id)) return;
-
-      displayedIds.add(item.id);
-
-      const empty = messagesEl.querySelector(".empty");
-      if (empty) empty.remove();
-
-      const box = document.createElement("article");
-      box.className = "message";
-      box.dataset.id = String(item.id);
-      box.dataset.nickname = item.nickname;
-
-      if (item.nickname === getNickname()) {
-        box.classList.add("mine");
-      }
-
-      const meta = document.createElement("div");
-      meta.className = "meta";
-
-      const sender = document.createElement("span");
-      sender.className = "sender";
-      sender.textContent = item.nickname;
-      const senderName = item.nickname.trim().replace(/\s+/g, " ").toLocaleLowerCase();
-      if (onlineNicknames.has(senderName)) {
-        sender.classList.add("online");
-        sender.title = "Online now";
-      }
-
-      const time = document.createElement("span");
-      time.className = "time";
-
-      const date = new Date(item.created_at);
-      time.textContent = Number.isNaN(date.getTime())
-        ? ""
-        : date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          });
-
-      const content = document.createElement("div");
-      content.className = "text";
-      content.textContent = item.message;
-
-      meta.append(sender, time);
-      box.append(meta, content);
-      messagesEl.appendChild(box);
-
-      while (messagesEl.children.length > 120) {
-        const first = messagesEl.firstElementChild;
-        if (first.dataset.id) {
-          displayedIds.delete(Number(first.dataset.id));
-        }
-        first.remove();
-      }
-
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    async function loadRoomMessages() {
-      if (!client) return;
-
-      const requestId = ++roomLoadId;
-      const requestedRoomCode = activeRoomCode;
-      messagesEl.replaceChildren();
-      displayedIds.clear();
-
-      let query = client
-        .from("chat_messages")
-        .select("id,nickname,message,created_at")
-        .order("created_at", { ascending: false })
-        .limit(100);
-
-      // Group history is session-only; personal room history persists across refreshes.
-      if (!requestedRoomCode) {
-        query = query.gte("created_at", sessionStartedAt);
-      }
-
-      const { data, error } = requestedRoomCode
-        ? await query.eq("room_code", requestedRoomCode)
-        : await query.is("room_code", null);
-
-      if (error) throw error;
-      if (requestId !== roomLoadId) return;
-
-      if (requestedRoomCode && data) {
-        updateSavedPeerName(requestedRoomCode, data);
-      }
-
-      if (!data || data.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = requestedRoomCode
-          ? "No messages here yet. Say hello!"
-          : "It’s quiet here… Start the first conversation ✨";
-        messagesEl.appendChild(empty);
-      } else {
-        data.reverse().forEach(renderMessage);
-      }
-    }
-
-    function selectRoom(roomCode) {
-      stopTypingBroadcast();
-      activeRoomCode = roomCode;
-      renderTypingIndicator();
-      const isPersonal = Boolean(roomCode);
-      if (isPersonal) {
-        savePersonalRoom(roomCode);
-        localStorage.setItem(ACTIVE_ROOM_KEY, roomCode);
-      } else {
-        localStorage.removeItem(ACTIVE_ROOM_KEY);
-      }
-      document.getElementById("groupRoom").classList.toggle("active", !isPersonal);
-      document.getElementById("personalRoom").classList.toggle("active", isPersonal || privatePanelOpen);
-      privatePanelEl.hidden = !privatePanelOpen;
-      roomCodeEl.value = roomCode || "";
-      copyRoomCodeButton.hidden = !isPersonal;
-      updateRoomHeading();
-      renderSavedRooms();
-      messageInput.placeholder = isPersonal
-        ? "Message this person…"
-        : "Write a message…";
-      updatePresenceNickname();
-      messagesEl.replaceChildren();
-      messagesEl.innerHTML = '<div class="empty">Loading the conversation…</div>';
-      if (client) {
-        loadRoomMessages().catch(showRoomLoadError);
-      }
-    }
-
-    function showRoomLoadError(error) {
-      console.error("ABRO CHAT room load error:", error);
-      connectionEl.textContent = "Connection error";
-      messagesEl.replaceChildren();
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "Could not load messages. Check the room_code column and Supabase policies.";
-      messagesEl.appendChild(empty);
-      showNotice("Could not load this chat room.");
-    }
-
-    document.getElementById("groupRoom").addEventListener("click", () => {
-      privatePanelOpen = false;
-      selectRoom(null);
-    });
-
-    document.getElementById("personalRoom").addEventListener("click", () => {
-      privatePanelOpen = !privatePanelOpen;
-      privatePanelEl.hidden = !privatePanelOpen;
-      document.getElementById("personalRoom").classList.toggle("active", privatePanelOpen || Boolean(activeRoomCode));
-      if (!privatePanelOpen && !activeRoomCode) {
-        document.getElementById("personalRoom").classList.remove("active");
-      }
-    });
-
-    savedRoomsEl.addEventListener("click", event => {
-      const button = event.target.closest("button[data-room-code]");
-      if (!button) return;
-      privatePanelOpen = true;
-      selectRoom(button.dataset.roomCode);
-    });
-
-    document.getElementById("joinRoom").addEventListener("click", () => {
-      const code = roomCodeEl.value.trim().replace(/\s+/g, "").toUpperCase();
-      if (code.length < 4 || code.length > 24) {
-        showNotice("Enter a valid chat code (4–24 characters).");
-        roomCodeEl.focus();
-        return;
-      }
-      roomCodeEl.value = code;
-      privatePanelOpen = true;
-      copyRoomCodeButton.hidden = false;
-      roomHelpEl.textContent = `Share this code with the other person: ${code}`;
-      showNotice("Connected to the personal chat.");
-      selectRoom(code);
-    });
-
-    document.getElementById("createRoom").addEventListener("click", () => {
-      const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      const randomValues = new Uint32Array(6);
-      crypto.getRandomValues(randomValues);
-      const code = "ABRO-" + Array.from(randomValues, value => alphabet[value % alphabet.length]).join("");
-      roomCodeEl.value = code;
-      copyRoomCodeButton.hidden = false;
-      privatePanelOpen = true;
-      roomHelpEl.textContent = `Your code is ${code}. Share it with one person to chat together.`;
-      showNotice("Personal chat code created. Share it with the other person.");
-      selectRoom(code);
-    });
-
-    copyRoomCodeButton.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(roomCodeEl.value);
-        showNotice("Chat code copied.");
-      } catch (error) {
-        roomCodeEl.select();
-        showNotice("Copy the selected code and send it to the other person.");
-      }
-    });
-
-    async function startChat() {
-      if (!window.supabase) {
-        connectionEl.textContent = "Library error";
-        showNotice("Could not load Supabase. Check your internet and refresh.");
-        return;
-      }
-
-      client = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
-
-      realtimeChannel = client
-        .channel("abro-chat-live", { config: { presence: { key: presenceKey } } })
-        .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "chat_messages" },
-          payload => {
-            if ((payload.new.room_code || null) === activeRoomCode) {
-              if (activeRoomCode) updateSavedPeerName(activeRoomCode, [payload.new]);
-              renderMessage(payload.new);
-            }
-          }
-        )
-        .on("broadcast", { event: "typing" }, handleTypingEvent)
-        .on("presence", { event: "sync" }, updateOnlineUsers)
-        .subscribe(status => {
-          if (status === "SUBSCRIBED") {
-            connectionEl.textContent = "Live";
-            updatePresenceNickname();
-          } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
-            connectionEl.textContent = "Reconnecting";
-          } else if (status === "CLOSED") {
-            connectionEl.textContent = "Disconnected";
-          }
-        });
-
-      try {
-        await loadRoomMessages();
-        connectionEl.textContent = "Connected";
-      } catch (error) {
-        showRoomLoadError(error);
-      }
-    }
-
-    document.getElementById("chatForm").addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-        stopTypingBroadcast();
-
-        if (!client) {
-          showNotice("Chat is not connected yet.");
-          return;
-        }
-
-        const nickname = getNickname();
-        const message = messageInput.value.trim();
-
-        if (!nickname || nickname.length > 24) {
-          showNotice("Save a nickname first (1–24 characters).");
-          nicknameEl.focus();
-          return;
-        }
-
-        if (!message || message.length > 500) return;
-
-        if (Date.now() - lastSentAt < 1500) {
-          showNotice("Please wait a moment before sending again.");
-          return;
-        }
-
-        lastSentAt = Date.now();
-        sendButton.disabled = true;
-
-        try {
-          localStorage.setItem("abro_nickname", nickname);
-          updatePresenceNickname();
-
-          const { error } = await client
-            .from("chat_messages")
-            .insert([{ nickname, message, room_code: activeRoomCode }]);
-
-          if (error) throw error;
-
-          messageInput.value = "";
-          showNotice("");
-        } catch (error) {
-          console.error("Message send error:", error);
-          showNotice("Message could not be sent. Please try again.");
-          lastSentAt = 0;
-        } finally {
-          sendButton.disabled = false;
-          messageInput.focus();
-        }
-      }
-    );
-
-    renderSavedRooms();
-    if (activeRoomCode) {
-      privatePanelOpen = true;
-      roomCodeEl.value = activeRoomCode;
-      copyRoomCodeButton.hidden = false;
-      selectRoom(activeRoomCode);
-    }
-
-    startChat();
+    route();
+  })();
   </script>
 </body>
-</html> 
+</html>
