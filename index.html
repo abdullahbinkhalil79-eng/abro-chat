@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#09090d">
+  <meta name="theme-color" content="#ffffff">
   <title>ABRO CHAT</title>
   <style>
     * { box-sizing: border-box; }
@@ -29,7 +29,7 @@
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       display: flex;
       justify-content: center;
-      padding: 24px 14px;
+      padding: 0;
     }
     input, button { font: inherit; }
     button { transition: transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease; }
@@ -156,12 +156,12 @@
     /* ---------- app shell ---------- */
     .app {
       width: 100%;
-      max-width: 760px;
-      height: calc(100dvh - 48px);
+      max-width: none;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 28px;
+      border: 0;
+      border-radius: 0;
       background: linear-gradient(145deg, rgba(28,25,41,.88), rgba(12,14,23,.84));
       box-shadow: 0 30px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
       overflow: hidden;
@@ -194,6 +194,17 @@
     .badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: 700; }
 
     .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    #homePanel { overflow-y: auto; justify-content: center; padding: 36px clamp(18px, 6vw, 72px); }
+    .home-content { width: min(100%, 900px); margin: 0 auto; }
+    .home-content h2 { margin: 0; font-size: clamp(25px, 4vw, 36px); letter-spacing: -.8px; }
+    .home-content > p { margin: 9px 0 25px; color: var(--muted); }
+    .home-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .home-option { min-height: 160px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 9px; padding: 22px; border: 1px solid rgba(196,181,253,.22); border-radius: 22px; background: linear-gradient(145deg, rgba(167,139,250,.14), rgba(255,255,255,.035)); color: #fff; text-align: left; white-space: normal; cursor: pointer; }
+    .home-option:hover { border-color: rgba(196,181,253,.65); background: linear-gradient(145deg, rgba(167,139,250,.24), rgba(255,255,255,.06)); }
+    .home-option .home-icon { font-size: 30px; }
+    .home-option strong { font-size: 18px; }
+    .home-option small { color: #b8b5c9; font-size: 12px; line-height: 1.5; }
+    #returnHome { padding: 8px 10px; }
 
     /* ---------- chat ---------- */
     .chat-head { display: flex; align-items: center; gap: 10px; padding: 4px 22px 10px; }
@@ -275,17 +286,33 @@
     .feed-card-head { display: flex; align-items: center; gap: 10px; margin: 0; }
     .feed-card-head .pinfo small { display: block; margin-top: 3px; }
     .feed-photo { display: block; width: 100%; max-height: 460px; margin-top: 10px; border-radius: 13px; object-fit: contain; background: rgba(0,0,0,.2); }
+    .engagement { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
+    .engagement .btn { padding: 7px 11px; font-size: 12px; }
+    .engagement .liked { border-color: rgba(244,63,94,.55); color: #fda4af; }
+    .comment-list { display: grid; gap: 8px; margin-top: 11px; }
+    .comment-item { padding: 9px 10px; border-radius: 11px; background: rgba(255,255,255,.045); }
+    .comment-item strong { margin-right: 7px; color: #d8ccff; font-size: 11px; }
+    .comment-item small { color: var(--muted); font-size: 10px; }
+    .comment-item p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .comment-form { display: flex; gap: 8px; margin-top: 10px; }
+    .comment-form input { flex: 1; min-width: 0; padding: 9px 11px; border-radius: 11px; font-size: 12px; }
+    .comment-form .btn { padding: 8px 11px; font-size: 12px; }
+    .story-engagement { position: relative; z-index: 2; width: 100%; margin-top: 14px; text-shadow: none; }
+    .story-engagement .comment-list { max-height: 160px; overflow-y: auto; }
+    .story-engagement .comment-form input { background: rgba(0,0,0,.46); }
     .stories-block { margin: 0 -22px 12px; padding: 13px 22px 3px; border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); background: linear-gradient(110deg, rgba(139,92,246,.10), rgba(56,189,248,.04)); }
     .stories-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 0 10px; color: #eeeaff; font-size: 14px; font-weight: 700; }
     .stories-heading small { color: var(--muted); font-size: 10px; font-weight: 500; }
-    .story-row { display: flex; gap: 14px; overflow-x: auto; padding: 3px 1px 13px; scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.35) transparent; }
+    .story-row { display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden; padding: 3px 1px 13px; scrollbar-width: none; }
+    .story-row::-webkit-scrollbar { display: none; }
     .story-item { flex: 0 0 76px; min-width: 0; border: 0; padding: 0; background: transparent; color: #fff; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .story-ring { position: relative; isolation: isolate; width: 70px; height: 70px; margin: 0 auto 7px; padding: 3px; border-radius: 50%; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); box-shadow: 0 0 16px rgba(167,139,250,.36); transition: filter .2s ease, box-shadow .2s ease; }
+    .story-ring { position: relative; isolation: isolate; display: block; flex: none; width: 70px; height: 70px; aspect-ratio: 1; margin: 0 auto 7px; padding: 3px; border-radius: 50%; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); box-shadow: 0 0 16px rgba(167,139,250,.36); transition: filter .2s ease, box-shadow .2s ease; }
     .story-ring::before { content: ""; position: absolute; z-index: -1; inset: -3px; border-radius: inherit; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); filter: blur(9px); opacity: .82; animation: storyGlow 2.4s ease-in-out infinite alternate; }
     @keyframes storyGlow { from { opacity: .52; transform: scale(.98); } to { opacity: .95; transform: scale(1.06); } }
-    .story-ring .avatar { width: 100%; height: 100%; border: 2px solid #151321; }
-    .story-item.seen .story-ring { background: #626174; box-shadow: none; filter: saturate(.25); }
-    .story-item.seen .story-ring::before { display: none; }
+    .story-ring .avatar { width: 100%; height: 100%; min-width: 0; overflow: hidden; border: 2px solid #151321; border-radius: 50%; }
+    .story-ring .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .story-item.seen .story-ring { filter: none; }
+    .story-item.seen .story-ring::before { display: block; }
     .story-item:active { transform: scale(.96); }
     .story-item small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd6fe; font-size: 11px; }
     .story-own { position: relative; flex: 0 0 76px; }
@@ -294,8 +321,7 @@
     .story-view { position: relative; width: min(100%, 420px); height: min(86dvh, 720px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 22px; border: 1px solid rgba(196,181,253,.38); border-radius: 24px; background: radial-gradient(ellipse at 50% 0%, #342557, #10111d 65%); box-shadow: 0 0 32px rgba(139,92,246,.22), 0 28px 90px rgba(0,0,0,.55); }
     .story-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .story-view::after { content: ""; position: absolute; inset: 25% 0 0; background: linear-gradient(transparent,rgba(0,0,0,.78)); pointer-events: none; }
-    .story-progress { position: absolute; z-index: 2; top: 12px; left: 14px; right: 14px; height: 3px; overflow: hidden; border-radius: 4px; background: rgba(255,255,255,.32); }
-    .story-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: #fff; animation: storyProgress 6s linear forwards; }
+    .story-progress { display: none; }
     @keyframes storyProgress { to { width: 100%; } }
     .story-view-head, .story-view-caption { position: relative; z-index: 1; }
     .story-view-head { display: flex; align-items: center; gap: 10px; align-self: stretch; margin-bottom: auto; padding-top: 8px; text-shadow: 0 1px 8px #000; }
@@ -305,6 +331,8 @@
     .story-view-head .btn { background: rgba(0,0,0,.28); }
     .story-view-caption { font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
     .bio-text { color: #d2cde2; font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .friends-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px 4px; }
+    .friends-toolbar h2 { margin: 0; font-size: 18px; }
     .search-wrap { position: sticky; top: 0; z-index: 3; padding: 4px 0 10px; background: linear-gradient(rgba(20,19,30,.98) 70%, transparent); }
     .section-title { margin: 16px 0 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
     .person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.04); }
@@ -325,6 +353,11 @@
     .profile-view-name { margin: 0; font-size: 20px; overflow-wrap: anywhere; }
     .profile-view-caption { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
     .profile-view-btn { padding: 5px 9px; font-size: 11px; }
+    .profile-post-preview { position: relative; width: min(100%, 560px); max-height: min(90dvh, 820px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(196,181,253,.3); border-radius: 20px; background: linear-gradient(145deg, rgba(31,29,52,.98), rgba(12,16,31,.99)); box-shadow: 0 24px 80px rgba(0,0,0,.55); }
+    .profile-post-preview-head { display: flex; align-items: center; justify-content: flex-end; padding: 10px; }
+    .profile-post-preview-image { display: block; width: 100%; max-height: 72dvh; object-fit: contain; background: rgba(0,0,0,.28); }
+    .profile-post-preview-text { padding: 4px 18px 18px; color: #f1effa; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .profile-post-preview-date { padding: 0 18px 14px; color: var(--muted); font-size: 11px; }
     .modal-backdrop { position: fixed; inset: 0; z-index: 1300; display: grid; place-items: center; padding: 18px; background: rgba(3,5,13,.72); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
     .profile-modal { width: min(100%, 420px); max-height: min(88dvh, 650px); overflow-y: auto; padding: 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); animation: arrive .3s ease both; }
     .profile-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
@@ -360,6 +393,9 @@
     @media (max-width: 480px) {
       body { padding: 0; }
       .app { height: 100dvh; min-height: 0; border-radius: 0; border: 0; }
+      .home-options { grid-template-columns: 1fr; gap: 10px; }
+      .home-option { min-height: 112px; padding: 17px; }
+      #homePanel { justify-content: flex-start; padding-top: 34px; }
       header { padding: max(12px, env(safe-area-inset-top)) 12px 12px; gap: 8px; }
       header, .tabs, .chat-head { padding-left: 13px; padding-right: 13px; }
       .brand { gap: 9px; }
@@ -400,6 +436,303 @@
       .story-own .story-item { width: 68px; }
       .story-ring { width: 62px; height: 62px; }
     }
+
+    /* Instagram-inspired, clean light social layout */
+    :root { color-scheme: light; --bg: #fff; --border: #e7e7e7; --muted: #737373; --accent: #0095f6; --ok: #35b76f; }
+    body { background: #f4f4f4; color: #171717; }
+    .app { position: relative; width: min(100%, 560px); height: 100dvh; margin: 0 auto; background: #fff; color: #171717; box-shadow: 0 0 30px rgba(0,0,0,.08); }
+    header { min-height: 58px; padding: 8px 16px; border-color: #eee; background: #fff; }
+    .logo { width: 36px; height: 36px; border-radius: 12px; color: #fff; background: linear-gradient(145deg,#ffb347,#ed3c82 55%,#7b42cf); box-shadow: none; }
+    h1 { font-size: 17px; letter-spacing: -.3px; }
+    .subtitle { display: none; }
+    .pills { gap: 6px; }
+    .pill { padding: 5px 8px; border-color: #e7e7e7; background: #fff; color: #444; font-size: 10px; }
+    .pill::before { width: 6px; height: 6px; }
+    .pill.warn { color: #a26100; background: #fff9e8; }
+    .userbar { min-height: 40px; padding: 4px 12px; border-color: #f0f0f0; background: #fff; color: #262626; }
+    .userbar > div:first-child { display: none; }
+    .userbar .pactions { display: flex; width: 100%; justify-content: flex-end; gap: 6px; }
+    .userbar .btn { padding: 6px 10px; border-color: #dbdbdb; border-radius: 7px; background: #fff; color: #262626; font-size: 11px; }
+    .user-profile-btn .avatar { width: 23px; height: 23px; }
+    .panel { background: #fff; }
+    #homePanel, #feedPanel, #friendsPanel { overflow-y: auto; padding: 0 0 72px; }
+    #chatPanel { min-height: 0; }
+    .profile-page { width: 100%; padding-bottom: 10px; }
+    .profile-topline { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #f1f1f1; }
+    .profile-topline strong { font-size: 16px; }
+    .profile-create { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; color: #222; font-size: 25px; }
+    .profile-overview { display: flex; align-items: center; gap: 24px; padding: 18px 16px 11px; }
+    .profile-page-avatar { width: 78px; height: 78px; overflow: hidden; border: 2px solid #f04f8b; background: linear-gradient(145deg,#ffb347,#ed3c82 55%,#7b42cf); font-size: 30px; }
+    .profile-stats { display: grid; flex: 1; grid-template-columns: repeat(3,1fr); text-align: center; }
+    .profile-stats div { display: grid; gap: 3px; }
+    .profile-stats strong { font-size: 16px; font-weight: 700; }
+    .profile-stats span { color: #555; font-size: 12px; }
+    .profile-bio { padding: 0 16px; font-size: 13px; }
+    .profile-bio p { margin: 4px 0 11px; color: #262626; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45; }
+    .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px 14px; }
+    .profile-actions .btn { padding: 7px; border: 1px solid #dbdbdb; border-radius: 7px; background: #fafafa; color: #262626; font-size: 12px; font-weight: 600; }
+    .profile-grid-heading { height: 43px; display: flex; align-items: center; justify-content: center; gap: 7px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; color: #262626; font-size: 12px; }
+    .profile-grid-heading span { font-size: 19px; }
+    .profile-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2px; }
+    .profile-grid-item { min-width: 0; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; padding: 0; border: 0; background: #f1f1f1; color: #333; cursor: pointer; }
+    .profile-grid-item img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-grid-item span { display: -webkit-box; padding: 9px; overflow: hidden; font-size: 11px; line-height: 1.4; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
+    .profile-grid-empty { grid-column: 1 / -1; padding: 38px 22px; color: #888; font-size: 13px; text-align: center; }
+    .tabs { position: absolute; z-index: 40; right: 0; bottom: 0; left: 0; height: calc(58px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 0; padding: 4px 6px env(safe-area-inset-bottom); border-top: 1px solid #e6e6e6; background: rgba(255,255,255,.98); }
+    .tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 3px; border: 0; border-radius: 0; background: transparent; color: #262626; font-size: 22px; }
+    .tab small { color: #555; font-size: 9px; }
+    .tab.active { border: 0; background: transparent; color: #111; }
+    .tab.active small { color: #111; font-weight: 700; }
+    .tab .badge { position: absolute; top: 1px; left: calc(50% + 4px); min-width: 15px; height: 15px; margin: 0; padding: 0 4px; font-size: 9px; }
+    .tab svg { width: 21px; height: 21px; display: block; }
+    .tab.create-tab svg { width: 23px; height: 23px; }
+    .tab.ai-tab svg { width: 22px; height: 22px; }
+    .ai-panel { overflow-y: auto; padding: 22px 16px calc(78px + env(safe-area-inset-bottom)); }
+    .ai-card { width: min(100%, 520px); margin: 12px auto; padding: 18px; border: 1px solid #eee; border-radius: 16px; background: #fff; }
+    .ai-card h2 { margin: 0 0 5px; font-size: 20px; }
+    .ai-card > p { margin: 0 0 15px; color: #737373; font-size: 13px; }
+    .ai-form { display: flex; gap: 8px; align-items: flex-end; }
+    .ai-form textarea { flex: 1; min-width: 0; min-height: 46px; max-height: 150px; padding: 12px; resize: vertical; border: 1px solid #dbdbdb; border-radius: 12px; color: #222; background: #fafafa; font: inherit; }
+    .ai-answer { min-height: 42px; margin-top: 14px; padding: 12px; border-radius: 12px; background: #f7f7f7; color: #262626; font-size: 14px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .ai-answer:empty { display: none; }
+    .app:has(#chatPanel:not([hidden])) .tabs { display: none; }
+    #homePanel, #feedPanel, #friendsPanel { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
+    #homePanel { justify-content: flex-start; }
+    .feed-toolbar { padding: 11px 15px; border-bottom: 1px solid #eee; }
+    .feed-toolbar h2 { color: #171717; font-size: 18px; }
+    .feed-plus { width: 34px; height: 34px; border-radius: 50%; background: #0095f6 !important; color: #fff; box-shadow: none !important; }
+    .stories-block { margin: 0 0 10px; padding: 12px 12px 4px; border: 0; border-bottom: 1px solid #eee; background: #fff; }
+    .stories-heading { margin-bottom: 8px; color: #222; }
+    .story-row { gap: 12px; padding: 2px 0 10px; }
+    .story-ring { width: 64px; height: 64px; box-shadow: none; }
+    .story-ring .avatar { border-color: #fff; }
+    .story-ring::before { filter: blur(5px); }
+    .story-item small { color: #333; font-size: 10px; }
+    .story-own { flex-basis: 70px; }
+    .story-own .story-item { width: 70px; }
+    .feed-composer, .story-composer { margin: 10px 12px; border-color: #e5e5e5; border-radius: 10px; background: #fff; }
+    .feed-card { margin: 0 0 12px; border: 0; border-bottom: 1px solid #eee; border-radius: 0; background: #fff; }
+    .feed-card-head { padding: 10px 12px; }
+    .feed-card-body { padding: 0 12px 12px; }
+    .feed-photo { max-height: 560px; margin: 0 -12px; width: calc(100% + 24px); border-radius: 0; object-fit: cover; background: #f4f4f4; }
+    .engagement { gap: 8px; }
+    .engagement .btn, .comment-form .btn { border-color: transparent; background: transparent; color: #262626; box-shadow: none; }
+    .engagement .liked { color: #ed4956; }
+    .text { color: #262626; }
+    .section-title { padding-left: 13px; color: #777; }
+    .person { margin: 0 10px 8px; border-color: #eee; border-radius: 10px; background: #fff; }
+    .search-wrap { padding: 10px 12px; background: #fff; }
+    .search-wrap input { border: 0; border-radius: 9px; background: #efefef; color: #222; }
+    .chat-head { min-height: 50px; padding: 5px 13px 9px; border-bottom: 1px solid #eee; background: #fff; }
+    .chat-head strong { color: #222; }
+    .chat-head small { color: #777; }
+    .surface { background: #f7f7f7; }
+    .earth-background, .earth-shade { display: none; }
+    #messages { padding: 14px 13px; }
+    .message { border-color: #e5e5e5; background: #fff; color: #222; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .message.mine { border-color: #cce8fc; background: #dff2ff; }
+    .sender { color: #555; }
+    .typing { color: #555; border-color: #eee; background: #fff; }
+    #chatForm { padding: 9px 10px max(9px,env(safe-area-inset-bottom)); border-color: #eee; background: #fff; }
+    #messageInput { border: 1px solid #dbdbdb; border-radius: 22px; background: #f7f7f7; color: #222; }
+    #send { border-radius: 22px; background: #0095f6; color: #fff; box-shadow: none; }
+    #notice { color: #666; background: #fff; }
+    .profile-modal, .feed-create-modal, .profile-view-card { border-color: #e5e5e5; background: #fff; color: #222; }
+    .profile-view-caption, .profile-modal .hint, .feed-create-modal p { color: #777; }
+    .btn { border-color: #dbdbdb; background: #fff; color: #262626; }
+    .btn.primary { border: 0; background: #0095f6; color: #fff; box-shadow: none; }
+    .toast { border-color: #e5e5e5; background: #fff; color: #222; }
+    .toast span.msg { color: #555; }
+    @media (max-width: 480px) {
+      .app { width: 100%; max-width: none; box-shadow: none; }
+      .userbar { padding: 3px 9px; }
+      .userbar .btn { padding: 5px 7px; }
+      .profile-overview { gap: 18px; }
+    }
+    /* Sci-fi glass theme: keep the existing layout and navigation, restore the dark neon look. */
+    :root {
+      color-scheme: dark;
+      --bg: #090a12;
+      --border: rgba(180, 190, 255, .17);
+      --muted: #a1a5bd;
+      --accent: #a78bfa;
+      --ok: #34d399;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 12% 4%, rgba(124, 58, 237, .22), transparent 38%),
+        radial-gradient(ellipse at 92% 92%, rgba(14, 165, 233, .14), transparent 36%),
+        #090a12;
+      color: #f6f4ff;
+    }
+    .app {
+      background: linear-gradient(145deg, rgba(24, 23, 43, .96), rgba(9, 13, 26, .97));
+      color: #f6f4ff;
+      box-shadow: 0 0 55px rgba(93, 63, 190, .16), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    header, .userbar, .panel, .feed-toolbar, .chat-head, #chatForm, #notice {
+      background: rgba(13, 16, 31, .76);
+      border-color: var(--border);
+      color: #f6f4ff;
+    }
+    .logo {
+      background: linear-gradient(145deg, #d8ccff 0%, #a78bfa 42%, #6d28d9 100%);
+      box-shadow: 0 0 22px rgba(139,92,246,.34), inset 0 1px 0 rgba(255,255,255,.45);
+    }
+    h1, .feed-toolbar h2, .chat-head strong, .profile-topline strong { color: #f6f4ff; }
+    .subtitle, .chat-head small, .feed-create-modal p, .profile-view-caption { color: var(--muted); }
+    .pill { border-color: rgba(52,211,153,.25); background: rgba(16,185,129,.10); color: #a7f3d0; }
+    .pill.warn { border-color: rgba(251,191,36,.3); background: rgba(251,191,36,.09); color: #fde68a; }
+    .userbar { color: #e9e7f5; }
+    .userbar .btn, .btn {
+      border-color: rgba(180,190,255,.19);
+      background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
+      color: #f6f4ff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .btn:hover:not(:disabled) { border-color: rgba(196,181,253,.56); }
+    .btn.primary, .userbar .btn.primary {
+      border: 0;
+      background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9);
+      color: #fff;
+      box-shadow: 0 7px 24px rgba(124,58,237,.28), inset 0 1px 0 rgba(255,255,255,.3);
+    }
+    .tabs {
+      border-color: rgba(180,190,255,.18);
+      background: rgba(11, 13, 27, .91);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+      box-shadow: 0 -10px 35px rgba(0,0,0,.24);
+    }
+    .tab, .tab.active { color: #d8d3ec; }
+    .tab small, .tab.active small { color: #aaa5c2; }
+    .tab.active svg, .tab.active { filter: drop-shadow(0 0 8px rgba(167,139,250,.55)); }
+    .feed-toolbar { border-color: var(--border); }
+    .feed-plus { background: linear-gradient(145deg, #c4b5fd, #7c3aed) !important; color: #fff; box-shadow: 0 0 18px rgba(139,92,246,.34) !important; }
+    .stories-block {
+      border-top: 1px solid rgba(167,139,250,.13);
+      border-bottom: 1px solid rgba(167,139,250,.18);
+      background: linear-gradient(110deg, rgba(139,92,246,.12), rgba(56,189,248,.06));
+    }
+    .stories-heading, .story-item small { color: #eeeaff; }
+    .story-ring { box-shadow: 0 0 17px rgba(167,139,250,.28); }
+    .story-ring .avatar { border-color: #171629; }
+    .feed-card, .feed-composer, .story-composer {
+      border-color: rgba(180,190,255,.15);
+      background: linear-gradient(145deg, rgba(31,29,52,.78), rgba(13,17,31,.82));
+      box-shadow: 0 10px 28px rgba(0,0,0,.14);
+    }
+    .feed-card { border-bottom-color: rgba(180,190,255,.17); }
+    .feed-card-head, .feed-card-body { color: #f6f4ff; }
+    .feed-photo { background: rgba(3,7,18,.48); }
+    .text, .comment-item p { color: #f1effa; }
+    .comment-item { background: rgba(255,255,255,.055); }
+    .comment-item strong { color: #c4b5fd; }
+    .engagement .btn, .comment-form .btn { border-color: rgba(180,190,255,.18); background: rgba(255,255,255,.055); color: #eeeaff; }
+    .engagement .liked { color: #fda4af; }
+    .section-title { color: #a1a5bd; }
+    .person { border-color: rgba(180,190,255,.15); background: rgba(255,255,255,.045); }
+    .search-wrap { background: linear-gradient(rgba(15,16,31,.98) 70%, transparent); }
+    .search-wrap input, input[type=text], input[type=email], input[type=password], input[type=search] {
+      border-color: rgba(180,190,255,.2);
+      background: rgba(255,255,255,.055);
+      color: #fff;
+    }
+    .profile-topline, .profile-grid-heading { border-color: rgba(180,190,255,.17); color: #eeeaff; }
+    .profile-page-avatar { border-color: #c084fc; box-shadow: 0 0 18px rgba(168,85,247,.28); }
+    .profile-stats span, .profile-bio p { color: #c9c6d8; }
+    .profile-actions .btn { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.06); color: #f6f4ff; }
+    .profile-grid-item { background: rgba(255,255,255,.08); color: #f1effa; }
+    .profile-grid-heading { color: #e9e5fa; }
+    .ai-card, .profile-modal, .feed-create-modal, .profile-view-card {
+      border-color: rgba(196,181,253,.22);
+      background: linear-gradient(145deg, rgba(31,29,52,.96), rgba(12,16,31,.97));
+      color: #f6f4ff;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35), 0 0 30px rgba(139,92,246,.08);
+    }
+    .ai-card > p, .profile-modal .hint, .feed-create-modal p { color: var(--muted); }
+    .ai-form textarea, .ai-answer { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.055); color: #f6f4ff; }
+    .ai-answer { background: rgba(167,139,250,.09); }
+    .surface { background: linear-gradient(135deg, rgba(4,12,28,.9), rgba(7,13,27,.88)); }
+    .earth-background, .earth-shade { display: block; }
+    #messages { background: transparent; }
+    .message { border-color: rgba(196,181,253,.19); background: linear-gradient(145deg, rgba(34,31,54,.87), rgba(18,21,39,.86)); color: #f6f4ff; }
+    .message.mine { border-color: rgba(196,181,253,.4); background: linear-gradient(135deg, rgba(139,92,246,.4), rgba(56,92,200,.25)); }
+    .sender { color: #c4b5fd; }
+    .typing { border-color: rgba(167,139,250,.24); background: rgba(29,25,49,.9); color: #ddd6fe; }
+    #messageInput { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.06); color: #fff; }
+    #send { background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9); color: #fff; }
+    #notice { color: #b9b4ce; }
+    .toast { border-color: rgba(196,181,253,.3); background: linear-gradient(135deg, rgba(37,31,58,.97), rgba(14,20,34,.97)); color: #f6f4ff; }
+    .toast span.msg { color: #c5c2d6; }
+    .modal-backdrop { background: rgba(3,5,13,.76); }
+
+    /* Clear iOS-style glass for the bottom navigation. */
+    .tabs {
+      height: calc(68px + env(safe-area-inset-bottom));
+      padding: 7px 9px calc(7px + env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(226, 220, 255, .28);
+      background: linear-gradient(180deg, rgba(94, 91, 130, .48), rgba(18, 20, 39, .80));
+      -webkit-backdrop-filter: saturate(190%) blur(28px);
+      backdrop-filter: saturate(190%) blur(28px);
+      box-shadow: 0 -10px 34px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .tabs::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 12%;
+      width: 76%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.52), transparent);
+      pointer-events: none;
+    }
+    .tab {
+      isolation: isolate;
+      gap: 3px;
+      color: rgba(239, 236, 255, .9);
+      text-shadow: 0 1px 10px rgba(0,0,0,.35);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 1px 5px;
+      border: 1px solid transparent;
+      border-radius: 16px;
+      background: transparent;
+      transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .tab.active, .tab.active small {
+      color: #fff;
+      filter: none;
+    }
+    .tab.active::before {
+      border-color: rgba(226, 216, 255, .34);
+      background: linear-gradient(145deg, rgba(203, 187, 255, .30), rgba(113, 89, 190, .22));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 18px rgba(131, 94, 255, .22);
+    }
+    .tab svg { filter: drop-shadow(0 1px 5px rgba(0,0,0,.28)); }
+    .tab.active svg { filter: drop-shadow(0 0 8px rgba(205,190,255,.72)); }
+    .tab small { color: rgba(229, 226, 245, .83); font-size: 10px; font-weight: 550; }
+    .tab.active small { font-weight: 700; }
+    .profile-create {
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(196,181,253,.36) !important;
+      border-radius: 13px !important;
+      background: linear-gradient(145deg, rgba(196,181,253,.20), rgba(255,255,255,.045)) !important;
+      color: #eee8ff !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 18px rgba(139,92,246,.15);
+    }
+    .profile-create svg { display: block; width: 21px; height: 21px; }
+    @media (max-width: 480px) {
+      .tabs { gap: 2px; padding-left: 5px; padding-right: 5px; }
+      .tab::before { inset-inline: 2px; }
+      .tab small { font-size: 9px; }
+    }
+
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
@@ -483,6 +816,7 @@
     <div class="userbar">
       <div><span>Signed in as</span> <strong id="meName"></strong></div>
       <div class="pactions">
+        <button class="btn" id="returnHome" type="button" hidden>← Menu</button>
         <button class="btn user-profile-btn" id="openMyProfile" type="button" aria-label="View my profile">
           <span id="userAvatar"></span><span>My profile</span>
         </button>
@@ -493,16 +827,53 @@
       </div>
     </div>
 
+    <section class="panel" id="homePanel" aria-label="My profile" hidden>
+      <div class="profile-page">
+        <div class="profile-topline">
+          <strong id="profilePageName"></strong>
+          <button class="btn profile-create" id="profileCreatePost" type="button" aria-label="Open friends and messages" title="Friends and messages">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3.5 2v-5.2A7.5 7.5 0 1 1 20 11.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11.5h8M8 14.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="profile-overview">
+          <div class="avatar profile-page-avatar" id="myProfileAvatar"></div>
+          <div class="profile-stats">
+            <div><strong id="myPostCount">0</strong><span>posts</span></div>
+            <div><strong id="myFriendCount">0</strong><span>friends</span></div>
+            <div><strong id="myStoryCount">0</strong><span>stories</span></div>
+          </div>
+        </div>
+        <div class="profile-bio"><strong id="myProfileDisplayName"></strong><p id="myProfileBio"></p></div>
+        <div class="profile-actions">
+          <button class="btn" id="profileEditButton" type="button">Edit profile</button>
+          <button class="btn" id="profileShareButton" type="button">Share profile</button>
+        </div>
+        <div class="profile-grid" id="myProfileGrid"></div>
+      </div>
+    </section>
+
     <nav class="tabs" aria-label="Sections">
-      <button class="btn tab active" id="tabLounge" type="button">🌐 Lounge</button>
-      <button class="btn tab" id="tabFeed" type="button">📰 Feed</button>
-      <button class="btn tab" id="tabFriends" type="button">👥 Friends<span class="badge" id="friendsBadge" hidden>0</span></button>
+      <button class="btn tab" id="tabFeed" type="button" aria-label="Feed" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.2v-6.2H9.4V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg><small>Feed</small>
+      </button>
+      <button class="btn tab" id="tabFriends" type="button" aria-label="Search people and friends">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><small>Search</small><span class="badge" id="friendsBadge" hidden>0</span>
+      </button>
+      <button class="btn tab create-tab" id="tabCreate" type="button" aria-label="Upload a photo or share a story">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><small>Create</small>
+      </button>
+      <button class="btn tab ai-tab" id="tabAI" type="button" aria-label="AI assistant">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 14.1 9l6.1 2-6.1 2.1-2.1 6.1-2-6.1L3.8 11l6.2-2zM19 15.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="currentColor"/></svg><small>AI</small>
+      </button>
+      <button class="btn tab" id="tabProfile" type="button" aria-label="Profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.8 18.8c.7-2.5 2.5-3.8 5.2-3.8s4.5 1.3 5.2 3.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><small>Profile</small>
+      </button>
     </nav>
 
     <section class="panel" id="feedPanel" hidden aria-label="Community feed">
       <div class="feed-toolbar">
         <h2>Feed</h2>
-        <button class="btn primary feed-plus" id="openFeedCreate" type="button" aria-label="Create a post or story">＋</button>
+        <button class="btn primary feed-plus" id="openFeedCreate" type="button" aria-label="Create a post or story" hidden>＋</button>
       </div>
       <div class="stories-block">
         <div class="stories-heading"><span>Stories</span><small>24 hours</small></div>
@@ -528,8 +899,21 @@
       <div id="feedPosts"></div>
     </section>
 
+    <section class="panel ai-panel" id="aiPanel" hidden aria-label="AI assistant">
+      <div class="ai-card">
+        <h2>AI Assistant</h2>
+        <p>Ask a question or get help with an idea.</p>
+        <form class="ai-form" id="aiForm">
+          <textarea id="aiInput" maxlength="2000" placeholder="Ask ABRO AI…" aria-label="Message the AI assistant" required></textarea>
+          <button class="btn primary" id="aiSend" type="submit">Send</button>
+        </form>
+        <div class="ai-answer" id="aiAnswer" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
     <!-- Friends -->
     <section class="panel" id="friendsPanel" hidden aria-label="Friends">
+      <div class="friends-toolbar"><h2>Search people</h2><button class="btn" id="openLoungeFromSearch" type="button">Public chat</button></div>
       <div class="search-wrap">
         <input id="searchInput" type="search" maxlength="20" placeholder="Search by username" aria-label="Search people by name" autocomplete="off">
       </div>
@@ -598,6 +982,17 @@
     </section>
   </div>
 
+  <div class="modal-backdrop" id="profilePostModal" hidden>
+    <section class="profile-post-preview" role="dialog" aria-modal="true" aria-label="Post preview">
+      <div class="profile-post-preview-head">
+        <button class="btn" id="closeProfilePost" type="button" aria-label="Close post preview">✕</button>
+      </div>
+      <img class="profile-post-preview-image" id="profilePostPreviewImage" alt="" hidden>
+      <p class="profile-post-preview-text" id="profilePostPreviewText" hidden></p>
+      <small class="profile-post-preview-date" id="profilePostPreviewDate"></small>
+    </section>
+  </div>
+
   <div class="modal-backdrop" id="profileSettingsModal" hidden>
     <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileSettingsTitle">
       <div class="profile-modal-head">
@@ -634,6 +1029,19 @@
       <img id="storyViewImage" alt="">
       <div class="story-view-head"><span id="storyViewAvatar"></span><strong id="storyViewName"></strong><small id="storyViewTime"></small><button class="btn" id="closeStory" type="button" aria-label="Close story">✕</button></div>
       <p class="story-view-caption" id="storyViewCaption"></p>
+      <div class="story-engagement" id="storyEngagement">
+        <div class="engagement">
+          <button class="btn" id="storyLikeButton" type="button">♡ Like</button>
+          <span id="storyLikeCount" class="time"></span>
+          <button class="btn" id="storyCommentsToggle" type="button">Comments</button>
+          <span id="storyCommentCount" class="time"></span>
+        </div>
+        <div id="storyComments" class="comment-list" hidden></div>
+        <form id="storyCommentForm" class="comment-form" hidden>
+          <input id="storyCommentInput" type="text" maxlength="500" placeholder="Write a comment…" aria-label="Comment on story" required>
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </div>
     </section>
   </div>
 
@@ -822,7 +1230,10 @@
     let feedPosts = [];
     let activeStories = [];
     let viewedStories = new Set();
-    let pendingPostImage = null, pendingStoryImage = null, storyTimer = null;
+    let pendingPostImage = null, pendingStoryImage = null, storyTimer = null, storyExpiryTimer = null;
+    const postEngagement = new Map();
+    const storyEngagement = new Map();
+    let viewedStory = null;
 
     /* ================= small UI helpers ================= */
     let toastTimer, toastAction = null;
@@ -1033,7 +1444,7 @@
       initEarth();
       connectRealtime();
       await loadFriendships();
-      openLounge();
+      openFeed();
     }
 
     let stagedAvatar = null;
@@ -1056,10 +1467,32 @@
       $("closeProfileView").focus();
     }
     function closeProfileView() { $("profileViewModal").hidden = true; }
+    function openProfilePost(post) {
+      const image = $("profilePostPreviewImage");
+      const text = $("profilePostPreviewText");
+      const hasImage = !!post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data);
+      image.hidden = !hasImage;
+      if (hasImage) {
+        image.src = post.image_data;
+        image.alt = post.body || "Photo from your post";
+      } else {
+        image.removeAttribute("src");
+      }
+      text.hidden = !post.body;
+      text.textContent = post.body || "";
+      $("profilePostPreviewDate").textContent = new Date(post.created_at).toLocaleString();
+      $("profilePostModal").hidden = false;
+      $("closeProfilePost").focus();
+    }
+    function closeProfilePost() { $("profilePostModal").hidden = true; }
     $("openMyProfile").addEventListener("click", () => openProfileView(state.me));
     $("closeProfileView").addEventListener("click", closeProfileView);
     $("profileViewModal").addEventListener("click", e => {
       if (e.target === $("profileViewModal")) closeProfileView();
+    });
+    $("closeProfilePost").addEventListener("click", closeProfilePost);
+    $("profilePostModal").addEventListener("click", e => {
+      if (e.target === $("profilePostModal")) closeProfilePost();
     });
 
     function closeProfileSettings() { $("profileSettingsModal").hidden = true; }
@@ -1080,6 +1513,7 @@
     document.addEventListener("keydown", e => {
       if (e.key !== "Escape") return;
       if (!$("profileViewModal").hidden) closeProfileView();
+      if (!$("profilePostModal").hidden) closeProfilePost();
       if (!$("profileSettingsModal").hidden) closeProfileSettings();
     });
     $("avatarOptions").addEventListener("click", e => {
@@ -1138,6 +1572,7 @@
       }
       lastResults = lastResults.map(p => p.id === profile.id ? profile : p);
       if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
+      if (profile.id === state.me?.id) renderMyProfilePage();
       if ($("profileSettingsModal") && !$("profileSettingsModal").hidden && profile.id === state.me?.id) updateAvatarPreview();
     }
 
@@ -1354,16 +1789,43 @@
     function setView(view) {
       stopTyping();
       state.view = view;
+      $("homePanel").hidden = view !== "home";
+      $("returnHome").hidden = view === "home";
       $("friendsPanel").hidden = view !== "friends";
       $("feedPanel").hidden = view !== "feed";
-      $("chatPanel").hidden = view === "friends" || view === "feed";
-      $("tabLounge").classList.toggle("active", view === "lounge");
+      $("aiPanel").hidden = view !== "ai";
+      $("chatPanel").hidden = view === "home" || view === "friends" || view === "feed" || view === "ai";
+      $("tabProfile").classList.toggle("active", view === "home");
       $("tabFeed").classList.toggle("active", view === "feed");
-      $("tabFriends").classList.toggle("active", view === "friends" || view === "dm");
+      $("tabFriends").classList.toggle("active", view === "friends");
+      $("tabAI").classList.toggle("active", view === "ai");
+      document.querySelectorAll(".tabs .tab").forEach(tab => {
+        if (tab.classList.contains("active")) tab.setAttribute("aria-current", "page");
+        else tab.removeAttribute("aria-current");
+      });
       $("backBtn").hidden = view !== "dm";
       renderTyping();
       notice("");
     }
+
+    function openHome() {
+      state.peer = null;
+      setView("home");
+      renderMyProfilePage();
+      loadFeed();
+    }
+    $("returnHome").addEventListener("click", openHome);
+    $("profileCreatePost").addEventListener("click", showFriends);
+    $("profileEditButton").addEventListener("click", () => $("openProfileSettings").click());
+    $("profileShareButton").addEventListener("click", async () => {
+      const shareText = `Find me on ABRO CHAT: @${state.me.username}`;
+      try {
+        if (navigator.share) await navigator.share({ title: "ABRO CHAT", text: shareText });
+        else if (navigator.clipboard) { await navigator.clipboard.writeText(shareText); notice("Profile username copied."); }
+        else notice(shareText);
+      } catch (error) { if (error.name !== "AbortError") notice("Couldn't share your profile."); }
+    });
+    $("tabProfile").addEventListener("click", openHome);
 
     function openLounge() {
       setView("lounge");
@@ -1399,6 +1861,36 @@
       loadFeed();
     }
 
+    function renderMyProfilePage() {
+      if (!state.me) return;
+      const profile = state.me;
+      const ownPosts = feedPosts.filter(post => post.author_id === profile.id);
+      const ownStories = activeStories.filter(story => story.author_id === profile.id);
+      const friends = state.friendships.filter(friendship => friendship.status === "accepted").length;
+      $("profilePageName").textContent = profile.username;
+      $("myProfileDisplayName").textContent = profile.username;
+      $("myProfileBio").textContent = profile.bio || "Add a bio to tell people about yourself.";
+      $("myProfileAvatar").replaceChildren(...avatarNode(profile).childNodes);
+      $("myPostCount").textContent = String(ownPosts.length);
+      $("myFriendCount").textContent = String(friends);
+      $("myStoryCount").textContent = String(ownStories.length);
+      const grid = $("myProfileGrid");
+      if (!ownPosts.length) {
+        grid.replaceChildren(h("div", { class: "profile-grid-empty", text: "Your shared photos and posts will appear here." }));
+        return;
+      }
+      grid.replaceChildren(...ownPosts.map(post => {
+        const tile = h("button", { class: "profile-grid-item", type: "button", "aria-label": "Open your post" });
+        if (post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data)) {
+          tile.append(h("img", { src: post.image_data, alt: post.body || "Your post", loading: "lazy" }));
+        } else {
+          tile.append(h("span", { text: post.body || "Post" }));
+        }
+        tile.addEventListener("click", () => openProfilePost(post));
+        return tile;
+      }));
+    }
+
     function closeFeedCreate() { $("feedCreateModal").hidden = true; }
     function openFeedComposer(kind) {
       closeFeedCreate();
@@ -1427,9 +1919,13 @@
       if (!state.me) return;
       const id = ++feedLoadId;
       const now = new Date().toISOString();
+      const friendIds = state.friendships
+        .filter(friendship => friendship.status === "accepted")
+        .map(friendship => friendship.requester === state.me.id ? friendship.addressee : friendship.requester);
+      const feedAuthorIds = [...new Set([state.me.id, ...friendIds])];
       const [postResult, storyResult] = await Promise.all([
-        sb.from("posts").select("id,author_id,body,image_data,created_at").order("created_at", { ascending: false }).limit(50),
-        sb.from("stories").select("id,author_id,caption,image_data,created_at,expires_at").gt("expires_at", now).order("created_at", { ascending: false }).limit(100)
+        sb.from("posts").select("id,author_id,body,image_data,created_at").in("author_id", feedAuthorIds).order("created_at", { ascending: false }).limit(50),
+        sb.from("stories").select("id,author_id,caption,image_data,created_at,expires_at").in("author_id", feedAuthorIds).gt("expires_at", now).order("created_at", { ascending: false }).limit(100)
       ]);
       if (id !== feedLoadId) return;
       if (postResult.error || storyResult.error) {
@@ -1446,8 +1942,49 @@
         (data || []).forEach(profile => state.profiles.set(profile.id, profile));
       }
       if (id !== feedLoadId) return;
+      const postIds = feedPosts.map(post => post.id);
+      const storyIds = activeStories.map(story => story.id);
+      const [postLikesResult, postCommentsResult, storyLikesResult, storyCommentsResult] = await Promise.all([
+        postIds.length ? sb.from("post_likes").select("post_id,user_id").in("post_id", postIds) : Promise.resolve({ data: [], error: null }),
+        postIds.length ? sb.from("post_comments").select("post_id").in("post_id", postIds) : Promise.resolve({ data: [], error: null }),
+        storyIds.length ? sb.from("story_likes").select("story_id,user_id").in("story_id", storyIds) : Promise.resolve({ data: [], error: null }),
+        storyIds.length ? sb.from("story_comments").select("story_id").in("story_id", storyIds) : Promise.resolve({ data: [], error: null })
+      ]);
+      if (id !== feedLoadId) return;
+      const summarize = (items, key, likes = false) => {
+        const result = new Map();
+        (items || []).forEach(item => {
+          const entry = result.get(item[key]) || { count: 0, liked: false };
+          entry.count++;
+          if (likes && item.user_id === state.me.id) entry.liked = true;
+          result.set(item[key], entry);
+        });
+        return result;
+      };
+      const pLikes = summarize(postLikesResult.data, "post_id", true);
+      const pComments = summarize(postCommentsResult.data, "post_id");
+      const sLikes = summarize(storyLikesResult.data, "story_id", true);
+      const sComments = summarize(storyCommentsResult.data, "story_id");
+      postEngagement.clear();
+      feedPosts.forEach(post => postEngagement.set(post.id, {
+        likes: pLikes.get(post.id)?.count || 0, liked: pLikes.get(post.id)?.liked || false,
+        comments: pComments.get(post.id)?.count || 0
+      }));
+      storyEngagement.clear();
+      activeStories.forEach(story => storyEngagement.set(story.id, {
+        likes: sLikes.get(story.id)?.count || 0, liked: sLikes.get(story.id)?.liked || false,
+        comments: sComments.get(story.id)?.count || 0
+      }));
+      const engagementError = postLikesResult.error || postCommentsResult.error || storyLikesResult.error || storyCommentsResult.error;
+      if (engagementError) console.error("Feed engagement load error:", engagementError);
       renderStories();
       renderFeedPosts();
+      renderMyProfilePage();
+      clearTimeout(storyExpiryTimer);
+      const nextExpiry = Math.min(...activeStories.map(story => Date.parse(story.expires_at)).filter(Number.isFinite));
+      if (Number.isFinite(nextExpiry)) {
+        storyExpiryTimer = setTimeout(loadFeed, Math.max(0, nextExpiry - Date.now() + 1000));
+      }
     }
 
     function loadViewedStories() {
@@ -1497,6 +2034,83 @@
       stories.replaceChildren(own, ...items);
     }
 
+    async function toggleContentLike(kind, id, button, countEl) {
+      const isPost = kind === "post";
+      const table = isPost ? "post_likes" : "story_likes";
+      const key = isPost ? "post_id" : "story_id";
+      const store = isPost ? postEngagement : storyEngagement;
+      const stats = store.get(id) || { likes: 0, liked: false, comments: 0 };
+      button.disabled = true;
+      try {
+        const result = stats.liked
+          ? await sb.from(table).delete().eq(key, id).eq("user_id", state.me.id)
+          : await sb.from(table).insert({ [key]: id, user_id: state.me.id });
+        if (result.error) throw result.error;
+        stats.liked = !stats.liked;
+        stats.likes = Math.max(0, stats.likes + (stats.liked ? 1 : -1));
+        store.set(id, stats);
+        button.classList.toggle("liked", stats.liked);
+        button.textContent = stats.liked ? "♥ Liked" : "♡ Like";
+        countEl.textContent = stats.likes ? String(stats.likes) : "";
+      } catch (error) {
+        console.error(`${kind} like error:`, error);
+        notice("Couldn't save your like. Check the feed engagement SQL setup.");
+      } finally { button.disabled = false; }
+    }
+
+    async function renderContentComments(kind, id, container) {
+      const isPost = kind === "post";
+      const table = isPost ? "post_comments" : "story_comments";
+      const key = isPost ? "post_id" : "story_id";
+      container.replaceChildren(h("div", { class: "note", text: "Loading comments…" }));
+      const { data, error } = await sb.from(table).select("id,user_id,body,created_at").eq(key, id).order("created_at", { ascending: true }).limit(100);
+      if (error) {
+        console.error(`${kind} comments load error:`, error);
+        container.replaceChildren(h("div", { class: "note", text: "Couldn't load comments. Check the feed engagement SQL setup." }));
+        return;
+      }
+      const authorIds = [...new Set((data || []).map(comment => comment.user_id).filter(userId => !state.profiles.has(userId)))];
+      if (authorIds.length) {
+        const { data: profiles } = await sb.from("profiles").select("id,username,avatar,bio").in("id", authorIds);
+        (profiles || []).forEach(profile => state.profiles.set(profile.id, profile));
+      }
+      if (!data?.length) {
+        container.replaceChildren(h("div", { class: "note", text: "No comments yet. Start the conversation." }));
+        return;
+      }
+      container.replaceChildren(...data.map(comment => {
+        const author = state.profiles.get(comment.user_id);
+        return h("div", { class: "comment-item" },
+          h("strong", { text: author?.username || "ABRO CHAT member" }),
+          h("small", { text: fmtTime(comment.created_at) }),
+          h("p", { text: comment.body }));
+      }));
+    }
+
+    async function addContentComment(kind, id, input, button, container, countEl) {
+      const body = input.value.trim();
+      if (!body) return;
+      const isPost = kind === "post";
+      const table = isPost ? "post_comments" : "story_comments";
+      const key = isPost ? "post_id" : "story_id";
+      const store = isPost ? postEngagement : storyEngagement;
+      const stats = store.get(id) || { likes: 0, liked: false, comments: 0 };
+      button.disabled = true;
+      try {
+        const { error } = await sb.from(table).insert({ [key]: id, user_id: state.me.id, body });
+        if (error) throw error;
+        input.value = "";
+        stats.comments++;
+        store.set(id, stats);
+        countEl.textContent = isPost ? `Comments (${stats.comments})` : (stats.comments ? String(stats.comments) : "");
+        await renderContentComments(kind, id, container);
+        container.scrollTop = container.scrollHeight;
+      } catch (error) {
+        console.error(`${kind} comment error:`, error);
+        notice("Couldn't add your comment. Check the feed engagement SQL setup.");
+      } finally { button.disabled = false; }
+    }
+
     function renderFeedPosts() {
       const container = $("feedPosts");
       if (!feedPosts.length) {
@@ -1524,6 +2138,31 @@
         const body = h("div", { class: "feed-card-body" });
         if (post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data)) body.append(h("img", { class: "feed-photo", src: post.image_data, alt: `Photo shared by ${profile.username}`, loading: "lazy" }));
         if (post.body) body.append(h("div", { class: "text", text: post.body }));
+        const stats = postEngagement.get(post.id) || { likes: 0, liked: false, comments: 0 };
+        const likeCount = h("span", { class: "time", text: stats.likes ? String(stats.likes) : "" });
+        const likeButton = h("button", { class: "btn" + (stats.liked ? " liked" : ""), type: "button", text: stats.liked ? "♥ Liked" : "♡ Like" });
+        likeButton.addEventListener("click", () => toggleContentLike("post", post.id, likeButton, likeCount));
+        const commentsButton = h("button", { class: "btn", type: "button", text: `Comments (${stats.comments})` });
+        const comments = h("div", { class: "comment-list", hidden: true });
+        const commentForm = h("form", { class: "comment-form", hidden: true });
+        const commentInput = h("input", { type: "text", maxlength: 500, placeholder: "Write a comment…", "aria-label": "Comment on post", required: true });
+        const commentSubmit = h("button", { class: "btn primary", type: "submit", text: "Send" });
+        commentForm.append(commentInput, commentSubmit);
+        commentsButton.addEventListener("click", async () => {
+          const open = comments.hidden;
+          comments.hidden = !open;
+          commentForm.hidden = !open;
+          if (open && comments.dataset.loaded !== "true") {
+            await renderContentComments("post", post.id, comments);
+            comments.dataset.loaded = "true";
+          }
+          if (open) commentInput.focus({ preventScroll: true });
+        });
+        commentForm.addEventListener("submit", e => {
+          e.preventDefault();
+          addContentComment("post", post.id, commentInput, commentSubmit, comments, commentsButton);
+        });
+        body.append(h("div", { class: "engagement" }, likeButton, likeCount, commentsButton), comments, commentForm);
         card.append(body);
         return card;
       }));
@@ -1533,10 +2172,22 @@
       $("storyViewName").textContent = profile.username || "ABRO CHAT member";
       $("storyViewTime").textContent = new Date(story.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       const avatar = avatarNode(profile);
-      $("storyViewAvatar").replaceChildren(...avatar.childNodes);
+      $("storyViewAvatar").replaceChildren(avatar);
       $("storyViewCaption").textContent = story.caption || "";
       $("storyViewImage").hidden = !story.image_data;
       if (story.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(story.image_data)) $("storyViewImage").src = story.image_data;
+      viewedStory = story;
+      const stats = storyEngagement.get(story.id) || { likes: 0, liked: false, comments: 0 };
+      $("storyLikeButton").classList.toggle("liked", stats.liked);
+      $("storyLikeButton").textContent = stats.liked ? "♥ Liked" : "♡ Like";
+      $("storyLikeCount").textContent = stats.likes ? String(stats.likes) : "";
+      $("storyCommentCount").textContent = stats.comments ? String(stats.comments) : "";
+      $("storyCommentsToggle").textContent = "Comments";
+      $("storyComments").hidden = true;
+      $("storyComments").replaceChildren();
+      $("storyComments").dataset.loaded = "false";
+      $("storyCommentForm").hidden = true;
+      $("storyCommentInput").value = "";
       const progress = $("storyProgressBar");
       progress.style.animation = "none";
       void progress.offsetWidth;
@@ -1546,8 +2197,30 @@
       clearTimeout(storyTimer);
       storyTimer = setTimeout(closeStory, 6000);
     }
-    function closeStory() { clearTimeout(storyTimer); $("storyModal").hidden = true; }
+    function closeStory() { clearTimeout(storyTimer); $("storyModal").hidden = true; viewedStory = null; }
     $("closeStory").addEventListener("click", closeStory);
+    $("storyLikeButton").addEventListener("click", () => {
+      if (!viewedStory) return;
+      clearTimeout(storyTimer);
+      toggleContentLike("story", viewedStory.id, $("storyLikeButton"), $("storyLikeCount"));
+    });
+    $("storyCommentsToggle").addEventListener("click", async () => {
+      if (!viewedStory) return;
+      clearTimeout(storyTimer);
+      const comments = $("storyComments"), form = $("storyCommentForm");
+      const open = comments.hidden;
+      comments.hidden = !open;
+      form.hidden = !open;
+      if (open && comments.dataset.loaded !== "true") {
+        await renderContentComments("story", viewedStory.id, comments);
+        comments.dataset.loaded = "true";
+      }
+      if (open) $("storyCommentInput").focus({ preventScroll: true });
+    });
+    $("storyCommentForm").addEventListener("submit", e => {
+      e.preventDefault();
+      if (viewedStory) addContentComment("story", viewedStory.id, $("storyCommentInput"), $("storyCommentForm").querySelector("button"), $("storyComments"), $("storyCommentCount"));
+    });
     $("storyModal").addEventListener("click", e => { if (e.target === $("storyModal")) closeStory(); });
 
     $("postPhoto").addEventListener("change", async e => {
@@ -1584,7 +2257,8 @@
       if (!caption && !pendingStoryImage) { notice("Add a caption or choose a story photo first."); return; }
       const button = $("storyForm").querySelector("button[type=submit]"); button.disabled = true;
       try {
-        const { error } = await sb.from("stories").insert({ author_id: state.me.id, caption, image_data: pendingStoryImage });
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        const { error } = await sb.from("stories").insert({ author_id: state.me.id, caption, image_data: pendingStoryImage, expires_at: expiresAt });
         if (error) throw error;
         $("storyCaption").value = ""; $("storyPhoto").value = ""; pendingStoryImage = null;
         $("storyForm").hidden = true;
@@ -1611,9 +2285,48 @@
       $("messageInput").focus();
     }
 
-    $("tabLounge").addEventListener("click", openLounge);
     $("tabFeed").addEventListener("click", openFeed);
     $("tabFriends").addEventListener("click", showFriends);
+    $("openLoungeFromSearch").addEventListener("click", openLounge);
+    $("tabCreate").addEventListener("click", () => {
+      openFeed();
+      $("feedCreateModal").hidden = false;
+      $("closeFeedCreate").focus();
+    });
+    $("tabAI").addEventListener("click", () => {
+      state.peer = null;
+      setView("ai");
+      $("aiInput").focus();
+    });
+    $("aiForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const input = $("aiInput"), button = $("aiSend");
+      const message = input.value.trim();
+      if (!message) return;
+      button.disabled = true;
+      $("aiAnswer").textContent = "Thinking…";
+      try {
+        const { data, error } = await sb.functions.invoke("abro-ai", { body: { message } });
+        if (error) {
+          let detail = error.message || "AI request failed.";
+          try {
+            const body = await error.context?.json();
+            detail = body?.error || body?.message || detail;
+          } catch { /* The function may not return a JSON error body. */ }
+          throw new Error(detail);
+        }
+        const answer = typeof data === "string" ? data
+          : data?.reply || data?.answer || data?.response || data?.content
+          || data?.choices?.[0]?.message?.content;
+        $("aiAnswer").textContent = answer || "The assistant returned an empty response.";
+        input.value = "";
+      } catch (error) {
+        console.error("ABRO.AI request error:", error);
+        $("aiAnswer").textContent = `ABRO.AI error: ${error.message || "Request failed."}`;
+      } finally {
+        button.disabled = false;
+      }
+    });
     $("backBtn").addEventListener("click", showFriends);
 
     /* ================= friends ================= */
@@ -1623,6 +2336,7 @@
         .order("created_at", { ascending: false });
       if (error) { console.error("Friends error:", error); notice("Could not load friends."); return; }
       state.friendships = data || [];
+      renderMyProfilePage();
 
       const ids = new Set();
       state.friendships.forEach(f => { ids.add(f.requester); ids.add(f.addressee); });
@@ -1647,6 +2361,7 @@
 
       updateBadge();
       if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
+      if (state.view === "feed") loadFeed();
     }
     const scheduleFriendsReload = debounce(loadFriendships, 300);
 
