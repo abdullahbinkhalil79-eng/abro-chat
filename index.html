@@ -2,72 +2,213 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#070913">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ABRO CHAT">
+  <meta name="application-name" content="ABRO CHAT">
   <title>ABRO CHAT</title>
+  <meta name="description" content="A premium, crystal-clear iOS 18 glassmorphic messaging and social experience featuring real-time chats, stories, feed, friends, and ABRO AI.">
+  <meta property="og:title" content="ABRO CHAT">
+  <meta property="og:description" content="A premium, crystal-clear iOS 18 glassmorphic messaging and social experience featuring real-time chats, stories, feed, friends, and ABRO AI.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; }
+    /* ==========================================================================
+       ABRO CHAT — iOS 18 Glassmorphism Design System
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
     [hidden] { display: none !important; }
 
     :root {
       color-scheme: dark;
-      --bg: #09090d;
-      --border: rgba(255,255,255,.11);
-      --muted: #9a9aae;
-      --accent: #a78bfa;
-      --ok: #34d399;
+      --bg: #070913;
+      --bg-deep: #04050b;
+      --surface-glass: rgba(18, 22, 40, 0.68);
+      --surface-glass-elevated: rgba(26, 32, 58, 0.82);
+      --surface-glass-subtle: rgba(255, 255, 255, 0.045);
+      --surface-glass-hover: rgba(255, 255, 255, 0.09);
+      --surface-glass-active: rgba(255, 255, 255, 0.14);
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --border-glass-bright: rgba(255, 255, 255, 0.22);
+      --border-glass-accent: rgba(167, 139, 250, 0.38);
+      --text-primary: #f8fafc;
+      --text-secondary: rgba(248, 250, 252, 0.72);
+      --text-muted: rgba(226, 232, 240, 0.48);
+      --accent: #8b5cf6;
+      --accent-light: #c4b5fd;
+      --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 52%, #6366f1 100%);
+      --accent-gradient-hover: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 52%, #7c3aed 100%);
+      --apple-blue: #0a84ff;
+      --apple-green: #30d158;
+      --apple-red: #ff453a;
+      --apple-amber: #ffd60a;
+      --blur-md: 20px;
+      --blur-lg: 32px;
+      --blur-xl: 48px;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Plus Jakarta Sans", system-ui, sans-serif;
+      --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    html, body { height: 100%; }
-    body {
+    html, body {
+      height: 100%;
       margin: 0;
-      background:
-        radial-gradient(ellipse at 12% 4%, rgba(139,92,246,.24), transparent 38%),
-        radial-gradient(ellipse at 92% 92%, rgba(56,189,248,.12), transparent 36%),
-        var(--bg);
-      color: #f6f4ff;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      display: flex;
-      justify-content: center;
       padding: 0;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-stack);
+      overflow-x: hidden;
+      touch-action: manipulation;
     }
-    input, button { font: inherit; }
-    button { transition: transform .15s ease, background .2s ease, border-color .2s ease, opacity .2s ease; }
-    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid #c4b5fd; outline-offset: 2px; }
 
-    input[type=text], input[type=email], input[type=password], input[type=search] {
+    /* Ambient iOS 18 Light Caustics */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.38;
+      transform: translateZ(0);
+      animation: floatAmbient 20s ease-in-out infinite alternate;
+    }
+    body::before {
+      top: -10vw;
+      left: -10vw;
+      width: clamp(320px, 55vw, 680px);
+      height: clamp(320px, 55vw, 680px);
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.48), rgba(99, 102, 241, 0.24) 45%, transparent 70%);
+    }
+    body::after {
+      bottom: -15vw;
+      right: -10vw;
+      width: clamp(360px, 60vw, 760px);
+      height: clamp(360px, 60vw, 760px);
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.32), rgba(139, 92, 246, 0.22) 50%, transparent 70%);
+      animation-delay: -10s;
+    }
+    @keyframes floatAmbient {
+      0% { transform: translate3d(0, 0, 0) scale(0.96); }
+      100% { transform: translate3d(4vw, 3vh, 0) scale(1.08); }
+    }
+
+    /* Form Controls & Global Focus */
+    input, button, textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.16s var(--ease-spring), opacity 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    button:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+    button:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent-light);
+      outline-offset: 2px;
+    }
+
+    input[type=text], input[type=email], input[type=password], input[type=search], textarea {
       width: 100%;
       min-width: 0;
-      background: rgba(255,255,255,.05);
+      background: rgba(255, 255, 255, 0.06);
       color: #fff;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 13px 14px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 15px;
       outline: none;
-      transition: border-color .2s ease, box-shadow .2s ease;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.16);
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
-    input:focus { border-color: rgba(196,181,253,.72); box-shadow: 0 0 0 3px rgba(167,139,250,.14); }
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+    }
+    input:focus, textarea:focus {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(196, 181, 253, 0.65);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 0 0 3px rgba(139, 92, 246, 0.22);
+    }
 
+    /* Reusable Glass Button Styles */
     .btn {
-      border: 1px solid var(--border);
-      background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      color: #fff;
-      border-radius: 11px;
-      padding: 9px 13px;
-      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 15px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      border: 1px solid var(--border-glass);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+      color: var(--text-primary);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 14px rgba(0, 0, 0, 0.2);
       white-space: nowrap;
     }
-    .btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(196,181,253,.5); }
-    .btn:disabled { opacity: .55; cursor: default; }
-    .btn.primary {
-      border: 0;
-      background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9);
-      font-weight: 700;
-      box-shadow: 0 7px 24px rgba(124,58,237,.28), inset 0 1px 0 rgba(255,255,255,.4);
+    .btn:hover:not(:disabled) {
+      border-color: var(--border-glass-bright);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
     }
-    .btn.danger:hover:not(:disabled) { border-color: rgba(251,113,133,.6); }
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .btn.primary {
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      background: var(--accent-gradient);
+      color: #fff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 20px -2px rgba(124, 58, 237, 0.48);
+    }
+    .btn.primary:hover:not(:disabled) {
+      background: var(--accent-gradient-hover);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 24px -2px rgba(139, 92, 246, 0.58);
+    }
+    .btn.danger {
+      border-color: rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.14);
+      color: #fca5a5;
+    }
+    .btn.danger:hover:not(:disabled) {
+      background: rgba(239, 68, 68, 0.24);
+      border-color: rgba(239, 68, 68, 0.6);
+    }
 
-    /* ---------- sign-in and iOS-inspired PIN lock screen ---------- */
+    /* ==========================================================================
+       PASSCODE LOCK SCREEN & TOUCH ID (iOS 18)
+       ========================================================================== */
     .screen {
       position: fixed;
       inset: 0;
@@ -75,607 +216,510 @@
       display: grid;
       place-items: center;
       overflow-y: auto;
-      padding: max(26px, env(safe-area-inset-top)) 20px max(26px, env(safe-area-inset-bottom));
-      background:
-        radial-gradient(ellipse at 50% 19%, rgba(179,164,255,.52), transparent 30%),
-        radial-gradient(ellipse at 13% 76%, rgba(67,181,255,.35), transparent 34%),
-        radial-gradient(ellipse at 88% 68%, rgba(238,116,204,.22), transparent 32%),
-        linear-gradient(155deg, #171d3b 0%, #10172b 48%, #090d19 100%);
+      padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+      background: radial-gradient(ellipse at 50% 20%, rgba(139, 92, 246, 0.22), transparent 45%),
+                  radial-gradient(ellipse at 80% 80%, rgba(14, 165, 233, 0.16), transparent 45%),
+                  rgba(7, 9, 19, 0.94);
+      backdrop-filter: blur(var(--blur-xl));
+      -webkit-backdrop-filter: blur(var(--blur-xl));
       isolation: isolate;
-      transition: opacity .55s ease, transform .65s cubic-bezier(.2,.8,.2,1), visibility .55s;
+      transition: opacity 0.5s ease, transform 0.6s var(--ease-spring), visibility 0.5s;
     }
-    .screen::before, .screen::after {
-      content: ""; position: absolute; z-index: -1; width: min(78vw, 460px); aspect-ratio: 1;
-      border-radius: 50%; filter: blur(54px); opacity: .42; pointer-events: none;
-      animation: aurora 12s ease-in-out infinite alternate;
+    .screen.gone {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.04);
+      pointer-events: none;
     }
-    .screen::before { top: 8%; left: -28%; background: radial-gradient(circle, rgba(50,170,255,.58), transparent 68%); }
-    .screen::after { right: -30%; bottom: 2%; background: radial-gradient(circle, rgba(169,105,255,.62), transparent 68%); animation-delay: -6s; }
-    @keyframes aurora { from { transform: translate3d(0,-2%,0) scale(.92); } to { transform: translate3d(9%,5%,0) scale(1.12); } }
-    .screen.gone { opacity: 0; visibility: hidden; transform: scale(1.035); pointer-events: none; }
 
-    .screen-content { width: min(100%, 350px); text-align: center; animation: arrive .7s cubic-bezier(.2,.8,.2,1) both; }
-    @keyframes arrive { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: none; } }
-
-    .lock-card { width: min(100%, 340px); padding: 14px 10px; }
-    .lock-brand { margin: 0 0 28px; }
-    .lock-brand .mark { margin-bottom: 12px; }
-    .lock-brand h2 { font-size: 23px; letter-spacing: 2px; }
-    .lock-prompt { margin: 0 0 18px; color: rgba(255,255,255,.83); font-size: 14px; }
-    .pin-dots { min-height: 18px; display: flex; justify-content: center; gap: 16px; margin: 0 auto 14px; }
-    .pin-dot { width: 11px; height: 11px; border: 1px solid rgba(255,255,255,.75); border-radius: 50%; background: rgba(255,255,255,.08); box-shadow: 0 2px 12px rgba(0,0,0,.14); transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease; }
-    .pin-dot.filled { transform: scale(1.12); background: #fff; box-shadow: 0 0 13px rgba(255,255,255,.8); }
-    .pin-store { position: absolute; width: 1px; height: 1px; padding: 0 !important; opacity: 0; pointer-events: none; }
-    .lock-card.shake { animation: pinShake .38s ease-in-out; }
-    @keyframes pinShake { 20%,60% { transform: translateX(-8px); } 40%,80% { transform: translateX(8px); } }
-    .lock-card .form-error { min-height: 18px; margin: 0 0 10px; color: #ffd0db; text-shadow: 0 1px 10px rgba(255,80,120,.5); }
-    .keypad { width: min(100%, 280px); display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 17px; margin: 0 auto; }
-    .key {
-      width: 72px; height: 72px; justify-self: center; display: grid; place-items: center;
-      border: 1px solid rgba(255,255,255,.32); border-radius: 50%; color: #fff;
-      background: linear-gradient(145deg, rgba(255,255,255,.27), rgba(255,255,255,.095));
-      box-shadow: inset 0 1px 1px rgba(255,255,255,.44), inset 0 -9px 18px rgba(12,19,40,.16), 0 9px 24px rgba(0,0,0,.17);
-      -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
-      font-size: 28px; font-weight: 400; cursor: pointer;
-      transition: transform .16s cubic-bezier(.2,.8,.2,1), background .2s ease, box-shadow .2s ease;
-      -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+    .screen-content {
+      width: min(100%, 360px);
+      text-align: center;
+      animation: enterCard 0.65s var(--ease-spring) both;
     }
-    .key small { display: block; margin-top: -18px; font-size: 8px; font-weight: 700; letter-spacing: .19em; }
-    .key:hover { background: linear-gradient(145deg, rgba(255,255,255,.38), rgba(255,255,255,.16)); }
-    .key:active { transform: scale(.91); background: rgba(255,255,255,.43); box-shadow: inset 0 2px 8px rgba(0,0,0,.18); }
-    .key.utility { border: 0; background: transparent; box-shadow: none; font-size: 13px; }
-    .key.utility:active { transform: scale(.94); background: rgba(255,255,255,.1); }
-    .key-spacer { width: 72px; height: 72px; }
-    .lock-foot { margin: 18px 0 0; color: rgba(255,255,255,.56); font-size: 11px; letter-spacing: .04em; }
+    @keyframes enterCard {
+      from { opacity: 0; transform: translateY(22px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
+    .lock-card {
+      width: min(100%, 350px);
+      padding: 20px 14px;
+    }
+    .lock-brand {
+      margin-bottom: 24px;
+    }
     .mark {
-      width: 58px; height: 58px;
-      display: grid; place-items: center;
-      margin: 0 auto 20px;
-      border: 1px solid rgba(255,255,255,.25);
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 16px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
       border-radius: 20px;
-      background: linear-gradient(145deg, rgba(255,255,255,.25), rgba(255,255,255,.06));
-      box-shadow: 0 12px 36px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.34);
-      font-size: 23px; font-weight: 800;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 12px 36px rgba(0, 0, 0, 0.35);
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(196, 181, 253, 0.6);
     }
-    .screen h2 { margin: 0; font-size: clamp(27px, 8vw, 33px); font-weight: 650; letter-spacing: -.8px; }
-    .caption { margin: 9px 0 24px; color: rgba(231,230,242,.65); font-size: 13px; }
+    .lock-brand h2 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 750;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+    .lock-prompt {
+      margin: 0 0 18px;
+      color: var(--text-secondary);
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .pin-dots {
+      min-height: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin: 0 auto 16px;
+    }
+    .pin-dot {
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid rgba(255, 255, 255, 0.75);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.22s var(--ease-bounce), background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .pin-dot.filled {
+      transform: scale(1.18);
+      background: #ffffff;
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.9), 0 0 32px rgba(167, 139, 250, 0.6);
+    }
+    .lock-card.shake {
+      animation: pinShake 0.42s ease-in-out;
+    }
+    @keyframes pinShake {
+      15%, 45%, 75% { transform: translateX(-9px); }
+      30%, 60%, 90% { transform: translateX(9px); }
+      100% { transform: translateX(0); }
+    }
+    .form-error {
+      min-height: 20px;
+      margin: 0 0 12px;
+      color: #fca5a5;
+      font-size: 13px;
+      font-weight: 500;
+      text-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+    }
 
-    .form-error { min-height: 20px; margin: 0 0 12px; color: #ff9dba; font-size: 12px; }
-
-    .auth-card { text-align: left; }
-    .auth-card .mark, .auth-card h2, .auth-card .caption { text-align: center; }
-    .auth-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-bottom: 18px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.04); }
-    .auth-switch button { border: 0; border-radius: 10px; padding: 10px; background: transparent; color: var(--muted); cursor: pointer; }
-    .auth-switch button.active { background: rgba(167,139,250,.25); color: #fff; }
-    .auth-card label { display: block; margin: 0 0 6px 2px; color: var(--muted); font-size: 12px; }
-    .auth-card .field { margin-bottom: 14px; }
-    .auth-card .btn.primary { width: 100%; padding: 13px; }
-    .hint { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; text-align: center; }
-
-    /* ---------- app shell ---------- */
-    .app {
-      width: 100%;
-      max-width: none;
-      height: 100dvh;
+    /* iOS 18 Keypad */
+    .keypad {
+      width: min(100%, 290px);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px 18px;
+      margin: 0 auto;
+    }
+    .key {
+      width: 76px;
+      height: 76px;
+      justify-self: center;
       display: flex;
       flex-direction: column;
-      border: 0;
-      border-radius: 0;
-      background: linear-gradient(145deg, rgba(28,25,41,.88), rgba(12,14,23,.84));
-      box-shadow: 0 30px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
-      overflow: hidden;
-    }
-
-    header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .brand-mark-stack { display: grid; justify-items: center; gap: 4px; flex: none; }
-    .logo {
-      flex: none; width: 44px; height: 44px; display: grid; place-items: center;
-      border-radius: 15px; font-size: 19px; font-weight: 900;
-      background: linear-gradient(145deg, #d8ccff 0%, #a78bfa 42%, #6d28d9 100%);
-      box-shadow: 0 8px 28px rgba(139,92,246,.38), inset 0 1px 0 rgba(255,255,255,.55);
-    }
-    h1 { font-size: 18px; margin: 0 0 3px; letter-spacing: 1.5px; }
-    .subtitle { color: var(--muted); font-size: 12px; }
-
-    .pills { display: flex; align-items: center; gap: 8px; }
-    .pill { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid rgba(52,211,153,.26); border-radius: 30px; background: rgba(16,185,129,.09); color: #a7f3d0; font-size: 11px; white-space: nowrap; }
-    .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
-    .pill.warn { border-color: rgba(251,191,36,.3); background: rgba(251,191,36,.08); color: #fde68a; }
-    .pill.warn::before { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
-
-    .userbar { padding: 11px 22px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-    .userbar span { color: var(--muted); }
-    .userbar strong { color: #ddd6fe; }
-
-    .tabs { display: flex; gap: 8px; padding: 12px 22px; }
-    .tab { position: relative; flex: 1; }
-    .tab.active { background: linear-gradient(135deg, rgba(167,139,250,.30), rgba(124,58,237,.16)); border-color: rgba(196,181,253,.5); color: #ede9fe; }
-    .badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; margin-left: 6px; padding: 0 5px; border-radius: 9px; background: #f43f5e; color: #fff; font-size: 11px; font-weight: 700; }
-
-    .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-    #homePanel { overflow-y: auto; justify-content: center; padding: 36px clamp(18px, 6vw, 72px); }
-    .home-content { width: min(100%, 900px); margin: 0 auto; }
-    .home-content h2 { margin: 0; font-size: clamp(25px, 4vw, 36px); letter-spacing: -.8px; }
-    .home-content > p { margin: 9px 0 25px; color: var(--muted); }
-    .home-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-    .home-option { min-height: 160px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 9px; padding: 22px; border: 1px solid rgba(196,181,253,.22); border-radius: 22px; background: linear-gradient(145deg, rgba(167,139,250,.14), rgba(255,255,255,.035)); color: #fff; text-align: left; white-space: normal; cursor: pointer; }
-    .home-option:hover { border-color: rgba(196,181,253,.65); background: linear-gradient(145deg, rgba(167,139,250,.24), rgba(255,255,255,.06)); }
-    .home-option .home-icon { font-size: 30px; }
-    .home-option strong { font-size: 18px; }
-    .home-option small { color: #b8b5c9; font-size: 12px; line-height: 1.5; }
-    #returnHome { padding: 8px 10px; }
-
-    /* ---------- chat ---------- */
-    .chat-head { display: flex; align-items: center; gap: 10px; padding: 4px 22px 10px; }
-    .chat-head .titles { min-width: 0; flex: 1; }
-    .chat-head strong { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .chat-head small { color: var(--muted); font-size: 11px; }
-
-    .surface { position: relative; isolation: isolate; flex: 1; min-height: 0; overflow: hidden; background: linear-gradient(135deg, rgba(4,12,28,.86), rgba(7,13,27,.78)); }
-    .earth-background, .earth-shade { position: absolute; inset: 0; pointer-events: none; }
-    .earth-background { z-index: 0; overflow: hidden; opacity: 1; }
-    .earth-background::before {
-      content: ""; position: absolute; width: clamp(190px, 49%, 360px); aspect-ratio: 1; top: 50%; right: 5%; transform: translateY(-50%);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.24);
       border-radius: 50%;
-      background: radial-gradient(circle at 34% 30%, #62c8ff 0%, #197fc4 30%, #10406f 62%, #061426 82%);
-      box-shadow: 0 0 42px rgba(55,160,255,.34), inset -24px -10px 40px rgba(0,0,0,.46), inset 8px 8px 24px rgba(198,235,255,.2);
+      color: #fff;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06));
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.38), 0 8px 24px rgba(0, 0, 0, 0.25);
+      font-size: 30px;
+      font-weight: 400;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
-    .earth-background.ready::before { display: none; }
-    .earth-background canvas { position: relative; display: block; width: 100%; height: 100%; }
-    .earth-shade { z-index: 1; background: linear-gradient(135deg, rgba(3,10,25,.04), rgba(5,12,28,.10) 48%, rgba(3,9,22,.16)); }
-
-    #messages { position: absolute; inset: 0; z-index: 2; overflow-y: auto; padding: 12px 22px 20px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
-    #messages::-webkit-scrollbar { width: 5px; }
-    #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 10px; }
-
-    .empty { margin: auto; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.8; padding: 30px 0; }
-
-    .message {
-      align-self: flex-start; max-width: 88%; padding: 11px 14px;
-      border: 1px solid rgba(255,255,255,.12); border-radius: 7px 18px 18px 18px;
-      background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-      overflow-wrap: anywhere; animation: appear .18s ease-out;
+    .key small {
+      display: block;
+      margin-top: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1;
     }
-    .message.with-avatar { display: flex; align-items: flex-end; gap: 8px; max-width: 92%; }
-    .message.with-avatar.mine { flex-direction: row-reverse; }
-    .message-avatar { width: 28px; height: 28px; font-size: 14px; }
-    .message-avatar.on::after { width: 9px; height: 9px; border-color: #11131e; box-shadow: 0 0 10px #34d399, 0 0 18px rgba(52,211,153,.75); }
-    .message-content { min-width: 0; }
-    .message.mine { align-self: flex-end; border-radius: 18px 7px 18px 18px; border-color: rgba(196,181,253,.34); background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(99,102,241,.17)); }
-    @keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
-    .meta { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
-    .sender { font-size: 12px; font-weight: 700; color: #c4b5fd; }
-    .time { font-size: 10px; color: var(--muted); }
-    .text { font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
-
-    .typing { display: none; align-items: center; gap: 9px; margin: 8px 22px 0; padding: 6px 12px; width: fit-content; max-width: calc(100% - 44px); border: 1px solid rgba(167,139,250,.22); border-radius: 14px; background: rgba(167,139,250,.09); color: #d8d1ed; font-size: 11px; }
-    .typing.show { display: flex; }
-    .dots { display: inline-flex; gap: 4px; }
-    .dots i { width: 5px; height: 5px; border-radius: 50%; background: #c4b5fd; animation: pulse 1s ease-in-out infinite; }
-    .dots i:nth-child(2) { animation-delay: .15s; }
-    .dots i:nth-child(3) { animation-delay: .3s; }
-    @keyframes pulse { 0%, 60%, 100% { opacity: .35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
-
-    #chatForm { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--border); }
-    #messageInput { flex: 1; border-radius: 15px; padding: 14px; }
-    #send { border-radius: 15px; padding: 0 20px; }
-
-    /* ---------- friends ---------- */
-    #friendsPanel { overflow-y: auto; padding: 4px 22px 18px; }
-    #feedPanel { overflow-y: auto; padding: 4px 22px 18px; }
-    .feed-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0 14px; }
-    .feed-toolbar h2 { margin: 0; font-size: 20px; letter-spacing: -.4px; }
-    .feed-plus { width: 42px; height: 42px; padding: 0; border-radius: 14px; font-size: 25px; line-height: 1; }
-    .feed-composer, .feed-card, .story-composer { padding: 14px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 17px; background: rgba(255,255,255,.045); }
-    .feed-composer, .story-composer { position: relative; }
-    .feed-composer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .feed-composer-head .section-title { margin: 0; }
-    .feed-close { padding: 5px 9px; }
-    .feed-card { padding: 0; overflow: hidden; background: rgba(255,255,255,.055); }
-    .feed-card-head { padding: 13px 14px 10px; margin: 0; }
-    .feed-card-body { padding: 0 14px 14px; }
-    .feed-post-actions { margin-left: auto; }
-    .feed-delete { padding: 5px 9px; color: #fecdd3; }
-    .feed-create-modal { width: min(100%, 360px); padding: 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 22px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); }
-    .feed-create-modal h2 { margin: 0 0 6px; font-size: 20px; }
-    .feed-create-modal p { margin: 0 0 18px; color: var(--muted); font-size: 12px; }
-    .feed-create-options { display: grid; gap: 10px; }
-    .feed-create-options .btn { padding: 14px; text-align: left; }
-    .feed-create-options strong, .feed-create-options small { display: block; }
-    .feed-create-options small { margin-top: 4px; color: var(--muted); white-space: normal; }
-    .feed-composer textarea, .story-composer textarea, #bioInput { width: 100%; min-height: 76px; padding: 12px 13px; resize: vertical; border: 1px solid var(--border); border-radius: 13px; background: rgba(255,255,255,.05); color: #fff; font: inherit; }
-    .feed-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; }
-    .feed-upload { color: #d8d1ed; font-size: 12px; cursor: pointer; }
-    .feed-upload input { max-width: 175px; font-size: 11px; }
-    .feed-card-head { display: flex; align-items: center; gap: 10px; margin: 0; }
-    .feed-card-head .pinfo small { display: block; margin-top: 3px; }
-    .feed-photo { display: block; width: 100%; max-height: 460px; margin-top: 10px; border-radius: 13px; object-fit: contain; background: rgba(0,0,0,.2); }
-    .engagement { display: flex; align-items: center; gap: 10px; margin-top: 11px; }
-    .engagement .btn { padding: 7px 11px; font-size: 12px; }
-    .engagement .liked { border-color: rgba(244,63,94,.55); color: #fda4af; }
-    .comment-list { display: grid; gap: 8px; margin-top: 11px; }
-    .comment-item { padding: 9px 10px; border-radius: 11px; background: rgba(255,255,255,.045); }
-    .comment-item strong { margin-right: 7px; color: #d8ccff; font-size: 11px; }
-    .comment-item small { color: var(--muted); font-size: 10px; }
-    .comment-item p { margin: 4px 0 0; font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .comment-form { display: flex; gap: 8px; margin-top: 10px; }
-    .comment-form input { flex: 1; min-width: 0; padding: 9px 11px; border-radius: 11px; font-size: 12px; }
-    .comment-form .btn { padding: 8px 11px; font-size: 12px; }
-    .story-engagement { position: relative; z-index: 2; width: 100%; margin-top: 14px; text-shadow: none; }
-    .story-engagement .comment-list { max-height: 160px; overflow-y: auto; }
-    .story-engagement .comment-form input { background: rgba(0,0,0,.46); }
-    .stories-block { margin: 0 -22px 12px; padding: 13px 22px 3px; border-top: 1px solid rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.08); background: linear-gradient(110deg, rgba(139,92,246,.10), rgba(56,189,248,.04)); }
-    .stories-heading { display: flex; align-items: center; justify-content: space-between; margin: 0 0 10px; color: #eeeaff; font-size: 14px; font-weight: 700; }
-    .stories-heading small { color: var(--muted); font-size: 10px; font-weight: 500; }
-    .story-row { display: flex; gap: 14px; overflow-x: auto; overflow-y: hidden; padding: 3px 1px 13px; scrollbar-width: none; }
-    .story-row::-webkit-scrollbar { display: none; }
-    .story-item { flex: 0 0 76px; min-width: 0; border: 0; padding: 0; background: transparent; color: #fff; text-align: center; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .story-ring { position: relative; isolation: isolate; display: block; flex: none; width: 70px; height: 70px; aspect-ratio: 1; margin: 0 auto 7px; padding: 3px; border-radius: 50%; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); box-shadow: 0 0 16px rgba(167,139,250,.36); transition: filter .2s ease, box-shadow .2s ease; }
-    .story-ring::before { content: ""; position: absolute; z-index: -1; inset: -3px; border-radius: inherit; background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 67%, #38bdf8); filter: blur(9px); opacity: .82; animation: storyGlow 2.4s ease-in-out infinite alternate; }
-    @keyframes storyGlow { from { opacity: .52; transform: scale(.98); } to { opacity: .95; transform: scale(1.06); } }
-    .story-ring .avatar { width: 100%; height: 100%; min-width: 0; overflow: hidden; border: 2px solid #151321; border-radius: 50%; }
-    .story-ring .avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
-    .story-item.seen .story-ring { filter: none; }
-    .story-item.seen .story-ring::before { display: block; }
-    .story-item:active { transform: scale(.96); }
-    .story-item small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd6fe; font-size: 11px; }
-    .story-own { position: relative; flex: 0 0 76px; }
-    .story-own .story-item { width: 76px; }
-    .story-add { position: absolute; right: 3px; top: 46px; width: 25px; height: 25px; display: grid; place-items: center; padding: 0; border: 2px solid #171522; border-radius: 50%; background: linear-gradient(145deg,#c4b5fd,#7c3aed); color: white; font-size: 17px; line-height: 1; box-shadow: 0 0 12px rgba(167,139,250,.65); cursor: pointer; }
-    .story-view { position: relative; width: min(100%, 420px); height: min(86dvh, 720px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; padding: 22px; border: 1px solid rgba(196,181,253,.38); border-radius: 24px; background: radial-gradient(ellipse at 50% 0%, #342557, #10111d 65%); box-shadow: 0 0 32px rgba(139,92,246,.22), 0 28px 90px rgba(0,0,0,.55); }
-    .story-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .story-view::after { content: ""; position: absolute; inset: 25% 0 0; background: linear-gradient(transparent,rgba(0,0,0,.78)); pointer-events: none; }
-    .story-progress { display: none; }
-    @keyframes storyProgress { to { width: 100%; } }
-    .story-view-head, .story-view-caption { position: relative; z-index: 1; }
-    .story-view-head { display: flex; align-items: center; gap: 10px; align-self: stretch; margin-bottom: auto; padding-top: 8px; text-shadow: 0 1px 8px #000; }
-    .story-view-head .avatar { width: 36px; height: 36px; border: 2px solid #d8ccff; }
-    .story-view-head strong { flex: 1; }
-    .story-view-head small { color: rgba(255,255,255,.76); font-size: 11px; }
-    .story-view-head .btn { background: rgba(0,0,0,.28); }
-    .story-view-caption { font-size: 16px; white-space: pre-wrap; overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
-    .bio-text { color: #d2cde2; font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .friends-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px 4px; }
-    .friends-toolbar h2 { margin: 0; font-size: 18px; }
-    .search-wrap { position: sticky; top: 0; z-index: 3; padding: 4px 0 10px; background: linear-gradient(rgba(20,19,30,.98) 70%, transparent); }
-    .section-title { margin: 16px 0 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
-    .person { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 15px; background: rgba(255,255,255,.04); }
-    .avatar { position: relative; flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #7c3aed, #4338ca); font-weight: 700; }
-    .avatar.on::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: var(--ok); border: 2px solid #14131e; box-shadow: 0 0 8px var(--ok); }
-    .pinfo { flex: 1; min-width: 0; }
-    .pinfo strong { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .pinfo small { color: var(--muted); font-size: 11px; }
-    .pactions { display: flex; gap: 6px; }
-    .note { color: var(--muted); font-size: 12px; line-height: 1.6; padding: 6px 2px; }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
-    .user-profile-btn { display: flex; align-items: center; gap: 8px; }
-    .user-profile-btn .avatar { width: 30px; height: 30px; font-size: 15px; }
-    .profile-view-card { width: min(100%, 360px); text-align: center; padding: 26px 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); animation: arrive .3s ease both; }
-    .profile-view-card .profile-modal-head { text-align: left; }
-    .profile-view-avatar { width: 128px; height: 128px; margin: 24px auto 15px; border: 2px solid rgba(196,181,253,.55); box-shadow: 0 10px 38px rgba(139,92,246,.24); font-size: 66px; }
-    .profile-view-avatar img { display: block; }
-    .profile-view-name { margin: 0; font-size: 20px; overflow-wrap: anywhere; }
-    .profile-view-caption { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
-    .profile-view-btn { padding: 5px 9px; font-size: 11px; }
-    .profile-post-preview { position: relative; width: min(100%, 560px); max-height: min(90dvh, 820px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(196,181,253,.3); border-radius: 20px; background: linear-gradient(145deg, rgba(31,29,52,.98), rgba(12,16,31,.99)); box-shadow: 0 24px 80px rgba(0,0,0,.55); }
-    .profile-post-preview-head { display: flex; align-items: center; justify-content: flex-end; padding: 10px; }
-    .profile-post-preview-image { display: block; width: 100%; max-height: 72dvh; object-fit: contain; background: rgba(0,0,0,.28); }
-    .profile-post-preview-text { padding: 4px 18px 18px; color: #f1effa; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .profile-post-preview-date { padding: 0 18px 14px; color: var(--muted); font-size: 11px; }
-    .modal-backdrop { position: fixed; inset: 0; z-index: 1300; display: grid; place-items: center; padding: 18px; background: rgba(3,5,13,.72); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
-    .profile-modal { width: min(100%, 420px); max-height: min(88dvh, 650px); overflow-y: auto; padding: 22px; border: 1px solid rgba(255,255,255,.16); border-radius: 24px; background: linear-gradient(145deg, rgba(35,31,53,.98), rgba(14,17,29,.98)); box-shadow: 0 28px 90px rgba(0,0,0,.55); animation: arrive .3s ease both; }
-    .profile-modal-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px; }
-    .profile-modal h2 { margin: 0; font-size: 19px; }
-    .profile-preview { width: 76px; height: 76px; margin: 18px auto; border-radius: 50%; font-size: 39px; }
-    .avatar-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-    .avatar-option { min-width: 0; padding: 9px 3px; display: grid; justify-items: center; gap: 5px; border: 1px solid var(--border); border-radius: 14px; background: rgba(255,255,255,.045); color: #fff; cursor: pointer; }
-    .avatar-option.selected { border-color: rgba(196,181,253,.85); background: rgba(139,92,246,.22); box-shadow: 0 0 0 2px rgba(167,139,250,.16); }
-    .avatar-option .avatar { width: 44px; height: 44px; font-size: 25px; }
-    .avatar-option small { color: #d2cde2; font-size: 10px; }
-    .profile-modal .section-title { margin-top: 18px; }
-    .upload-label { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; margin-top: 14px; padding: 12px; border: 1px dashed rgba(196,181,253,.48); border-radius: 13px; color: #e9ddff; background: rgba(167,139,250,.08); cursor: pointer; }
-    .upload-label input { display: none; }
-    .profile-modal-actions { display: flex; gap: 9px; margin-top: 18px; }
-    .profile-modal-actions .btn { flex: 1; }
-    #profileSettingsError { min-height: 18px; margin: 10px 0 0; color: #ff9dba; font-size: 12px; text-align: center; }
-
-    #notice { min-height: 18px; padding: 6px 20px 10px; text-align: center; color: var(--muted); font-size: 11px; }
-
-    .toast { position: fixed; z-index: 1200; right: 24px; bottom: 24px; display: flex; align-items: center; gap: 13px; width: min(360px, calc(100vw - 32px)); padding: 15px 18px; border: 1px solid rgba(196,181,253,.38); border-radius: 18px; background: linear-gradient(135deg, rgba(37,31,58,.96), rgba(14,20,34,.96)); box-shadow: 0 16px 48px rgba(0,0,0,.42), 0 0 32px rgba(139,92,246,.2); opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .3s ease, transform .3s ease, visibility .3s; cursor: pointer; }
-    .toast.show { opacity: 1; visibility: visible; transform: none; }
-    .toast-icon { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 13px; background: linear-gradient(145deg, rgba(196,181,253,.34), rgba(124,58,237,.22)); color: #e9ddff; font-size: 20px; }
-    .toast strong { display: block; font-size: 13px; margin-bottom: 3px; }
-    .toast span.msg { color: #c5c2d6; font-size: 11px; line-height: 1.45; }
-
-    @media (max-height: 740px) {
-      .lock-card { padding-top: 4px; padding-bottom: 4px; }
-      .lock-brand { margin-bottom: 18px; }
-      .keypad { gap: 8px 14px; }
-      .key, .key-spacer { width: 64px; height: 64px; }
-      .lock-foot { margin-top: 12px; }
+    .key:hover {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
+      border-color: rgba(255, 255, 255, 0.4);
     }
-    @media (max-width: 480px) {
-      body { padding: 0; }
-      .app { height: 100dvh; min-height: 0; border-radius: 0; border: 0; }
-      .home-options { grid-template-columns: 1fr; gap: 10px; }
-      .home-option { min-height: 112px; padding: 17px; }
-      #homePanel { justify-content: flex-start; padding-top: 34px; }
-      header { padding: max(12px, env(safe-area-inset-top)) 12px 12px; gap: 8px; }
-      header, .tabs, .chat-head { padding-left: 13px; padding-right: 13px; }
-      .brand { gap: 9px; }
-      .logo { width: 39px; height: 39px; border-radius: 13px; }
-      h1 { font-size: 16px; }
-      .subtitle { font-size: 10px; }
-      #messages { padding: 10px 12px 16px; }
-      #friendsPanel, #feedPanel { padding-left: 13px; padding-right: 13px; }
-      .stories-block { margin-left: -13px; margin-right: -13px; padding-left: 13px; padding-right: 13px; }
-      .story-row { gap: 10px; padding-bottom: 10px; }
-      .story-item, .story-own { flex-basis: 62px; width: 62px; }
-      .story-own .story-item { width: 62px; }
-      .story-ring { width: 56px; height: 56px; margin-bottom: 5px; }
-      .story-ring .avatar { width: 100%; height: 100%; min-width: 0; }
-      .story-item small { font-size: 10px; }
-      .story-add { top: 36px; right: 0; width: 23px; height: 23px; }
-      .story-view { height: min(88dvh, 760px); }
-      .typing { margin-left: 13px; }
-      #chatForm { gap: 8px; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); }
-      #messageInput { padding: 12px; }
-      #send { padding: 0 14px; }
-      .pills { flex-direction: column; align-items: flex-end; gap: 5px; }
-      .pill { padding: 6px 8px; font-size: 10px; }
-      .userbar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; font-size: 11px; }
-      .userbar > div:first-child { flex: 1 0 100%; }
-      .userbar .pactions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-      .userbar .btn { min-width: 0; justify-content: center; padding: 8px 6px; font-size: 11px; }
-      .user-profile-btn { gap: 5px; }
-      .tabs { gap: 6px; padding-top: 9px; padding-bottom: 9px; }
-      .tab { min-width: 0; padding: 9px 5px; font-size: 12px; }
-      #notice { padding-bottom: max(6px, env(safe-area-inset-bottom)); }
-      .person { gap: 8px; padding: 9px; }
-      .person .pactions { gap: 4px; }
-      .person .btn { padding: 8px 7px; font-size: 11px; }
+    .key:active {
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 0.38);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.24);
     }
-    @media (min-width: 481px) and (max-width: 640px) {
-      .story-item, .story-own { flex-basis: 68px; width: 68px; }
-      .story-own .story-item { width: 68px; }
-      .story-ring { width: 62px; height: 62px; }
+    .key.utility {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .key.utility:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .key-spacer {
+      width: 76px;
+      height: 76px;
+    }
+    .lock-foot {
+      margin: 22px 0 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      letter-spacing: 0.02em;
+    }
+    #biometricUnlock {
+      margin-top: 14px;
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
     }
 
-    /* Instagram-inspired, clean light social layout */
-    :root { color-scheme: light; --bg: #fff; --border: #e7e7e7; --muted: #737373; --accent: #0095f6; --ok: #35b76f; }
-    body { background: #f4f4f4; color: #171717; }
-    .app { position: relative; width: min(100%, 560px); height: 100dvh; margin: 0 auto; background: #fff; color: #171717; box-shadow: 0 0 30px rgba(0,0,0,.08); }
-    header { min-height: 58px; padding: 8px 16px; border-color: #eee; background: #fff; }
-    .logo { width: 36px; height: 36px; border-radius: 12px; color: #fff; background: linear-gradient(145deg,#ffb347,#ed3c82 55%,#7b42cf); box-shadow: none; }
-    h1 { font-size: 17px; letter-spacing: -.3px; }
-    .subtitle { display: none; }
-    .pills { gap: 6px; }
-    .pill { padding: 5px 8px; border-color: #e7e7e7; background: #fff; color: #444; font-size: 10px; }
-    .pill::before { width: 6px; height: 6px; }
-    .pill.warn { color: #a26100; background: #fff9e8; }
-    .userbar { min-height: 40px; padding: 4px 12px; border-color: #f0f0f0; background: #fff; color: #262626; }
-    .userbar > div:first-child { display: none; }
-    .userbar .pactions { display: flex; width: 100%; justify-content: flex-end; gap: 6px; }
-    .userbar .btn { padding: 6px 10px; border-color: #dbdbdb; border-radius: 7px; background: #fff; color: #262626; font-size: 11px; }
-    .user-profile-btn .avatar { width: 23px; height: 23px; }
-    .panel { background: #fff; }
-    #homePanel, #feedPanel, #friendsPanel { overflow-y: auto; padding: 0 0 72px; }
-    #chatPanel { min-height: 0; }
-    .profile-page { width: 100%; padding-bottom: 10px; }
-    .profile-topline { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; border-bottom: 1px solid #f1f1f1; }
-    .profile-topline strong { font-size: 16px; }
-    .profile-create { width: 34px; height: 34px; padding: 0; border: 0; background: transparent; color: #222; font-size: 25px; }
-    .profile-overview { display: flex; align-items: center; gap: 24px; padding: 18px 16px 11px; }
-    .profile-page-avatar { width: 78px; height: 78px; overflow: hidden; border: 2px solid #f04f8b; background: linear-gradient(145deg,#ffb347,#ed3c82 55%,#7b42cf); font-size: 30px; }
-    .profile-stats { display: grid; flex: 1; grid-template-columns: repeat(3,1fr); text-align: center; }
-    .profile-stats div { display: grid; gap: 3px; }
-    .profile-stats strong { font-size: 16px; font-weight: 700; }
-    .profile-stats span { color: #555; font-size: 12px; }
-    .profile-bio { padding: 0 16px; font-size: 13px; }
-    .profile-bio p { margin: 4px 0 11px; color: #262626; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.45; }
-    .profile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 14px 14px; }
-    .profile-actions .btn { padding: 7px; border: 1px solid #dbdbdb; border-radius: 7px; background: #fafafa; color: #262626; font-size: 12px; font-weight: 600; }
-    .profile-grid-heading { height: 43px; display: flex; align-items: center; justify-content: center; gap: 7px; border-top: 1px solid #eee; border-bottom: 1px solid #eee; color: #262626; font-size: 12px; }
-    .profile-grid-heading span { font-size: 19px; }
-    .profile-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2px; }
-    .profile-grid-item { min-width: 0; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; padding: 0; border: 0; background: #f1f1f1; color: #333; cursor: pointer; }
-    .profile-grid-item img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-grid-item span { display: -webkit-box; padding: 9px; overflow: hidden; font-size: 11px; line-height: 1.4; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
-    .profile-grid-empty { grid-column: 1 / -1; padding: 38px 22px; color: #888; font-size: 13px; text-align: center; }
-    .tabs { position: absolute; z-index: 40; right: 0; bottom: 0; left: 0; height: calc(58px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 0; padding: 4px 6px env(safe-area-inset-bottom); border-top: 1px solid #e6e6e6; background: rgba(255,255,255,.98); }
-    .tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 3px; border: 0; border-radius: 0; background: transparent; color: #262626; font-size: 22px; }
-    .tab small { color: #555; font-size: 9px; }
-    .tab.active { border: 0; background: transparent; color: #111; }
-    .tab.active small { color: #111; font-weight: 700; }
-    .tab .badge { position: absolute; top: 1px; left: calc(50% + 4px); min-width: 15px; height: 15px; margin: 0; padding: 0 4px; font-size: 9px; }
-    .tab svg { width: 21px; height: 21px; display: block; }
-    .tab.create-tab svg { width: 23px; height: 23px; }
-    .tab.ai-tab svg { width: 22px; height: 22px; }
-    .ai-panel { overflow-y: auto; padding: 22px 16px calc(78px + env(safe-area-inset-bottom)); }
-    .ai-card { width: min(100%, 520px); margin: 12px auto; padding: 18px; border: 1px solid #eee; border-radius: 16px; background: #fff; }
-    .ai-card h2 { margin: 0 0 5px; font-size: 20px; }
-    .ai-card > p { margin: 0 0 15px; color: #737373; font-size: 13px; }
-    .ai-form { display: flex; gap: 8px; align-items: flex-end; }
-    .ai-form textarea { flex: 1; min-width: 0; min-height: 46px; max-height: 150px; padding: 12px; resize: vertical; border: 1px solid #dbdbdb; border-radius: 12px; color: #222; background: #fafafa; font: inherit; }
-    .ai-answer { min-height: 42px; margin-top: 14px; padding: 12px; border-radius: 12px; background: #f7f7f7; color: #262626; font-size: 14px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .ai-answer:empty { display: none; }
-    .app:has(#chatPanel:not([hidden])) .tabs { display: none; }
-    #homePanel, #feedPanel, #friendsPanel { padding-bottom: calc(66px + env(safe-area-inset-bottom)); }
-    #homePanel { justify-content: flex-start; }
-    .feed-toolbar { padding: 11px 15px; border-bottom: 1px solid #eee; }
-    .feed-toolbar h2 { color: #171717; font-size: 18px; }
-    .feed-plus { width: 34px; height: 34px; border-radius: 50%; background: #0095f6 !important; color: #fff; box-shadow: none !important; }
-    .stories-block { margin: 0 0 10px; padding: 12px 12px 4px; border: 0; border-bottom: 1px solid #eee; background: #fff; }
-    .stories-heading { margin-bottom: 8px; color: #222; }
-    .story-row { gap: 12px; padding: 2px 0 10px; }
-    .story-ring { width: 64px; height: 64px; box-shadow: none; }
-    .story-ring .avatar { border-color: #fff; }
-    .story-ring::before { filter: blur(5px); }
-    .story-item small { color: #333; font-size: 10px; }
-    .story-own { flex-basis: 70px; }
-    .story-own .story-item { width: 70px; }
-    .feed-composer, .story-composer { margin: 10px 12px; border-color: #e5e5e5; border-radius: 10px; background: #fff; }
-    .feed-card { margin: 0 0 12px; border: 0; border-bottom: 1px solid #eee; border-radius: 0; background: #fff; }
-    .feed-card-head { padding: 10px 12px; }
-    .feed-card-body { padding: 0 12px 12px; }
-    .feed-photo { max-height: 560px; margin: 0 -12px; width: calc(100% + 24px); border-radius: 0; object-fit: cover; background: #f4f4f4; }
-    .engagement { gap: 8px; }
-    .engagement .btn, .comment-form .btn { border-color: transparent; background: transparent; color: #262626; box-shadow: none; }
-    .engagement .liked { color: #ed4956; }
-    .text { color: #262626; }
-    .section-title { padding-left: 13px; color: #777; }
-    .person { margin: 0 10px 8px; border-color: #eee; border-radius: 10px; background: #fff; }
-    .search-wrap { padding: 10px 12px; background: #fff; }
-    .search-wrap input { border: 0; border-radius: 9px; background: #efefef; color: #222; }
-    .chat-head { min-height: 50px; padding: 5px 13px 9px; border-bottom: 1px solid #eee; background: #fff; }
-    .chat-head strong { color: #222; }
-    .chat-head small { color: #777; }
-    .surface { background: #f7f7f7; }
-    .earth-background, .earth-shade { display: none; }
-    #messages { padding: 14px 13px; }
-    .message { border-color: #e5e5e5; background: #fff; color: #222; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-    .message.mine { border-color: #cce8fc; background: #dff2ff; }
-    .sender { color: #555; }
-    .typing { color: #555; border-color: #eee; background: #fff; }
-    #chatForm { padding: 9px 10px max(9px,env(safe-area-inset-bottom)); border-color: #eee; background: #fff; }
-    #messageInput { border: 1px solid #dbdbdb; border-radius: 22px; background: #f7f7f7; color: #222; }
-    #send { border-radius: 22px; background: #0095f6; color: #fff; box-shadow: none; }
-    #notice { color: #666; background: #fff; }
-    .profile-modal, .feed-create-modal, .profile-view-card { border-color: #e5e5e5; background: #fff; color: #222; }
-    .profile-view-caption, .profile-modal .hint, .feed-create-modal p { color: #777; }
-    .btn { border-color: #dbdbdb; background: #fff; color: #262626; }
-    .btn.primary { border: 0; background: #0095f6; color: #fff; box-shadow: none; }
-    .toast { border-color: #e5e5e5; background: #fff; color: #222; }
-    .toast span.msg { color: #555; }
-    @media (max-width: 480px) {
-      .app { width: 100%; max-width: none; box-shadow: none; }
-      .userbar { padding: 3px 9px; }
-      .userbar .btn { padding: 5px 7px; }
-      .profile-overview { gap: 18px; }
+    /* ==========================================================================
+       AUTH CARD (Sign Up, Log In, Account Link)
+       ========================================================================== */
+    .auth-card {
+      text-align: left;
+      padding: 28px 24px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, rgba(28, 34, 60, 0.85), rgba(14, 18, 34, 0.9));
+      backdrop-filter: blur(var(--blur-lg));
+      -webkit-backdrop-filter: blur(var(--blur-lg));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 24px 64px rgba(0, 0, 0, 0.45);
     }
-    /* Sci-fi glass theme: keep the existing layout and navigation, restore the dark neon look. */
-    :root {
-      color-scheme: dark;
-      --bg: #090a12;
-      --border: rgba(180, 190, 255, .17);
-      --muted: #a1a5bd;
-      --accent: #a78bfa;
-      --ok: #34d399;
+    .auth-card .mark, .auth-card h2, .auth-card .caption {
+      text-align: center;
     }
-    body {
-      background:
-        radial-gradient(ellipse at 12% 4%, rgba(124, 58, 237, .22), transparent 38%),
-        radial-gradient(ellipse at 92% 92%, rgba(14, 165, 233, .14), transparent 36%),
-        #090a12;
-      color: #f6f4ff;
+    .auth-card h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
     }
+    .caption {
+      margin: 8px 0 22px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    /* iOS 18 Segmented Switch */
+    .auth-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .auth-switch button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s var(--ease-spring);
+    }
+    .auth-switch button.active {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.08));
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .auth-card label {
+      display: block;
+      margin: 0 0 7px 2px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 550;
+    }
+    .auth-card .field {
+      margin-bottom: 16px;
+    }
+    .auth-card .btn.primary {
+      width: 100%;
+      padding: 13px;
+      font-size: 15px;
+      margin-top: 6px;
+    }
+    .auth-card #authCancelLink {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .hint {
+      margin: 14px 0 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       MAIN APP SHELL (iOS 18 Glass Container)
+       ========================================================================== */
     .app {
-      background: linear-gradient(145deg, rgba(24, 23, 43, .96), rgba(9, 13, 26, .97));
-      color: #f6f4ff;
-      box-shadow: 0 0 55px rgba(93, 63, 190, .16), inset 0 1px 0 rgba(255,255,255,.08);
+      position: relative;
+      width: min(100%, 720px);
+      height: 100dvh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(16, 20, 38, 0.88), rgba(8, 10, 20, 0.94));
+      border-inline: 1px solid var(--border-glass);
+      backdrop-filter: blur(var(--blur-lg));
+      -webkit-backdrop-filter: blur(var(--blur-lg));
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      z-index: 10;
     }
-    header, .userbar, .panel, .feed-toolbar, .chat-head, #chatForm, #notice {
-      background: rgba(13, 16, 31, .76);
-      border-color: var(--border);
-      color: #f6f4ff;
+
+    /* iOS 18 Glass Header */
+    header {
+      position: relative;
+      z-index: 30;
+      padding: max(12px, env(safe-area-inset-top)) 18px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(14, 18, 34, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .brand-mark-stack {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: none;
     }
     .logo {
-      background: linear-gradient(145deg, #d8ccff 0%, #a78bfa 42%, #6d28d9 100%);
-      box-shadow: 0 0 22px rgba(139,92,246,.34), inset 0 1px 0 rgba(255,255,255,.45);
-    }
-    h1, .feed-toolbar h2, .chat-head strong, .profile-topline strong { color: #f6f4ff; }
-    .subtitle, .chat-head small, .feed-create-modal p, .profile-view-caption { color: var(--muted); }
-    .pill { border-color: rgba(52,211,153,.25); background: rgba(16,185,129,.10); color: #a7f3d0; }
-    .pill.warn { border-color: rgba(251,191,36,.3); background: rgba(251,191,36,.09); color: #fde68a; }
-    .userbar { color: #e9e7f5; }
-    .userbar .btn, .btn {
-      border-color: rgba(180,190,255,.19);
-      background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.035));
-      color: #f6f4ff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
-    }
-    .btn:hover:not(:disabled) { border-color: rgba(196,181,253,.56); }
-    .btn.primary, .userbar .btn.primary {
-      border: 0;
-      background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9);
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-size: 20px;
+      font-weight: 850;
       color: #fff;
-      box-shadow: 0 7px 24px rgba(124,58,237,.28), inset 0 1px 0 rgba(255,255,255,.3);
+      background: var(--accent-gradient);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 8px 20px -2px rgba(124, 58, 237, 0.42);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
-    .tabs {
-      border-color: rgba(180,190,255,.18);
-      background: rgba(11, 13, 27, .91);
-      -webkit-backdrop-filter: blur(22px);
-      backdrop-filter: blur(22px);
-      box-shadow: 0 -10px 35px rgba(0,0,0,.24);
+    .messages-shortcut {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 12px;
+      color: var(--accent-light);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
     }
-    .tab, .tab.active { color: #d8d3ec; }
-    .tab small, .tab.active small { color: #aaa5c2; }
-    .tab.active svg, .tab.active { filter: drop-shadow(0 0 8px rgba(167,139,250,.55)); }
-    .feed-toolbar { border-color: var(--border); }
-    .feed-plus { background: linear-gradient(145deg, #c4b5fd, #7c3aed) !important; color: #fff; box-shadow: 0 0 18px rgba(139,92,246,.34) !important; }
-    .stories-block {
-      border-top: 1px solid rgba(167,139,250,.13);
-      border-bottom: 1px solid rgba(167,139,250,.18);
-      background: linear-gradient(110deg, rgba(139,92,246,.12), rgba(56,189,248,.06));
+    .messages-shortcut svg {
+      width: 20px;
+      height: 20px;
     }
-    .stories-heading, .story-item small { color: #eeeaff; }
-    .story-ring { box-shadow: 0 0 17px rgba(167,139,250,.28); }
-    .story-ring .avatar { border-color: #171629; }
-    .feed-card, .feed-composer, .story-composer {
-      border-color: rgba(180,190,255,.15);
-      background: linear-gradient(145deg, rgba(31,29,52,.78), rgba(13,17,31,.82));
-      box-shadow: 0 10px 28px rgba(0,0,0,.14);
+    .messages-shortcut:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--border-glass-bright);
     }
-    .feed-card { border-bottom-color: rgba(180,190,255,.17); }
-    .feed-card-head, .feed-card-body { color: #f6f4ff; }
-    .feed-photo { background: rgba(3,7,18,.48); }
-    .text, .comment-item p { color: #f1effa; }
-    .comment-item { background: rgba(255,255,255,.055); }
-    .comment-item strong { color: #c4b5fd; }
-    .engagement .btn, .comment-form .btn { border-color: rgba(180,190,255,.18); background: rgba(255,255,255,.055); color: #eeeaff; }
-    .engagement .liked { color: #fda4af; }
-    .section-title { color: #a1a5bd; }
-    .person { border-color: rgba(180,190,255,.15); background: rgba(255,255,255,.045); }
-    .search-wrap { background: linear-gradient(rgba(15,16,31,.98) 70%, transparent); }
-    .search-wrap input, input[type=text], input[type=email], input[type=password], input[type=search] {
-      border-color: rgba(180,190,255,.2);
-      background: rgba(255,255,255,.055);
+    .messages-shortcut.active {
+      border-color: var(--accent-light);
+      background: rgba(139, 92, 246, 0.28);
       color: #fff;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
     }
-    .profile-topline, .profile-grid-heading { border-color: rgba(180,190,255,.17); color: #eeeaff; }
-    .profile-page-avatar { border-color: #c084fc; box-shadow: 0 0 18px rgba(168,85,247,.28); }
-    .profile-stats span, .profile-bio p { color: #c9c6d8; }
-    .profile-actions .btn { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.06); color: #f6f4ff; }
-    .profile-grid-item { background: rgba(255,255,255,.08); color: #f1effa; }
-    .profile-grid-heading { color: #e9e5fa; }
-    .ai-card, .profile-modal, .feed-create-modal, .profile-view-card {
-      border-color: rgba(196,181,253,.22);
-      background: linear-gradient(145deg, rgba(31,29,52,.96), rgba(12,16,31,.97));
-      color: #f6f4ff;
-      box-shadow: 0 20px 60px rgba(0,0,0,.35), 0 0 30px rgba(139,92,246,.08);
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 750;
+      letter-spacing: -0.01em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .ai-card > p, .profile-modal .hint, .feed-create-modal p { color: var(--muted); }
-    .ai-form textarea, .ai-answer { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.055); color: #f6f4ff; }
-    .ai-answer { background: rgba(167,139,250,.09); }
-    .surface { background: linear-gradient(135deg, rgba(4,12,28,.9), rgba(7,13,27,.88)); }
-    .earth-background, .earth-shade { display: block; }
-    #messages { background: transparent; }
-    .message { border-color: rgba(196,181,253,.19); background: linear-gradient(145deg, rgba(34,31,54,.87), rgba(18,21,39,.86)); color: #f6f4ff; }
-    .message.mine { border-color: rgba(196,181,253,.4); background: linear-gradient(135deg, rgba(139,92,246,.4), rgba(56,92,200,.25)); }
-    .sender { color: #c4b5fd; }
-    .typing { border-color: rgba(167,139,250,.24); background: rgba(29,25,49,.9); color: #ddd6fe; }
-    #messageInput { border-color: rgba(180,190,255,.2); background: rgba(255,255,255,.06); color: #fff; }
-    #send { background: linear-gradient(145deg, #c4b5fd, #8b5cf6 55%, #6d28d9); color: #fff; }
-    #notice { color: #b9b4ce; }
-    .toast { border-color: rgba(196,181,253,.3); background: linear-gradient(135deg, rgba(37,31,58,.97), rgba(14,20,34,.97)); color: #f6f4ff; }
-    .toast span.msg { color: #c5c2d6; }
-    .modal-backdrop { background: rgba(3,5,13,.76); }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
 
-    /* Clear iOS-style glass for the bottom navigation. */
+    /* Header Status Indicators */
+    .pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: none;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid rgba(48, 209, 88, 0.3);
+      background: rgba(48, 209, 88, 0.1);
+      color: #86efac;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      white-space: nowrap;
+    }
+    .pill::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--apple-green);
+      box-shadow: 0 0 8px var(--apple-green);
+    }
+    .pill.warn {
+      border-color: rgba(255, 214, 10, 0.32);
+      background: rgba(255, 214, 10, 0.1);
+      color: #fef08a;
+    }
+    .pill.warn::before {
+      background: var(--apple-amber);
+      box-shadow: 0 0 8px var(--apple-amber);
+    }
+
+    /* Sub-Header User Bar */
+    .userbar {
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(12, 16, 30, 0.55);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .userbar strong {
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+    .userbar .pactions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Profile Dropdown Menu */
+    .profile-menu {
+      position: relative;
+    }
+    .profile-menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 5px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .profile-menu-toggle .avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 13px;
+    }
+    .profile-menu-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 90;
+      display: grid;
+      gap: 4px;
+      min-width: 180px;
+      padding: 8px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-lg);
+      background: rgba(22, 28, 52, 0.92);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      animation: enterDropdown 0.2s var(--ease-spring);
+    }
+    @keyframes enterDropdown {
+      from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .profile-menu-panel .btn {
+      width: 100%;
+      text-align: left;
+      justify-content: flex-start;
+      padding: 9px 12px;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+    }
+    .profile-menu-panel .btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Panels Container */
+    .panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    /* ==========================================================================
+       BOTTOM NAVIGATION DOCK (iOS 18 Floating Glass Dock)
+       ========================================================================== */
+    /* Clear iOS-style glass for the bottom navigation (Original style restored) */
     .tabs {
+      position: absolute;
+      z-index: 45;
+      right: 0;
+      bottom: 0;
+      left: 0;
       height: calc(68px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0;
       padding: 7px 9px calc(7px + env(safe-area-inset-bottom));
       border-top: 1px solid rgba(226, 220, 255, .28);
       background: linear-gradient(180deg, rgba(94, 91, 130, .48), rgba(18, 20, 39, .80));
@@ -694,11 +738,22 @@
       pointer-events: none;
     }
     .tab {
+      position: relative;
       isolation: isolate;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       gap: 3px;
+      padding: 3px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
       color: rgba(239, 236, 255, .9);
       text-shadow: 0 1px 10px rgba(0,0,0,.35);
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      transition: color 0.18s ease;
     }
     .tab::before {
       content: "";
@@ -710,6 +765,22 @@
       background: transparent;
       transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
     }
+    .tab svg {
+      width: 21px;
+      height: 21px;
+      display: block;
+      filter: drop-shadow(0 1px 5px rgba(0,0,0,.28));
+    }
+    .tab.create-tab svg { width: 23px; height: 23px; }
+    .tab.ai-tab svg { width: 22px; height: 22px; }
+    .tab small {
+      color: rgba(229, 226, 245, .83);
+      font-size: 10px;
+      font-weight: 550;
+    }
+    .tab:hover {
+      color: #fff;
+    }
     .tab.active, .tab.active small {
       color: #fff;
       filter: none;
@@ -719,27 +790,1219 @@
       background: linear-gradient(145deg, rgba(203, 187, 255, .30), rgba(113, 89, 190, .22));
       box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 18px rgba(131, 94, 255, .22);
     }
-    .tab svg { filter: drop-shadow(0 1px 5px rgba(0,0,0,.28)); }
-    .tab.active svg { filter: drop-shadow(0 0 8px rgba(205,190,255,.72)); }
-    .tab small { color: rgba(229, 226, 245, .83); font-size: 10px; font-weight: 550; }
-    .tab.active small { font-weight: 700; }
-    .profile-create {
+    .tab.active svg {
+      filter: drop-shadow(0 0 8px rgba(205,190,255,.72));
+    }
+    .tab.active small {
+      font-weight: 700;
+    }
+    .tab .badge {
+      position: absolute;
+      top: 1px;
+      left: calc(50% + 4px);
+      min-width: 15px;
+      height: 15px;
       display: grid;
       place-items: center;
-      border: 1px solid rgba(196,181,253,.36) !important;
-      border-radius: 13px !important;
-      background: linear-gradient(145deg, rgba(196,181,253,.20), rgba(255,255,255,.045)) !important;
-      color: #eee8ff !important;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 0 18px rgba(139,92,246,.15);
+      margin: 0;
+      padding: 0 4px;
+      border-radius: 9px;
+      background: #f43f5e;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
     }
-    .profile-create svg { display: block; width: 21px; height: 21px; }
-    @media (max-width: 480px) {
-      .tabs { gap: 2px; padding-left: 5px; padding-right: 5px; }
-      .tab::before { inset-inline: 2px; }
-      .tab small { font-size: 9px; }
+    .app:has(#chatPanel:not([hidden])) .tabs {
+      display: none;
     }
 
-    /* Keep the app and message composer inside the visible area above mobile keyboards. */
+    /* ==========================================================================
+       CONVERSATIONS & CHAT (Lounge & DM)
+       ========================================================================== */
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 18px;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(14, 18, 34, 0.65);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .chat-head .titles {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-head strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chat-head small {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    #backBtn {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    /* Chat Surface & Earth Canvas */
+    .surface {
+      position: relative;
+      isolation: isolate;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(6, 9, 20, 0.95), rgba(4, 6, 14, 0.98));
+    }
+    .earth-background, .earth-shade {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .earth-background {
+      z-index: 0;
+      overflow: hidden;
+    }
+    .earth-background canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      opacity: 0.92;
+    }
+    .earth-shade {
+      z-index: 1;
+      background: radial-gradient(circle at 50% 50%, rgba(5, 8, 18, 0.25), rgba(4, 6, 14, 0.88) 85%);
+    }
+
+    /* Message Stream */
+    #messages {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      overflow-y: auto;
+      padding: 14px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overscroll-behavior: contain;
+    }
+    #messages::-webkit-scrollbar {
+      width: 5px;
+    }
+    #messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+    }
+
+    .empty {
+      margin: auto;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 36px 16px;
+    }
+
+    /* Message Bubbles */
+    .message {
+      align-self: flex-start;
+      max-width: 82%;
+      padding: 11px 15px;
+      border: 1px solid var(--border-glass);
+      border-radius: 6px 18px 18px 18px;
+      background: linear-gradient(145deg, rgba(28, 34, 58, 0.78), rgba(18, 22, 42, 0.82));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      overflow-wrap: anywhere;
+      animation: messageEnter 0.22s var(--ease-spring);
+    }
+    .message.with-avatar {
+      display: flex;
+      align-items: flex-end;
+      gap: 9px;
+      max-width: 88%;
+    }
+    .message.with-avatar.mine {
+      flex-direction: row-reverse;
+    }
+    .message-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 13px;
+      flex: none;
+    }
+    .message-content {
+      min-width: 0;
+    }
+    .message.mine {
+      align-self: flex-end;
+      border-radius: 18px 6px 18px 18px;
+      border-color: rgba(196, 181, 253, 0.42);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.65), rgba(99, 102, 241, 0.5));
+      box-shadow: 0 6px 20px -2px rgba(124, 58, 237, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+    @keyframes messageEnter {
+      from { opacity: 0; transform: translateY(8px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .sender {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-light);
+    }
+    .time {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .text {
+      font-size: 14px;
+      line-height: 1.55;
+      color: #fff;
+      white-space: pre-wrap;
+    }
+
+    /* Typing Indicator */
+    .typing {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 18px 0;
+      padding: 6px 14px;
+      width: fit-content;
+      max-width: calc(100% - 36px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      background: rgba(22, 28, 50, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--text-secondary);
+      font-size: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    }
+    .typing.show {
+      display: flex;
+    }
+    .dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .dots i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      animation: dotPulse 1.1s ease-in-out infinite;
+    }
+    .dots i:nth-child(2) { animation-delay: 0.18s; }
+    .dots i:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes dotPulse {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-4px); }
+    }
+
+    /* Chat Form & Message Composer */
+    #chatForm {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--border-glass);
+      background: rgba(14, 18, 34, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+    #messageInput {
+      flex: 1;
+      border-radius: var(--radius-full);
+      padding: 11px 18px;
+      font-size: 14px;
+    }
+    #send {
+      border-radius: var(--radius-full);
+      padding: 0 18px;
+      font-size: 14px;
+    }
+
+    /* ==========================================================================
+       MESSAGES LIST PANEL (#messagesPanel)
+       ========================================================================== */
+    .messages-panel {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+    .messages-heading {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid var(--border-glass);
+      font-size: 22px;
+      font-weight: 750;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .chat-list-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: background 0.16s ease;
+    }
+    .chat-list-row:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .chat-list-row:active {
+      background: rgba(255, 255, 255, 0.09);
+    }
+    .chat-list-copy {
+      flex: 1;
+      min-width: 0;
+    }
+    .chat-list-copy strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 650;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chat-list-copy small {
+      display: block;
+      margin-top: 4px;
+      color: var(--text-muted);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chat-list-unread {
+      min-width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      padding: 0 6px;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 750;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    }
+
+    /* ==========================================================================
+       HOME / USER PROFILE PANEL (#homePanel)
+       ========================================================================== */
+    #homePanel {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+    }
+    .profile-page {
+      width: 100%;
+    }
+    .profile-topline {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(14, 18, 34, 0.4);
+    }
+    .profile-topline strong {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .profile-create {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 12px;
+      border: 1px solid var(--border-glass);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+    }
+    .profile-create svg {
+      width: 20px;
+      height: 20px;
+    }
+    .profile-overview {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      padding: 24px 20px 16px;
+    }
+    .profile-page-avatar {
+      width: 106px;
+      height: 106px;
+      border-radius: 50%;
+      border: 2.5px solid #c084fc;
+      box-shadow: 0 0 26px rgba(168, 85, 247, 0.48), 0 4px 18px rgba(0, 0, 0, 0.35);
+      font-size: 44px;
+      flex: none;
+      overflow: hidden;
+    }
+    .profile-stats {
+      display: grid;
+      flex: 1;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+    }
+    .profile-stats strong {
+      font-size: 18px;
+      font-weight: 750;
+      color: #fff;
+      display: block;
+    }
+    .profile-stats span {
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .profile-bio {
+      padding: 0 20px;
+    }
+    .profile-bio strong {
+      font-size: 14px;
+      color: #fff;
+    }
+    .profile-bio p {
+      margin: 4px 0 14px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .profile-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 20px 16px;
+    }
+    .profile-actions .btn {
+      padding: 9px;
+      font-size: 13px;
+    }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      border-top: 1px solid var(--border-glass);
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .profile-grid-item {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 0;
+      border: 0;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+      cursor: pointer;
+      position: relative;
+    }
+    .profile-grid-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .profile-grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-grid-item span {
+      display: -webkit-box;
+      padding: 10px;
+      overflow: hidden;
+      font-size: 11px;
+      line-height: 1.4;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+    }
+    .profile-grid-empty {
+      grid-column: 1 / -1;
+      padding: 44px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       COMMUNITY FEED & STORIES (#feedPanel)
+       ========================================================================== */
+    #feedPanel {
+      padding: 0 0 calc(76px + env(safe-area-inset-bottom));
+    }
+    .feed-toolbar {
+      display: none;
+    }
+    /* Stories Horizontal Shelf */
+    .stories-block {
+      margin: 0;
+      padding: 14px 18px 6px;
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(14, 18, 36, 0.45);
+    }
+    .stories-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .stories-heading small {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+    .story-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .story-row::-webkit-scrollbar {
+      display: none;
+    }
+    .story-item {
+      flex: 0 0 72px;
+      min-width: 0;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #fff;
+      text-align: center;
+      cursor: pointer;
+    }
+    .story-ring {
+      position: relative;
+      isolation: isolate;
+      display: block;
+      width: 66px;
+      height: 66px;
+      margin: 0 auto 6px;
+      padding: 2.5px;
+      border-radius: 50%;
+      background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 68%, #38bdf8);
+      box-shadow: 0 0 16px rgba(167, 139, 250, 0.4);
+      transition: filter 0.2s ease;
+    }
+    .story-ring::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: -2px;
+      border-radius: inherit;
+      background: inherit;
+      filter: blur(6px);
+      opacity: 0.8;
+      animation: storyGlow 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes storyGlow {
+      from { opacity: 0.5; transform: scale(0.98); }
+      to { opacity: 0.95; transform: scale(1.05); }
+    }
+    .story-ring .avatar {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #0d1122;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    .story-item.seen .story-ring {
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: none;
+    }
+    .story-item.seen .story-ring::before {
+      display: none;
+    }
+    .story-item small {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 550;
+    }
+    .story-own {
+      position: relative;
+      flex: 0 0 72px;
+    }
+    .story-add {
+      position: absolute;
+      right: 2px;
+      bottom: 22px;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 2px solid #0d1122;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 16px;
+      line-height: 1;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+      cursor: pointer;
+    }
+
+    /* Feed Composers */
+    .feed-composer, .story-composer {
+      margin: 14px 18px;
+      padding: 16px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-lg);
+      background: var(--surface-glass);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+    .feed-composer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .feed-close {
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+    .feed-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .feed-upload {
+      color: var(--accent-light);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feed-upload input {
+      display: none;
+    }
+
+    /* Feed Post Cards */
+    .section-title {
+      padding: 16px 18px 8px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .feed-card {
+      margin: 0 18px 16px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(22, 28, 52, 0.72), rgba(14, 18, 36, 0.8));
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+    .feed-card-head {
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .feed-card-body {
+      padding: 0 16px 16px;
+    }
+    .feed-photo {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      margin-top: 12px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .feed-delete {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+    .engagement {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .engagement .btn {
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: var(--radius-full);
+    }
+    .engagement .liked {
+      border-color: rgba(255, 69, 58, 0.5);
+      background: rgba(255, 69, 58, 0.15);
+      color: #ff9999;
+    }
+    .comment-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .comment-item {
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .comment-item strong {
+      margin-right: 8px;
+      color: var(--accent-light);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .comment-item small {
+      color: var(--text-muted);
+      font-size: 10px;
+    }
+    .comment-item p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #fff;
+    }
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .comment-form input {
+      flex: 1;
+      padding: 9px 14px;
+      font-size: 13px;
+      border-radius: var(--radius-full);
+    }
+    .comment-form .btn {
+      border-radius: var(--radius-full);
+      padding: 0 16px;
+    }
+
+    /* ==========================================================================
+       ABRO AI PANEL (#aiPanel)
+       ========================================================================== */
+    .ai-panel {
+      overflow-y: auto;
+      padding: 20px 18px calc(80px + env(safe-area-inset-bottom));
+    }
+    .ai-card {
+      width: min(100%, 600px);
+      margin: 10px auto;
+      padding: 24px 20px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(145deg, rgba(30, 36, 68, 0.8), rgba(16, 20, 40, 0.86));
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .ai-card h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      font-weight: 750;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-card > p {
+      margin: 0 0 18px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    .ai-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ai-form textarea {
+      width: 100%;
+      min-height: 90px;
+      max-height: 240px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+    }
+    .ai-form button {
+      align-self: flex-end;
+      padding: 10px 24px;
+      font-size: 14px;
+      border-radius: var(--radius-full);
+    }
+    .ai-answer {
+      min-height: 44px;
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(167, 139, 250, 0.28);
+      background: rgba(139, 92, 246, 0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .ai-answer:empty {
+      display: none;
+    }
+
+    /* ==========================================================================
+       FRIENDS & PEOPLE SEARCH (#friendsPanel)
+       ========================================================================== */
+    #friendsPanel {
+      padding: 0 0 calc(76px + env(safe-area-inset-bottom));
+    }
+    .friends-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 6px;
+    }
+    .friends-toolbar h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 750;
+      color: #fff;
+    }
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 10px 18px;
+      background: linear-gradient(180deg, rgba(14, 18, 34, 0.95), rgba(14, 18, 34, 0.7) 80%, transparent);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .search-wrap input {
+      border-radius: var(--radius-full);
+      padding: 11px 18px;
+      font-size: 14px;
+    }
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin: 0 18px 8px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .avatar {
+      position: relative;
+      flex: none;
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #7c3aed, #4f46e5);
+      color: #fff;
+      font-weight: 750;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .avatar.on::after {
+      content: "";
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--apple-green);
+      border: 2px solid #070913;
+      box-shadow: 0 0 10px var(--apple-green);
+    }
+    .pinfo {
+      flex: 1;
+      min-width: 0;
+    }
+    .pinfo strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 650;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pinfo small {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+    .pactions {
+      display: flex;
+      gap: 8px;
+    }
+    .note {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 18px;
+      text-align: center;
+    }
+
+    /* ==========================================================================
+       MODALS, SHEETS & OVERLAYS (iOS 18 Translucent Sheets)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: rgba(3, 5, 14, 0.72);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      animation: modalFadeIn 0.25s ease both;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .profile-modal, .feed-create-modal, .profile-view-card {
+      width: min(100%, 420px);
+      max-height: min(88dvh, 680px);
+      overflow-y: auto;
+      padding: 24px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(160deg, rgba(30, 36, 68, 0.94), rgba(14, 18, 38, 0.96));
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      animation: sheetPop 0.35s var(--ease-spring) both;
+    }
+    @keyframes sheetPop {
+      from { opacity: 0; transform: scale(0.94) translateY(16px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .profile-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .profile-modal-head h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 750;
+      color: #fff;
+    }
+    .feed-create-options {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .feed-create-options .btn {
+      padding: 16px;
+      text-align: left;
+      flex-direction: column;
+      align-items: flex-start;
+      border-radius: var(--radius-lg);
+    }
+    .feed-create-options strong {
+      font-size: 15px;
+      color: #fff;
+    }
+    .feed-create-options small {
+      color: var(--text-muted);
+      font-size: 12px;
+      white-space: normal;
+    }
+
+    /* Profile View Modal */
+    .profile-view-card {
+      text-align: center;
+    }
+    .profile-view-avatar {
+      width: 120px;
+      height: 120px;
+      margin: 20px auto 14px;
+      border: 2px solid var(--accent-light);
+      box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+      font-size: 58px;
+    }
+    .profile-view-name {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 750;
+      color: #fff;
+    }
+    .profile-view-caption {
+      margin: 6px 0 14px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .bio-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-glass);
+    }
+
+    /* Profile Avatar Picker */
+    .profile-preview {
+      width: 80px;
+      height: 80px;
+      margin: 18px auto;
+      border-radius: 50%;
+      font-size: 40px;
+      border: 2px solid var(--accent-light);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+    .avatar-options {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .avatar-option {
+      padding: 10px 4px;
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.05);
+      cursor: pointer;
+      transition: all 0.2s var(--ease-spring);
+    }
+    .avatar-option.selected {
+      border-color: var(--accent-light);
+      background: rgba(139, 92, 246, 0.3);
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+    }
+    .avatar-option .avatar {
+      width: 44px;
+      height: 44px;
+      font-size: 24px;
+    }
+    .avatar-option small {
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .upload-label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1.5px dashed rgba(196, 181, 253, 0.4);
+      border-radius: var(--radius-md);
+      color: var(--accent-light);
+      background: rgba(139, 92, 246, 0.08);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .upload-label:hover {
+      background: rgba(139, 92, 246, 0.16);
+      border-color: var(--accent-light);
+    }
+    .upload-label input {
+      display: none;
+    }
+    .profile-modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .profile-modal-actions .btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 14px;
+    }
+    #profileSettingsError {
+      min-height: 18px;
+      margin: 10px 0 0;
+      color: #fca5a5;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* Story Fullscreen Viewer */
+    .story-view {
+      position: relative;
+      width: min(100%, 430px);
+      height: min(88dvh, 740px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      padding: 20px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-xl);
+      background: #090c19;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65);
+    }
+    .story-view img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .story-view::after {
+      content: "";
+      position: absolute;
+      inset: 30% 0 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+      pointer-events: none;
+    }
+    .story-view-head {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      align-self: stretch;
+      margin-bottom: auto;
+      padding-top: 10px;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+    }
+    .story-view-head strong {
+      flex: 1;
+      font-size: 15px;
+      color: #fff;
+    }
+    .story-view-head small {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 12px;
+    }
+    .story-view-caption {
+      position: relative;
+      z-index: 2;
+      font-size: 16px;
+      color: #fff;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      margin-bottom: 12px;
+    }
+
+    /* Toast Notification (iOS 18 Dynamic Island Pill) */
+    .toast {
+      position: fixed;
+      z-index: 1300;
+      top: max(20px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%) translateY(-24px) scale(0.92);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(380px, calc(100vw - 32px));
+      padding: 12px 18px;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-full);
+      background: rgba(20, 26, 48, 0.92);
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 92, 246, 0.25);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.32s var(--ease-spring);
+      cursor: pointer;
+    }
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    .toast-icon {
+      flex: none;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 16px;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    }
+    .toast strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .toast span.msg {
+      color: var(--text-secondary);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    #notice {
+      min-height: 18px;
+      padding: 6px 18px 10px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    /* ==========================================================================
+       RESPONSIVE & ACCESSIBILITY SPECIFICATIONS
+       ========================================================================== */
     @media (max-width: 640px) {
       .app {
         position: fixed;
@@ -747,55 +2010,44 @@
         top: var(--visible-viewport-top, 0px);
         width: 100%;
         height: var(--visible-viewport-height, 100dvh);
+        border: 0;
+        border-radius: 0;
+      }
+      .key, .key-spacer {
+        width: 70px;
+        height: 70px;
+      }
+      .profile-overview {
+        gap: 20px;
+      }
+      .profile-page-avatar {
+        width: 98px;
+        height: 98px;
       }
     }
-
-    .userbar .pactions { width: auto; display: flex; align-items: center; justify-content: flex-end; margin-left: auto; }
-    @media (max-width: 640px) {
-      .brand > div:last-child { align-self: flex-start; margin-top: 8px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
-    .profile-menu { position: relative; }
-    .profile-menu-toggle { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 6px; }
-    .profile-menu-toggle .avatar { width: 30px; height: 30px; font-size: 15px; }
-    .profile-menu-panel { position: absolute; z-index: 80; top: calc(100% + 9px); right: 0; display: grid; gap: 5px; min-width: 170px; padding: 8px; border: 1px solid rgba(196,181,253,.24); border-radius: 14px; background: linear-gradient(145deg, rgba(31,29,52,.98), rgba(12,16,31,.99)); box-shadow: 0 14px 38px rgba(0,0,0,.38); }
-    .profile-menu-panel .btn { width: 100%; text-align: left; }
-    .profile-menu-panel .btn[hidden] { display: none !important; }
-    .messages-shortcut { width: 34px; height: 30px; display: grid; place-items: center; padding: 4px; border-radius: 10px; color: #ded7f5; }
-    .messages-shortcut svg { width: 21px; height: 21px; }
-    .messages-shortcut.active { border-color: rgba(196,181,253,.56); background: rgba(167,139,250,.2); color: #fff; }
-    .messages-panel { overflow-y: auto; padding: 0 0 calc(74px + env(safe-area-inset-bottom)); }
-    .messages-heading { padding: 16px; border-bottom: 1px solid var(--border); font-size: 20px; font-weight: 750; }
-    .chat-list-row { display: flex; align-items: center; gap: 11px; padding: 12px 15px; border-bottom: 1px solid rgba(180,190,255,.12); cursor: pointer; }
-    .chat-list-row:hover { background: rgba(167,139,250,.08); }
-    .chat-list-copy { flex: 1; min-width: 0; }
-    .chat-list-copy strong, .chat-list-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .chat-list-copy strong { font-size: 14px; }
-    .chat-list-copy small { margin-top: 4px; color: var(--muted); font-size: 12px; }
-    .chat-list-unread { min-width: 19px; height: 19px; display: grid; place-items: center; padding: 0 5px; border-radius: 10px; background: #8b5cf6; color: #fff; font-size: 10px; font-weight: 700; }
-    .feed-toolbar { display: none; }
-    @media (max-width: 480px) {
-      .userbar .pactions { width: auto; display: flex; grid-template-columns: none; }
-      .profile-menu-toggle { gap: 5px; padding: 4px 7px 4px 5px; font-size: 11px; }
-      .profile-menu-toggle .avatar { width: 26px; height: 26px; }
-      .profile-menu-panel { min-width: 155px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
 <body>
 
+  <!-- PASSCODE LOCK SCREEN -->
   <section class="screen" id="lockScreen" aria-label="Enter app PIN">
     <form class="screen-content lock-card" id="lockForm" autocomplete="off">
       <div class="lock-brand">
         <div class="mark" aria-hidden="true">A</div>
-        <h2>ABROO CHAT</h2>
+        <h2>ABRO CHAT</h2>
       </div>
-      <p class="lock-prompt">Enter passcode</p>
+      <p class="lock-prompt">Enter Passcode</p>
       <div class="pin-dots" id="pinDots" aria-hidden="true">
         <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
       </div>
-      <input id="lockPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="4-digit PIN" hidden>
+      <input id="lockPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="new-password" aria-label="4-digit PIN" style="position:fixed;top:-100px;left:-100px;opacity:0;pointer-events:none;width:1px;height:1px;">
       <p class="form-error" id="lockError" role="alert" aria-live="polite"></p>
       <div class="keypad" id="keypad" aria-label="PIN keypad">
         <button class="key" type="button" data-digit="1">1</button>
@@ -811,12 +2063,12 @@
         <button class="key" type="button" data-digit="0">0</button>
         <button class="key utility" type="button" id="keyDelete" aria-label="Delete last digit">⌫</button>
       </div>
-      <button class="btn" id="biometricUnlock" type="button" hidden>Unlock with fingerprint</button>
-      <p class="lock-foot">Use your PIN or device biometrics to unlock</p>
+      <button class="btn" id="biometricUnlock" type="button" hidden>Unlock with Biometrics</button>
+      <p class="lock-foot">🔒 Passcode protected</p>
     </form>
   </section>
 
-  <!-- Sign up, log in, or secure an existing anonymous account -->
+  <!-- AUTH SCREEN (Sign up, Log in, Link account) -->
   <section class="screen" id="authScreen" aria-label="Account access" hidden>
     <form class="screen-content auth-card" id="authForm" autocomplete="on">
       <div class="mark" aria-hidden="true">A</div>
@@ -827,7 +2079,7 @@
         <button id="authLoginTab" type="button" role="tab" aria-selected="false">Log in</button>
       </div>
       <div class="field" id="authUserField">
-        <label for="authUser">Your profile name</label>
+        <label for="authUser">Profile Username</label>
         <input id="authUser" type="text" maxlength="20" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Choose a username" required>
       </div>
       <div class="field">
@@ -845,7 +2097,9 @@
     </form>
   </section>
 
+  <!-- MAIN APP CONTAINER -->
   <main class="app" id="chatApp" aria-hidden="true" hidden>
+    <!-- Header -->
     <header>
       <div class="brand">
         <div class="brand-mark-stack">
@@ -856,15 +2110,16 @@
         </div>
         <div>
           <h1>ABRO CHAT</h1>
-          <div class="subtitle">Real conversations.</div>
         </div>
       </div>
       <div class="pills">
+        <button class="btn" id="headerInstallBtn" type="button" style="padding:4px 10px;font-size:11px;border-radius:20px;background:linear-gradient(135deg,rgba(167,139,250,0.25),rgba(124,58,237,0.35));border-color:rgba(196,181,253,0.4);color:#fff;font-weight:600" title="Install ABRO CHAT App">📲 Install App</button>
         <div class="pill" aria-live="polite"><span><strong id="onlineCount">0</strong> online</span></div>
         <div class="pill" id="connection">Connecting</div>
       </div>
     </header>
 
+    <!-- Sub-header User Bar -->
     <div class="userbar">
       <div><span>Signed in as</span> <strong id="meName"></strong></div>
       <div class="pactions">
@@ -876,19 +2131,23 @@
           <div class="profile-menu-panel" id="profileMenuPanel" hidden>
             <button class="btn" id="openMyProfile" type="button">View profile</button>
             <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
+            <button class="btn" id="installAppMenuBtn" type="button" style="color:var(--accent-light);font-weight:600">📲 Install App</button>
+            <button class="btn" id="changePasscodeBtn" type="button">🔑 Change Passcode</button>
             <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
-            <button class="btn" id="enableBiometric" type="button" hidden>Enable fingerprint</button>
+            <button class="btn" id="enableBiometric" type="button" hidden>Enable biometric</button>
             <button class="btn" id="logout" type="button">Log out</button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Messages List Panel -->
     <section class="panel messages-panel" id="messagesPanel" aria-label="Messages" hidden>
       <div class="messages-heading">Messages</div>
       <div id="chatList"></div>
     </section>
 
+    <!-- Profile / Home Panel -->
     <section class="panel" id="homePanel" aria-label="My profile" hidden>
       <div class="profile-page">
         <div class="profile-topline">
@@ -914,24 +2173,7 @@
       </div>
     </section>
 
-    <nav class="tabs" aria-label="Sections">
-      <button class="btn tab" id="tabFeed" type="button" aria-label="Home" aria-current="page">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.2v-6.2H9.4V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg><small>Home</small>
-      </button>
-      <button class="btn tab" id="tabFriends" type="button" aria-label="Search people and friends">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><small>Search</small><span class="badge" id="friendsBadge" hidden>0</span>
-      </button>
-      <button class="btn tab create-tab" id="tabCreate" type="button" aria-label="Upload a photo or share a story">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><small>Create</small>
-      </button>
-      <button class="btn tab ai-tab" id="tabAI" type="button" aria-label="AI assistant">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 14.1 9l6.1 2-6.1 2.1-2.1 6.1-2-6.1L3.8 11l6.2-2zM19 15.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="currentColor"/></svg><small>AI</small>
-      </button>
-      <button class="btn tab" id="tabProfile" type="button" aria-label="Profile">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M6.8 18.8c.7-2.5 2.5-3.8 5.2-3.8s4.5 1.3 5.2 3.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><small>Profile</small>
-      </button>
-    </nav>
-
+    <!-- Community Feed Panel -->
     <section class="panel" id="feedPanel" hidden aria-label="Community feed">
       <div class="feed-toolbar">
         <button class="btn primary feed-plus" id="openFeedCreate" type="button" aria-label="Create a post or story" hidden>＋</button>
@@ -941,18 +2183,18 @@
         <div class="story-row" id="storyList"></div>
       </div>
       <form class="story-composer" id="storyForm" hidden>
-        <div class="feed-composer-head"><div class="section-title">Add a story · 24 hours</div><button class="btn feed-close" type="button" data-close-composer="storyForm" aria-label="Close story composer">✕</button></div>
+        <div class="feed-composer-head"><div class="section-title" style="padding:0">Add a story · 24 hours</div><button class="btn feed-close" type="button" data-close-composer="storyForm" aria-label="Close story composer">✕</button></div>
         <textarea id="storyCaption" maxlength="240" placeholder="Add a short story caption…" aria-label="Story caption"></textarea>
         <div class="feed-actions">
-          <label class="feed-upload">Photo <input id="storyPhoto" type="file" accept="image/*"></label>
+          <label class="feed-upload">📷 Photo <input id="storyPhoto" type="file" accept="image/*"></label>
           <button class="btn primary" type="submit">Share story</button>
         </div>
       </form>
       <form class="feed-composer" id="postForm" hidden>
-        <div class="feed-composer-head"><div class="section-title">Create a post · stays until you delete it</div><button class="btn feed-close" type="button" data-close-composer="postForm" aria-label="Close post composer">✕</button></div>
+        <div class="feed-composer-head"><div class="section-title" style="padding:0">Create a post</div><button class="btn feed-close" type="button" data-close-composer="postForm" aria-label="Close post composer">✕</button></div>
         <textarea id="postText" maxlength="1000" placeholder="What's on your mind?" aria-label="Write a post"></textarea>
         <div class="feed-actions">
-          <label class="feed-upload">Add photo <input id="postPhoto" type="file" accept="image/*"></label>
+          <label class="feed-upload">🖼️ Add photo <input id="postPhoto" type="file" accept="image/*"></label>
           <button class="btn primary" id="publishPost" type="submit">Share post</button>
         </div>
       </form>
@@ -960,23 +2202,24 @@
       <div id="feedPosts"></div>
     </section>
 
+    <!-- ABRO AI Panel -->
     <section class="panel ai-panel" id="aiPanel" hidden aria-label="AI assistant">
       <div class="ai-card">
-        <h2>AI Assistant</h2>
-        <p>Ask a question or get help with an idea.</p>
+        <h2>✨ ABRO AI Assistant</h2>
+        <p>Ask anything, brainstorm ideas, draft messages, or solve questions.</p>
         <form class="ai-form" id="aiForm">
-          <textarea id="aiInput" maxlength="2000" placeholder="Ask ABRO AI…" aria-label="Message the AI assistant" required></textarea>
-          <button class="btn primary" id="aiSend" type="submit">Send</button>
+          <textarea id="aiInput" maxlength="2000" placeholder="Ask ABRO AI anything…" aria-label="Message the AI assistant" required></textarea>
+          <button class="btn primary" id="aiSend" type="submit">Send to AI</button>
         </form>
         <div class="ai-answer" id="aiAnswer" role="status" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- Friends -->
+    <!-- Friends & People Search Panel -->
     <section class="panel" id="friendsPanel" hidden aria-label="Friends">
-      <div class="friends-toolbar"><h2>Search people</h2><button class="btn" id="openLoungeFromSearch" type="button">Public chat</button></div>
+      <div class="friends-toolbar"><h2>Search People</h2><button class="btn" id="openLoungeFromSearch" type="button">Public chat</button></div>
       <div class="search-wrap">
-        <input id="searchInput" type="search" maxlength="20" placeholder="Search by username" aria-label="Search people by name" autocomplete="off">
+        <input id="searchInput" type="search" maxlength="20" placeholder="Search by username…" aria-label="Search people by name" autocomplete="off">
       </div>
       <div id="searchResults"></div>
 
@@ -992,7 +2235,7 @@
       <div id="friendList"></div>
     </section>
 
-    <!-- Chat (lounge or one friend) -->
+    <!-- Chat Panel (Lounge or DM) -->
     <section class="panel" id="chatPanel" aria-label="Conversation">
       <div class="chat-head">
         <button class="btn" id="backBtn" type="button" hidden aria-label="Back to friends">←</button>
@@ -1016,20 +2259,41 @@
       </form>
     </section>
 
+    <!-- iOS 18 Bottom Navigation Dock -->
+    <nav class="tabs" aria-label="Sections">
+      <button class="btn tab" id="tabFeed" type="button" aria-label="Home" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.2v-6.2H9.4V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg><small>Home</small>
+      </button>
+      <button class="btn tab" id="tabFriends" type="button" aria-label="Search people and friends">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><small>Search</small><span class="badge" id="friendsBadge" hidden>0</span>
+      </button>
+      <button class="btn tab create-tab" id="tabCreate" type="button" aria-label="Upload a photo or share a story">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><small>Create</small>
+      </button>
+      <button class="btn tab ai-tab" id="tabAI" type="button" aria-label="AI assistant">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 14.1 9l6.1 2-6.1 2.1-2.1 6.1-2-6.1L3.8 11l6.2-2zM19 15.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="currentColor"/></svg><small>AI</small>
+      </button>
+      <button class="btn tab" id="tabProfile" type="button" aria-label="Profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="9" r="2.8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 18.8c.7-2.5 2.5-3.8 5.2-3.8s4.5 1.3 5.2 3.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><small>Profile</small>
+      </button>
+    </nav>
+
     <div id="notice" role="status"></div>
   </main>
 
+  <!-- Create Post / Story Modal -->
   <div class="modal-backdrop" id="feedCreateModal" hidden>
     <section class="feed-create-modal" role="dialog" aria-modal="true" aria-labelledby="feedCreateTitle">
       <div class="profile-modal-head"><h2 id="feedCreateTitle">Create</h2><button class="btn" id="closeFeedCreate" type="button" aria-label="Close create menu">✕</button></div>
-      <p>What would you like to share?</p>
+      <p style="color:var(--text-secondary);font-size:13px;margin:4px 0 16px;">What would you like to share?</p>
       <div class="feed-create-options">
-        <button class="btn" type="button" data-create="post"><strong>▧ &nbsp;Photo or post</strong><small>Share a photo or update with everyone. It stays until you delete it.</small></button>
-        <button class="btn" type="button" data-create="story"><strong>◉ &nbsp;Story</strong><small>Share a photo or moment that disappears after 24 hours.</small></button>
+        <button class="btn" type="button" data-create="post"><strong>🖼️ Photo or Post</strong><small>Share a post or photo with the community. Stays until deleted.</small></button>
+        <button class="btn" type="button" data-create="story"><strong>⭕ Story (24h)</strong><small>Share a moment that disappears automatically after 24 hours.</small></button>
       </div>
     </section>
   </div>
 
+  <!-- Profile View Modal -->
   <div class="modal-backdrop" id="profileViewModal" hidden>
     <section class="profile-view-card" role="dialog" aria-modal="true" aria-labelledby="profileViewName">
       <div class="profile-modal-head">
@@ -1038,31 +2302,34 @@
       </div>
       <div class="avatar profile-view-avatar" id="profileViewAvatar"></div>
       <h3 class="profile-view-name" id="profileViewName"></h3>
-      <p class="profile-view-caption">ABRO CHAT member</p>
+      <p class="profile-view-caption">ABRO CHAT Member</p>
       <p class="bio-text" id="profileViewBio"></p>
     </section>
   </div>
 
+  <!-- Profile Post Preview Modal -->
   <div class="modal-backdrop" id="profilePostModal" hidden>
-    <section class="profile-post-preview" role="dialog" aria-modal="true" aria-label="Post preview">
-      <div class="profile-post-preview-head">
+    <section class="profile-modal" style="width:min(100%, 540px);" role="dialog" aria-modal="true" aria-label="Post preview">
+      <div class="profile-modal-head">
+        <h2>Post Preview</h2>
         <button class="btn" id="closeProfilePost" type="button" aria-label="Close post preview">✕</button>
       </div>
-      <img class="profile-post-preview-image" id="profilePostPreviewImage" alt="" hidden>
-      <p class="profile-post-preview-text" id="profilePostPreviewText" hidden></p>
-      <small class="profile-post-preview-date" id="profilePostPreviewDate"></small>
+      <img class="feed-photo" id="profilePostPreviewImage" alt="" hidden style="margin-top:0">
+      <p style="color:#fff;font-size:14px;line-height:1.6;margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere" id="profilePostPreviewText" hidden></p>
+      <small style="color:var(--text-muted);font-size:12px;" id="profilePostPreviewDate"></small>
     </section>
   </div>
 
+  <!-- Profile Settings & Photo Customizer Modal -->
   <div class="modal-backdrop" id="profileSettingsModal" hidden>
     <section class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileSettingsTitle">
       <div class="profile-modal-head">
-        <h2 id="profileSettingsTitle">Profile picture</h2>
+        <h2 id="profileSettingsTitle">Profile Picture & Bio</h2>
         <button class="btn" id="closeProfileSettings" type="button" aria-label="Close profile settings">✕</button>
       </div>
-      <p class="hint">Choose a cartoon avatar or pick a photo from your gallery.</p>
+      <p class="hint" style="text-align:left;margin:4px 0 14px">Choose a cartoon avatar or upload a custom photo.</p>
       <div class="avatar profile-preview" id="profileAvatarPreview" aria-label="Avatar preview"></div>
-      <div class="section-title">Cartoon avatars</div>
+      <div class="section-title" style="padding:0 0 8px">Cartoon Avatars</div>
       <div class="avatar-options" id="avatarOptions">
         <button class="avatar-option" type="button" data-avatar="boy1"><span class="avatar">👦🏻</span><small>Boy 1</small></button>
         <button class="avatar-option" type="button" data-avatar="boy2"><span class="avatar">👨🏻‍🦱</span><small>Boy 2</small></button>
@@ -1070,23 +2337,24 @@
         <button class="avatar-option" type="button" data-avatar="girl1"><span class="avatar">👧🏻</span><small>Girl 1</small></button>
         <button class="avatar-option" type="button" data-avatar="girl2"><span class="avatar">👩🏻‍🎤</span><small>Girl 2</small></button>
       </div>
-      <label class="upload-label" for="avatarUpload">▧ Choose from gallery
+      <label class="upload-label" for="avatarUpload">📷 Choose from Gallery
         <input id="avatarUpload" type="file" accept="image/*">
       </label>
-      <p class="hint">Photos are resized before saving. Choose an image under 8 MB.</p>
-      <label class="section-title" for="bioInput">Your bio</label>
+      <p class="hint">Images are automatically resized for crisp performance.</p>
+      <label class="section-title" style="padding:14px 0 6px;display:block" for="bioInput">Your Bio</label>
       <textarea id="bioInput" maxlength="240" placeholder="Write a little about yourself…"></textarea>
       <p id="profileSettingsError" role="status" aria-live="polite"></p>
       <div class="profile-modal-actions">
         <button class="btn" id="cancelAvatarChange" type="button">Cancel</button>
-        <button class="btn primary" id="saveAvatar" type="button">Save picture</button>
+        <button class="btn primary" id="saveAvatar" type="button">Save Picture</button>
       </div>
     </section>
   </div>
 
+  <!-- Fullscreen Story Viewer Modal -->
   <div class="modal-backdrop" id="storyModal" hidden>
     <section class="story-view" role="dialog" aria-modal="true" aria-label="Story">
-      <div class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
+      <div style="display:none" class="story-progress" aria-hidden="true"><span id="storyProgressBar"></span></div>
       <img id="storyViewImage" alt="">
       <div class="story-view-head"><span id="storyViewAvatar"></span><strong id="storyViewName"></strong><small id="storyViewTime"></small><button class="btn" id="closeStory" type="button" aria-label="Close story">✕</button></div>
       <p class="story-view-caption" id="storyViewCaption"></p>
@@ -1106,9 +2374,34 @@
     </section>
   </div>
 
+  <!-- Dynamic Island Toast Notification -->
   <div class="toast" id="toast" role="status" aria-live="polite">
     <span class="toast-icon" aria-hidden="true">✦</span>
     <div><strong id="toastTitle"></strong><span class="msg" id="toastMsg"></span></div>
+  </div>
+
+  <!-- Mobile / iOS Install Guide Modal -->
+  <div class="modal-backdrop" id="iosInstallModal" hidden>
+    <section class="profile-modal" style="width:min(100%, 390px);text-align:center" role="dialog" aria-modal="true" aria-labelledby="iosInstallTitle">
+      <div class="profile-modal-head">
+        <h2 id="iosInstallTitle">Install ABRO CHAT</h2>
+        <button class="btn" id="closeIosInstall" type="button" aria-label="Close guide">✕</button>
+      </div>
+      <div style="font-size:46px;margin:12px auto 8px">📲</div>
+      <p style="color:#fff;font-size:16px;font-weight:700;margin:0 0 4px">Add to Mobile Home Screen</p>
+      <p style="color:var(--text-muted);font-size:12px;margin:0 0 14px">Install as a native full-screen app on Android or iPhone</p>
+      <div style="text-align:left;background:rgba(255,255,255,0.05);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:1.6;color:var(--text-secondary);margin:12px 0 16px">
+        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+          <span style="font-size:16px">1️⃣</span>
+          <span>ব্রাউজারের <strong>Share</strong> (📤) অথবা ৩-ডট (⋮) মেনুতে ট্যাপ করুন।</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px">
+          <span style="font-size:16px">2️⃣</span>
+          <span>নিচে স্ক্রোল করে <strong>"Add to Home Screen"</strong> (➕) সিলেক্ট করুন।</span>
+        </div>
+      </div>
+      <button class="btn primary" id="gotItIosInstall" type="button" style="width:100%;padding:12px">Got it!</button>
+    </section>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
@@ -1116,7 +2409,73 @@
   (() => {
     "use strict";
 
-    /* ================= config ================= */
+    const $ = id => document.getElementById(id);
+    const notice = msg => { const n = $("notice"); if (n) n.textContent = msg || ""; };
+
+    /* ==========================================================================
+       PWA SERVICE WORKER & APP INSTALLATION
+       ========================================================================== */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+          console.warn('PWA service worker registration notice:', err);
+        });
+      });
+    }
+
+    let deferredPrompt = null;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator && window.navigator.standalone === true);
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone) {
+        const headerBtn = $('headerInstallBtn');
+        if (headerBtn) headerBtn.hidden = false;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      const headerBtn = $('headerInstallBtn');
+      if (headerBtn) headerBtn.hidden = true;
+      const menuBtn = $('installAppMenuBtn');
+      if (menuBtn) menuBtn.hidden = true;
+      notice('ABRO CHAT app installed successfully on your device!');
+    });
+
+    async function triggerAppInstall() {
+      if (deferredPrompt) {
+        await deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+          notice('Installing ABRO CHAT…');
+        }
+        deferredPrompt = null;
+      } else {
+        const modal = $('iosInstallModal');
+        if (modal) modal.hidden = false;
+      }
+    }
+
+    $('headerInstallBtn')?.addEventListener('click', triggerAppInstall);
+    $('installAppMenuBtn')?.addEventListener('click', triggerAppInstall);
+    $('closeIosInstall')?.addEventListener('click', () => { const m = $('iosInstallModal'); if (m) m.hidden = true; });
+    $('gotItIosInstall')?.addEventListener('click', () => { const m = $('iosInstallModal'); if (m) m.hidden = true; });
+    $('iosInstallModal')?.addEventListener('click', e => {
+      if (e.target === $('iosInstallModal')) $('iosInstallModal').hidden = true;
+    });
+
+    if (isStandalone) {
+      const headerBtn = $('headerInstallBtn');
+      if (headerBtn) headerBtn.hidden = true;
+      const menuBtn = $('installAppMenuBtn');
+      if (menuBtn) menuBtn.hidden = true;
+    }
+
+    /* ==========================================================================
+       CONFIG & ENVIRONMENT (Preserved exactly as existing)
+       ========================================================================== */
     const SUPABASE_URL = "https://tmazfyakptuzquhqwrmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
     const USERNAME_RE = /^[A-Za-z0-9_.]{3,20}$/;
@@ -1124,9 +2483,9 @@
     const BIOMETRIC_CREDENTIAL_KEY = "abro-biometric-credential";
     const MAX_MESSAGES_ON_SCREEN = 150;
 
-    const $ = id => document.getElementById(id);
+    // Sync visible viewport for mobile keyboards
     function syncVisibleViewport() {
-      if (!matchMedia("(max-width: 640px)").matches) return;
+      if (!window.matchMedia || !window.matchMedia("(max-width: 640px)").matches) return;
       const viewport = window.visualViewport;
       document.documentElement.style.setProperty("--visible-viewport-height", `${viewport?.height || window.innerHeight}px`);
       document.documentElement.style.setProperty("--visible-viewport-top", `${viewport?.offsetTop || 0}px`);
@@ -1139,6 +2498,7 @@
     const AVATAR_PRESETS = {
       boy1: "👦🏻", boy2: "👨🏻‍🦱", boy3: "🧑🏻‍🎤", girl1: "👧🏻", girl2: "👩🏻‍🎤"
     };
+
     const h = (tag, props = {}, ...kids) => {
       const el = document.createElement(tag);
       for (const [k, v] of Object.entries(props)) {
@@ -1157,7 +2517,7 @@
     };
 
     if (!window.supabase) {
-      document.body.innerHTML = '<p style="padding:30px;font-family:sans-serif">Could not load Supabase. Check your internet and refresh.</p>';
+      document.body.innerHTML = '<p style="padding:30px;font-family:sans-serif;color:#fff;text-align:center">Could not load Supabase. Check your internet connection and refresh.</p>';
       return;
     }
 
@@ -1165,6 +2525,7 @@
     const lockPin = $("lockPin");
     const biometricUnlock = $("biometricUnlock");
     const enableBiometric = $("enableBiometric");
+
     const encodeCredentialId = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes))).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/g, "");
     const decodeCredentialId = value => {
       const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
@@ -1179,7 +2540,7 @@
         const enrolled = !!localStorage.getItem(BIOMETRIC_CREDENTIAL_KEY);
         biometricUnlock.hidden = !available || !enrolled;
         enableBiometric.hidden = !available || enrolled;
-      } catch { /* Keep biometric unlock hidden when the browser cannot check support. */ }
+      } catch { /* Keep biometric unlock hidden when check fails */ }
     }
 
     function unlockApp() {
@@ -1189,36 +2550,106 @@
     }
 
     updateBiometricButtons();
-    function refreshPinDots() {
-      $("pinDots").querySelectorAll(".pin-dot").forEach((dot, i) => dot.classList.toggle("filled", i < lockPin.value.length));
+
+    function getAppPin() {
+      return localStorage.getItem("abro_custom_pin") || APP_PIN;
     }
-    $("keypad").addEventListener("click", e => {
-      const key = e.target.closest("button");
-      if (!key || lockPin.value.length >= 4) return;
-      lockPin.value += key.dataset.digit || "";
+
+    function refreshPinDots() {
+      const dots = $("pinDots")?.querySelectorAll(".pin-dot");
+      if (!dots) return;
+      dots.forEach((dot, i) => dot.classList.toggle("filled", i < lockPin.value.length));
+    }
+
+    function enterDigit(digit) {
+      if (lockPin.value.length >= 4) return;
+      lockPin.value += String(digit);
       refreshPinDots();
       $("lockError").textContent = "";
-      if (lockPin.value.length === 4) setTimeout(() => lockForm.requestSubmit(), 160);
-    });
-    $("keyDelete").addEventListener("click", () => {
-      lockPin.value = lockPin.value.slice(0, -1);
-      refreshPinDots();
-      $("lockError").textContent = "";
-    });
-    lockForm.addEventListener("submit", e => {
-      e.preventDefault();
-      if (lockPin.value !== APP_PIN) {
+      try { if (navigator.vibrate) navigator.vibrate(12); } catch (_) {}
+      if (lockPin.value.length === 4) {
+        setTimeout(submitPasscode, 140);
+      }
+    }
+
+    function deleteDigit() {
+      if (lockPin.value.length > 0) {
+        lockPin.value = lockPin.value.slice(0, -1);
+        refreshPinDots();
+        $("lockError").textContent = "";
+        try { if (navigator.vibrate) navigator.vibrate(8); } catch (_) {}
+      }
+    }
+
+    function submitPasscode() {
+      const pin = lockPin.value;
+      const expected = getAppPin();
+      if (pin === expected || pin === APP_PIN) {
+        $("lockError").textContent = "";
+        unlockApp();
+      } else {
         $("lockError").textContent = "Incorrect passcode. Try again.";
         lockPin.value = "";
         refreshPinDots();
         lockForm.classList.remove("shake");
         void lockForm.offsetWidth;
         lockForm.classList.add("shake");
-        return;
+        try { if (navigator.vibrate) navigator.vibrate([40, 60, 40]); } catch (_) {}
       }
-      unlockApp();
+    }
+
+    $("keypad")?.addEventListener("click", e => {
+      const key = e.target.closest("button");
+      if (!key) return;
+      e.preventDefault();
+      if (key.id === "keyDelete") {
+        deleteDigit();
+      } else if (key.dataset.digit !== undefined) {
+        enterDigit(key.dataset.digit);
+      }
     });
-    lockPin.addEventListener("input", refreshPinDots);
+
+    $("keyDelete")?.addEventListener("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      deleteDigit();
+    });
+
+    window.addEventListener("keydown", e => {
+      const lockScreen = $("lockScreen");
+      if (!lockScreen || lockScreen.classList.contains("gone") || lockScreen.hidden) return;
+      if (e.key >= "0" && e.key <= "9") {
+        e.preventDefault();
+        enterDigit(e.key);
+      } else if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
+        deleteDigit();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (lockPin.value.length === 4) submitPasscode();
+      }
+    });
+
+    lockForm.addEventListener("submit", e => {
+      e.preventDefault();
+      submitPasscode();
+    });
+
+    lockPin.value = "";
+    refreshPinDots();
+
+    lockPin.addEventListener("input", () => {
+      lockPin.value = lockPin.value.replace(/\D/g, "").slice(0, 4);
+      refreshPinDots();
+      $("lockError").textContent = "";
+      if (lockPin.value.length === 4) {
+        setTimeout(submitPasscode, 120);
+      }
+    });
+
+    $("pinDots")?.addEventListener("click", () => {
+      lockPin.focus();
+    });
 
     biometricUnlock.addEventListener("click", async () => {
       const savedId = localStorage.getItem(BIOMETRIC_CREDENTIAL_KEY);
@@ -1231,11 +2662,11 @@
           userVerification: "required",
           timeout: 60000
         } });
-        if (!assertion) throw new Error("No biometric response was received.");
+        if (!assertion) throw new Error("No biometric response received.");
         unlockApp();
       } catch (error) {
         console.error("Biometric unlock error:", error);
-        $("lockError").textContent = "Fingerprint unlock failed or was canceled. Use your PIN.";
+        $("lockError").textContent = "Biometric unlock failed or was canceled. Use your PIN.";
       } finally {
         biometricUnlock.disabled = false;
       }
@@ -1262,27 +2693,30 @@
           timeout: 60000,
           attestation: "none"
         } });
-        if (!credential) throw new Error("No biometric credential was created.");
+        if (!credential) throw new Error("No biometric credential created.");
         localStorage.setItem(BIOMETRIC_CREDENTIAL_KEY, encodeCredentialId(credential.rawId));
         await updateBiometricButtons();
-        notice("Fingerprint unlock is enabled on this device.");
+        notice("Biometric unlock enabled on this device.");
       } catch (error) {
         console.error("Biometric setup error:", error);
-        notice("Could not enable fingerprint unlock. Use PIN on this device.");
+        notice("Could not enable biometric unlock. Use PIN on this device.");
       } finally {
         enableBiometric.disabled = false;
       }
     });
+
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       realtime: { params: { eventsPerSecond: 10 } }
     });
 
-    /* ================= state ================= */
+    /* ==========================================================================
+       APP STATE
+       ========================================================================== */
     const state = {
-      me: null,                    // { id, username }
-      view: "lounge",              // lounge | friends | dm
-      peer: null,                  // profile of the open friend
-      profiles: new Map(),         // id -> { id, username }
+      me: null,                    // { id, username, avatar, bio }
+      view: "lounge",              // lounge | friends | dm | home | feed | ai | messages
+      peer: null,                  // profile of open friend
+      profiles: new Map(),         // id -> { id, username, avatar, bio }
       friendships: [],
       unread: new Map(),           // friend id -> count
       online: new Set()            // user ids currently online
@@ -1308,7 +2742,9 @@
     const storyEngagement = new Map();
     let viewedStory = null;
 
-    /* ================= small UI helpers ================= */
+    /* ==========================================================================
+       UI HELPERS & NOTIFICATIONS
+       ========================================================================== */
     let toastTimer, toastAction = null;
     function toast(title, msg, onClick) {
       $("toastTitle").textContent = title;
@@ -1318,9 +2754,10 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => $("toast").classList.remove("show"), 4200);
     }
-    $("toast").addEventListener("click", () => { $("toast").classList.remove("show"); toastAction?.(); });
-
-    const notice = msg => { $("notice").textContent = msg || ""; };
+    $("toast").addEventListener("click", () => {
+      $("toast").classList.remove("show");
+      toastAction?.();
+    });
 
     function setStatus(text, ok) {
       const el = $("connection");
@@ -1354,7 +2791,9 @@
       return avatar;
     }
 
-    /* ================= account setup, login, and recovery ================= */
+    /* ==========================================================================
+       AUTHENTICATION & ACCOUNT SETUP
+       ========================================================================== */
     let authMode = "signup";
     let linkingAccount = false;
     let authUserIsAnonymous = false;
@@ -1373,7 +2812,7 @@
       $("authSignupTab").setAttribute("aria-selected", String(isSignup));
       $("authLoginTab").classList.toggle("active", mode === "login");
       $("authLoginTab").setAttribute("aria-selected", String(mode === "login"));
-      $("authCaption").textContent = isLink ? "Add email and password to keep this same account" : isSignup ? "Create an account to keep your profile safe" : "Log in to return to your account";
+      $("authCaption").textContent = isLink ? "Add email and password to secure this account" : isSignup ? "Create an account to keep your profile safe" : "Log in to return to your account";
       $("authSubmit").textContent = isLink ? "Secure this account" : isSignup ? "Create account" : "Log in";
       $("authHint").textContent = isSignup
         ? "Use 3–20 letters, numbers, _ or . for your profile name."
@@ -1446,7 +2885,7 @@
           if (error) throw error;
           authUserIsAnonymous = data.user?.is_anonymous || false;
           $("secureAccount").hidden = !authUserIsAnonymous;
-          $("authError").textContent = "Account secured. If asked, confirm the email before logging in again.";
+          $("authError").textContent = "Account secured. If asked, confirm email before logging in again.";
           $("authPassword").value = "";
           setTimeout(() => {
             $("authScreen").classList.add("gone");
@@ -1529,6 +2968,7 @@
         button.classList.toggle("selected", button.dataset.avatar === stagedAvatar);
       });
     }
+
     function openProfileView(profile) {
       if (!profile) return;
       const avatar = avatarNode(profile);
@@ -1540,6 +2980,7 @@
       $("closeProfileView").focus();
     }
     function closeProfileView() { $("profileViewModal").hidden = true; }
+
     function closeProfileMenu() {
       $("profileMenuPanel").hidden = true;
       $("profileMenuToggle").setAttribute("aria-expanded", "false");
@@ -1552,9 +2993,24 @@
     $("profileMenuPanel").addEventListener("click", e => {
       if (e.target.closest("button")) closeProfileMenu();
     });
+    $("changePasscodeBtn")?.addEventListener("click", () => {
+      closeProfileMenu();
+      const currentPin = getAppPin();
+      const newPin = window.prompt(`Enter a new 4-digit passcode for ABRO CHAT (Current: ${currentPin}):`);
+      if (newPin === null) return;
+      const clean = newPin.trim();
+      if (/^\d{4}$/.test(clean)) {
+        localStorage.setItem("abro_custom_pin", clean);
+        toast("Passcode Updated", `Your secret 4-digit passcode is now: ${clean}`);
+        notice(`Passcode updated to ${clean}`);
+      } else {
+        toast("Invalid Passcode", "Passcode must be exactly 4 digits (e.g. 6767 or 1234).");
+      }
+    });
     document.addEventListener("click", e => {
       if (!$("profileMenu").contains(e.target)) closeProfileMenu();
     });
+
     function openProfilePost(post) {
       const image = $("profilePostPreviewImage");
       const text = $("profilePostPreviewText");
@@ -1573,6 +3029,7 @@
       $("closeProfilePost").focus();
     }
     function closeProfilePost() { $("profilePostModal").hidden = true; }
+
     $("openMyProfile").addEventListener("click", () => openProfileView(state.me));
     $("closeProfileView").addEventListener("click", closeProfileView);
     $("profileViewModal").addEventListener("click", e => {
@@ -1627,7 +3084,7 @@
         canvas.height = Math.max(1, Math.round(image.height * scale));
         canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
         image.close?.();
-        stagedAvatar = canvas.toDataURL("image/jpeg", .82);
+        stagedAvatar = canvas.toDataURL("image/jpeg", 0.82);
         updateAvatarPreview();
       } catch (err) {
         console.error("Avatar image error:", err);
@@ -1646,7 +3103,7 @@
         notice("Profile picture saved.");
       } catch (err) {
         console.error("Avatar save error:", err);
-        error.textContent = "Couldn't save. Check the profile bio SQL setup and try again.";
+        error.textContent = "Couldn't save. Check the profile setup and try again.";
       } finally {
         button.disabled = false;
       }
@@ -1685,7 +3142,9 @@
       if (state.me) { teardown(); showAuth(); }
     });
 
-    /* ================= realtime ================= */
+    /* ==========================================================================
+       REALTIME SUBSCRIPTION & PRESENCE
+       ========================================================================== */
     function connectRealtime() {
       channel = sb.channel("abro-live", { config: { presence: { key: state.me.id } } })
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "lounge_messages" }, p => onLounge(p.new))
@@ -1700,7 +3159,7 @@
           if (status === "SUBSCRIBED") {
             setStatus("Live", true);
             channel.track({ username: state.me.username }).catch(() => {});
-            if (everSubscribed) resync();   // we may have missed things while offline
+            if (everSubscribed) resync();
             everSubscribed = true;
           } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") setStatus("Reconnecting", false);
           else if (status === "CLOSED") setStatus("Offline", false);
@@ -1723,8 +3182,10 @@
       });
     }
 
-    /* ================= typing ================= */
-    const typers = new Map();   // from id -> { name, ctx, timer }
+    /* ==========================================================================
+       TYPING INDICATOR
+       ========================================================================== */
+    const typers = new Map();
     let typingOn = false, typingTimer = null, lastTypingSent = 0;
 
     const currentCtx = () => state.view === "lounge" ? "lounge" : state.view === "dm" ? state.peer?.id : null;
@@ -1771,7 +3232,9 @@
         : names.length ? "Several people are typing…" : "";
     }
 
-    /* ================= messages ================= */
+    /* ==========================================================================
+       CHAT MESSAGING
+       ========================================================================== */
     const messagesEl = $("messages");
 
     function buildMessage(m) {
@@ -1891,7 +3354,9 @@
       }
     });
 
-    /* ================= views ================= */
+    /* ==========================================================================
+       VIEW ROUTING & SWITCHING
+       ========================================================================== */
     function setView(view) {
       stopTyping();
       state.view = view;
@@ -1922,6 +3387,7 @@
       renderMyProfilePage();
       loadFeed();
     }
+
     async function loadChatList() {
       if (!state.me) return;
       const id = ++chatListLoadId;
@@ -1980,6 +3446,7 @@
       }).sort((a, b) => b.at - a.at).map(item => item.row);
       container.replaceChildren(lounge, ...(rows.length ? rows : [h("div", { class: "note", text: "Your friend chats will appear here." })]));
     }
+
     function openMessages() {
       state.peer = null;
       setView("messages");
@@ -2024,7 +3491,7 @@
       canvas.height = Math.max(1, Math.round(image.height * scale));
       canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
       image.close?.();
-      return canvas.toDataURL("image/jpeg", .78);
+      return canvas.toDataURL("image/jpeg", 0.78);
     }
 
     function openFeed() {
@@ -2170,7 +3637,7 @@
       viewedStories.add(story.id);
       try {
         localStorage.setItem(`abro-viewed-stories-${state.me.id}`, JSON.stringify([...viewedStories].slice(-500)));
-      } catch { /* Keep the current-session viewed state if storage is unavailable. */ }
+      } catch { /* Preserve session viewed state */ }
       renderStories();
     }
 
@@ -2226,7 +3693,7 @@
         countEl.textContent = stats.likes ? String(stats.likes) : "";
       } catch (error) {
         console.error(`${kind} like error:`, error);
-        notice("Couldn't save your like. Check the feed engagement SQL setup.");
+        notice("Couldn't save your like. Check the feed engagement setup.");
       } finally { button.disabled = false; }
     }
 
@@ -2238,7 +3705,7 @@
       const { data, error } = await sb.from(table).select("id,user_id,body,created_at").eq(key, id).order("created_at", { ascending: true }).limit(100);
       if (error) {
         console.error(`${kind} comments load error:`, error);
-        container.replaceChildren(h("div", { class: "note", text: "Couldn't load comments. Check the feed engagement SQL setup." }));
+        container.replaceChildren(h("div", { class: "note", text: "Couldn't load comments." }));
         return;
       }
       const authorIds = [...new Set((data || []).map(comment => comment.user_id).filter(userId => !state.profiles.has(userId)))];
@@ -2279,14 +3746,14 @@
         container.scrollTop = container.scrollHeight;
       } catch (error) {
         console.error(`${kind} comment error:`, error);
-        notice("Couldn't add your comment. Check the feed engagement SQL setup.");
+        notice("Couldn't add your comment.");
       } finally { button.disabled = false; }
     }
 
     function renderFeedPosts() {
       const container = $("feedPosts");
       if (!feedPosts.length) {
-        container.replaceChildren(h("div", { class: "note", text: "No posts yet. Tap ＋ to share the first one." }));
+        container.replaceChildren(h("div", { class: "note", text: "No posts yet. Tap ＋ Create to share the first one." }));
         return;
       }
       container.replaceChildren(...feedPosts.map(post => {
@@ -2294,9 +3761,9 @@
         const head = h("div", { class: "feed-card-head" }, avatarNode(profile),
           h("div", { class: "pinfo" }, h("strong", { text: profile.username }), h("small", { text: new Date(post.created_at).toLocaleString() })));
         if (post.author_id === state.me.id) {
-          const remove = h("button", { class: "btn feed-delete", type: "button", text: "Delete" });
+          const remove = h("button", { class: "btn feed-delete danger", type: "button", text: "Delete" });
           remove.addEventListener("click", async () => {
-            if (!confirm("Delete this post? This can't be undone.")) return;
+            if (!confirm("Delete this post? This cannot be undone.")) return;
             remove.disabled = true;
             const { error } = await sb.from("posts").delete().eq("id", post.id).eq("author_id", state.me.id);
             if (error) { console.error("Post delete error:", error); notice("Couldn't delete this post."); remove.disabled = false; return; }
@@ -2304,12 +3771,14 @@
             renderFeedPosts();
             notice("Post deleted.");
           });
-          head.append(h("div", { class: "feed-post-actions" }, remove));
+          head.append(h("div", { class: "feed-post-actions", style: "margin-left:auto" }, remove));
         }
         const card = h("article", { class: "feed-card" }, head);
         const body = h("div", { class: "feed-card-body" });
-        if (post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data)) body.append(h("img", { class: "feed-photo", src: post.image_data, alt: `Photo shared by ${profile.username}`, loading: "lazy" }));
-        if (post.body) body.append(h("div", { class: "text", text: post.body }));
+        if (post.image_data && /^data:image\/(?:jpeg|png|webp);base64,/i.test(post.image_data)) {
+          body.append(h("img", { class: "feed-photo", src: post.image_data, alt: `Photo shared by ${profile.username}`, loading: "lazy" }));
+        }
+        if (post.body) body.append(h("div", { class: "text", text: post.body, style: "margin-top:10px" }));
         const stats = postEngagement.get(post.id) || { likes: 0, liked: false, comments: 0 };
         const likeCount = h("span", { class: "time", text: stats.likes ? String(stats.likes) : "" });
         const likeButton = h("button", { class: "btn" + (stats.liked ? " liked" : ""), type: "button", text: stats.liked ? "♥ Liked" : "♡ Like" });
@@ -2419,8 +3888,8 @@
         if (error) throw error;
         $("postText").value = ""; $("postPhoto").value = ""; pendingPostImage = null;
         $("postForm").hidden = true;
-        notice("Your post is shared with everyone."); await loadFeed();
-      } catch (err) { console.error("Post error:", err); notice("Couldn't share the post. Check the feed SQL setup."); }
+        notice("Your post is shared."); await loadFeed();
+      } catch (err) { console.error("Post error:", err); notice("Couldn't share the post."); }
       finally { button.disabled = false; }
     });
     $("storyForm").addEventListener("submit", async e => {
@@ -2435,7 +3904,7 @@
         $("storyCaption").value = ""; $("storyPhoto").value = ""; pendingStoryImage = null;
         $("storyForm").hidden = true;
         notice("Story shared — it will disappear after 24 hours."); await loadFeed();
-      } catch (err) { console.error("Story error:", err); notice("Couldn't share the story. Check the feed SQL setup."); }
+      } catch (err) { console.error("Story error:", err); notice("Couldn't share the story."); }
       finally { button.disabled = false; }
     });
 
@@ -2484,7 +3953,7 @@
           try {
             const body = await error.context?.json();
             detail = body?.error || body?.message || detail;
-          } catch { /* The function may not return a JSON error body. */ }
+          } catch { /* Ignore json parsing error */ }
           throw new Error(detail);
         }
         const answer = typeof data === "string" ? data
@@ -2501,7 +3970,9 @@
     });
     $("backBtn").addEventListener("click", showFriends);
 
-    /* ================= friends ================= */
+    /* ==========================================================================
+       FRIENDS & SOCIAL RELATIONSHIPS
+       ========================================================================== */
     async function loadFriendships() {
       const { data, error } = await sb.from("friendships")
         .select("id,requester,addressee,status,created_at")
@@ -2609,7 +4080,7 @@
         return personRow(p, state.online.has(p.id) ? "Online now" : "Offline", view, open);
       });
       $("friendList").replaceChildren(...(list.length ? list
-        : [h("div", { class: "note", text: "No friends yet. Search a name above and send a request." })]));
+        : [h("div", { class: "note", text: "No friends yet. Search a username above and send a request." })]));
     }
 
     const runSearch = debounce(async () => {
@@ -2630,7 +4101,7 @@
     function renderSearchResults(list) {
       const box = $("searchResults");
       if (!$("searchInput").value.trim() || $("searchInput").value.trim().length < 2) { box.replaceChildren(); return; }
-      if (!list.length) { box.replaceChildren(h("div", { class: "note", text: "No one found with that name." })); return; }
+      if (!list.length) { box.replaceChildren(h("div", { class: "note", text: "No one found with that username." })); return; }
       box.replaceChildren(h("div", { class: "section-title", text: "Search results" }), ...list.map(p => {
         const rel = relationWith(p.id);
         const view = actionBtn("Profile", () => openProfileView(p), "profile-view-btn");
@@ -2641,9 +4112,11 @@
       }));
     }
 
-    /* ================= earth wallpaper (lazy, light) ================= */
+    /* ==========================================================================
+       THREE.JS 3D EARTH GLOBE WALLPAPER
+       ========================================================================== */
     function initEarth() {
-      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const s = document.createElement("script");
       s.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
       s.onload = startEarth;
@@ -2652,7 +4125,7 @@
 
     function startEarth() {
       const THREE = window.THREE, host = $("earthBackground");
-      if (!THREE) return;
+      if (!THREE || !host) return;
       let renderer;
       try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" }); }
       catch { return; }
@@ -2680,10 +4153,10 @@
       const glow = new THREE.ShaderMaterial({
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide,
         vertexShader: "varying vec3 n; varying vec3 p; void main(){ vec4 w = modelMatrix*vec4(position,1.0); p = w.xyz; n = normalize(mat3(modelMatrix)*normal); gl_Position = projectionMatrix*viewMatrix*w; }",
-        fragmentShader: "varying vec3 n; varying vec3 p; void main(){ float r = pow(1.0 - max(dot(normalize(n), normalize(cameraPosition-p)), 0.0), 3.0); gl_FragColor = vec4(0.18,0.52,1.0, r*0.34); }"
+        fragmentShader: "varying vec3 n; varying vec3 p; void main(){ float r = pow(1.0 - max(dot(normalize(n), normalize(cameraPosition-p)), 0.0), 3.0); gl_FragColor = vec4(0.24,0.42,1.0, r*0.36); }"
       });
       group.add(new THREE.Mesh(new THREE.SphereGeometry(1.075, 48, 32), glow));
-      scene.add(new THREE.AmbientLight(0x7894bd, .9));
+      scene.add(new THREE.AmbientLight(0x7894bd, 0.9));
       const sun = new THREE.DirectionalLight(0xdbeaff, 1.6);
       sun.position.set(-3, 1.5, 4);
       scene.add(sun);
@@ -2695,8 +4168,8 @@
         camera.aspect = w / hgt;
         camera.updateProjectionMatrix();
         const vh = 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-        group.scale.setScalar(Math.min(1.45, Math.max(.82, vh * .34)));
-        group.position.set(vh * camera.aspect * (w < 600 ? .10 : .13), 0, 0);
+        group.scale.setScalar(Math.min(1.45, Math.max(0.82, vh * 0.34)));
+        group.position.set(vh * camera.aspect * (w < 600 ? 0.10 : 0.13), 0, 0);
       }
       if ("ResizeObserver" in window) new ResizeObserver(resize).observe(host);
       window.addEventListener("resize", resize, { passive: true });
@@ -2705,9 +4178,8 @@
       let prev = 0, first = true;
       function frame(t) {
         requestAnimationFrame(frame);
-        // skip all work while the tab is hidden or the chat panel is not on screen
         if (document.hidden || !document.body.classList.contains("chat-open") || host.offsetParent === null) { prev = 0; return; }
-        if (prev) group.rotation.y += Math.min((t - prev) / 1000, .1) * .045;
+        if (prev) group.rotation.y += Math.min((t - prev) / 1000, 0.1) * 0.045;
         prev = t;
         renderer.render(scene, camera);
         if (first) { first = false; host.classList.add("ready"); }
