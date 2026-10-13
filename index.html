@@ -359,20 +359,46 @@
     }
     @media (max-width: 480px) {
       body { padding: 0; }
-      .app { height: 100dvh; border-radius: 0; border: 0; }
-      header, .userbar, .tabs, .chat-head { padding-left: 15px; padding-right: 15px; }
-      #messages { padding-left: 14px; padding-right: 14px; }
-      #friendsPanel, #feedPanel { padding-left: 15px; padding-right: 15px; }
-      .stories-block { margin-left: -15px; margin-right: -15px; padding-left: 15px; padding-right: 15px; }
+      .app { height: 100dvh; min-height: 0; border-radius: 0; border: 0; }
+      header { padding: max(12px, env(safe-area-inset-top)) 12px 12px; gap: 8px; }
+      header, .tabs, .chat-head { padding-left: 13px; padding-right: 13px; }
+      .brand { gap: 9px; }
+      .logo { width: 39px; height: 39px; border-radius: 13px; }
+      h1 { font-size: 16px; }
+      .subtitle { font-size: 10px; }
+      #messages { padding: 10px 12px 16px; }
+      #friendsPanel, #feedPanel { padding-left: 13px; padding-right: 13px; }
+      .stories-block { margin-left: -13px; margin-right: -13px; padding-left: 13px; padding-right: 13px; }
+      .story-row { gap: 10px; padding-bottom: 10px; }
+      .story-item, .story-own { flex-basis: 62px; width: 62px; }
+      .story-own .story-item { width: 62px; }
+      .story-ring { width: 56px; height: 56px; margin-bottom: 5px; }
+      .story-ring .avatar { width: 100%; height: 100%; min-width: 0; }
+      .story-item small { font-size: 10px; }
+      .story-add { top: 36px; right: 0; width: 23px; height: 23px; }
       .story-view { height: min(88dvh, 760px); }
-      .typing { margin-left: 15px; }
-      #chatForm { padding: 10px 12px; }
+      .typing { margin-left: 13px; }
+      #chatForm { gap: 8px; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); }
+      #messageInput { padding: 12px; }
+      #send { padding: 0 14px; }
       .pills { flex-direction: column; align-items: flex-end; gap: 5px; }
       .pill { padding: 6px 8px; font-size: 10px; }
-      .userbar { gap: 6px; padding-left: 10px; padding-right: 10px; font-size: 11px; }
-      .userbar .pactions { gap: 4px; }
-      .userbar .btn { padding: 8px; }
+      .userbar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; font-size: 11px; }
+      .userbar > div:first-child { flex: 1 0 100%; }
+      .userbar .pactions { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+      .userbar .btn { min-width: 0; justify-content: center; padding: 8px 6px; font-size: 11px; }
       .user-profile-btn { gap: 5px; }
+      .tabs { gap: 6px; padding-top: 9px; padding-bottom: 9px; }
+      .tab { min-width: 0; padding: 9px 5px; font-size: 12px; }
+      #notice { padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+      .person { gap: 8px; padding: 9px; }
+      .person .pactions { gap: 4px; }
+      .person .btn { padding: 8px 7px; font-size: 11px; }
+    }
+    @media (min-width: 481px) and (max-width: 640px) {
+      .story-item, .story-own { flex-basis: 68px; width: 68px; }
+      .story-own .story-item { width: 68px; }
+      .story-ring { width: 62px; height: 62px; }
     }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
@@ -405,7 +431,8 @@
         <button class="key" type="button" data-digit="0">0</button>
         <button class="key utility" type="button" id="keyDelete" aria-label="Delete last digit">⌫</button>
       </div>
-      <p class="lock-foot">Protected with your personal passcode</p>
+      <button class="btn" id="biometricUnlock" type="button" hidden>Unlock with fingerprint</button>
+      <p class="lock-foot">Use your PIN or device biometrics to unlock</p>
     </form>
   </section>
 
@@ -461,6 +488,7 @@
         </button>
         <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
         <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
+        <button class="btn" id="enableBiometric" type="button" hidden>Enable fingerprint</button>
         <button class="btn" id="logout" type="button">Log out</button>
       </div>
     </div>
@@ -624,6 +652,7 @@
     const SUPABASE_KEY = "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
     const USERNAME_RE = /^[A-Za-z0-9_.]{3,20}$/;
     const APP_PIN = "6767";
+    const BIOMETRIC_CREDENTIAL_KEY = "abro-biometric-credential";
     const MAX_MESSAGES_ON_SCREEN = 150;
 
     const $ = id => document.getElementById(id);
@@ -654,6 +683,32 @@
 
     const lockForm = $("lockForm");
     const lockPin = $("lockPin");
+    const biometricUnlock = $("biometricUnlock");
+    const enableBiometric = $("enableBiometric");
+    const encodeCredentialId = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes))).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/g, "");
+    const decodeCredentialId = value => {
+      const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+      return Uint8Array.from(atob(base64 + "=".repeat((4 - base64.length % 4) % 4)), c => c.charCodeAt(0));
+    };
+    const biometricSupported = () => window.isSecureContext && !!window.PublicKeyCredential && !!navigator.credentials;
+
+    async function updateBiometricButtons() {
+      if (!biometricSupported()) return;
+      try {
+        const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+        const enrolled = !!localStorage.getItem(BIOMETRIC_CREDENTIAL_KEY);
+        biometricUnlock.hidden = !available || !enrolled;
+        enableBiometric.hidden = !available || enrolled;
+      } catch { /* Keep biometric unlock hidden when the browser cannot check support. */ }
+    }
+
+    function unlockApp() {
+      $("lockScreen").classList.add("gone");
+      $("authScreen").hidden = false;
+      route();
+    }
+
+    updateBiometricButtons();
     function refreshPinDots() {
       $("pinDots").querySelectorAll(".pin-dot").forEach((dot, i) => dot.classList.toggle("filled", i < lockPin.value.length));
     }
@@ -681,11 +736,63 @@
         lockForm.classList.add("shake");
         return;
       }
-      $("lockScreen").classList.add("gone");
-      $("authScreen").hidden = false;
-      route();
+      unlockApp();
     });
     lockPin.addEventListener("input", refreshPinDots);
+
+    biometricUnlock.addEventListener("click", async () => {
+      const savedId = localStorage.getItem(BIOMETRIC_CREDENTIAL_KEY);
+      if (!savedId) return updateBiometricButtons();
+      biometricUnlock.disabled = true;
+      try {
+        const assertion = await navigator.credentials.get({ publicKey: {
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          allowCredentials: [{ type: "public-key", id: decodeCredentialId(savedId) }],
+          userVerification: "required",
+          timeout: 60000
+        } });
+        if (!assertion) throw new Error("No biometric response was received.");
+        unlockApp();
+      } catch (error) {
+        console.error("Biometric unlock error:", error);
+        $("lockError").textContent = "Fingerprint unlock failed or was canceled. Use your PIN.";
+      } finally {
+        biometricUnlock.disabled = false;
+      }
+    });
+
+    enableBiometric.addEventListener("click", async () => {
+      if (!state.me || !biometricSupported()) return;
+      enableBiometric.disabled = true;
+      try {
+        const credential = await navigator.credentials.create({ publicKey: {
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          rp: { name: "ABRO CHAT" },
+          user: {
+            id: crypto.getRandomValues(new Uint8Array(16)),
+            name: state.me.username,
+            displayName: state.me.username
+          },
+          pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+          authenticatorSelection: {
+            authenticatorAttachment: "platform",
+            residentKey: "preferred",
+            userVerification: "required"
+          },
+          timeout: 60000,
+          attestation: "none"
+        } });
+        if (!credential) throw new Error("No biometric credential was created.");
+        localStorage.setItem(BIOMETRIC_CREDENTIAL_KEY, encodeCredentialId(credential.rawId));
+        await updateBiometricButtons();
+        notice("Fingerprint unlock is enabled on this device.");
+      } catch (error) {
+        console.error("Biometric setup error:", error);
+        notice("Could not enable fingerprint unlock. Use PIN on this device.");
+      } finally {
+        enableBiometric.disabled = false;
+      }
+    });
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       realtime: { params: { eventsPerSecond: 10 } }
     });
