@@ -169,6 +169,7 @@
 
     header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark-stack { display: grid; justify-items: center; gap: 4px; flex: none; }
     .logo {
       flex: none; width: 44px; height: 44px; display: grid; place-items: center;
       border-radius: 15px; font-size: 19px; font-weight: 900;
@@ -237,6 +238,11 @@
       background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
       overflow-wrap: anywhere; animation: appear .18s ease-out;
     }
+    .message.with-avatar { display: flex; align-items: flex-end; gap: 8px; max-width: 92%; }
+    .message.with-avatar.mine { flex-direction: row-reverse; }
+    .message-avatar { width: 28px; height: 28px; font-size: 14px; }
+    .message-avatar.on::after { width: 9px; height: 9px; border-color: #11131e; box-shadow: 0 0 10px #34d399, 0 0 18px rgba(52,211,153,.75); }
+    .message-content { min-width: 0; }
     .message.mine { align-self: flex-end; border-radius: 18px 7px 18px 18px; border-color: rgba(196,181,253,.34); background: linear-gradient(135deg, rgba(139,92,246,.32), rgba(99,102,241,.17)); }
     @keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
     .meta { display: flex; gap: 10px; align-items: center; margin-bottom: 5px; }
@@ -733,6 +739,47 @@
       .tab small { font-size: 9px; }
     }
 
+    /* Keep the app and message composer inside the visible area above mobile keyboards. */
+    @media (max-width: 640px) {
+      .app {
+        position: fixed;
+        inset-inline: 0;
+        top: var(--visible-viewport-top, 0px);
+        width: 100%;
+        height: var(--visible-viewport-height, 100dvh);
+      }
+    }
+
+    .userbar .pactions { width: auto; display: flex; align-items: center; justify-content: flex-end; margin-left: auto; }
+    @media (max-width: 640px) {
+      .brand > div:last-child { align-self: flex-start; margin-top: 8px; }
+    }
+    .profile-menu { position: relative; }
+    .profile-menu-toggle { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 6px; }
+    .profile-menu-toggle .avatar { width: 30px; height: 30px; font-size: 15px; }
+    .profile-menu-panel { position: absolute; z-index: 80; top: calc(100% + 9px); right: 0; display: grid; gap: 5px; min-width: 170px; padding: 8px; border: 1px solid rgba(196,181,253,.24); border-radius: 14px; background: linear-gradient(145deg, rgba(31,29,52,.98), rgba(12,16,31,.99)); box-shadow: 0 14px 38px rgba(0,0,0,.38); }
+    .profile-menu-panel .btn { width: 100%; text-align: left; }
+    .profile-menu-panel .btn[hidden] { display: none !important; }
+    .messages-shortcut { width: 34px; height: 30px; display: grid; place-items: center; padding: 4px; border-radius: 10px; color: #ded7f5; }
+    .messages-shortcut svg { width: 21px; height: 21px; }
+    .messages-shortcut.active { border-color: rgba(196,181,253,.56); background: rgba(167,139,250,.2); color: #fff; }
+    .messages-panel { overflow-y: auto; padding: 0 0 calc(74px + env(safe-area-inset-bottom)); }
+    .messages-heading { padding: 16px; border-bottom: 1px solid var(--border); font-size: 20px; font-weight: 750; }
+    .chat-list-row { display: flex; align-items: center; gap: 11px; padding: 12px 15px; border-bottom: 1px solid rgba(180,190,255,.12); cursor: pointer; }
+    .chat-list-row:hover { background: rgba(167,139,250,.08); }
+    .chat-list-copy { flex: 1; min-width: 0; }
+    .chat-list-copy strong, .chat-list-copy small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chat-list-copy strong { font-size: 14px; }
+    .chat-list-copy small { margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .chat-list-unread { min-width: 19px; height: 19px; display: grid; place-items: center; padding: 0 5px; border-radius: 10px; background: #8b5cf6; color: #fff; font-size: 10px; font-weight: 700; }
+    .feed-toolbar { display: none; }
+    @media (max-width: 480px) {
+      .userbar .pactions { width: auto; display: flex; grid-template-columns: none; }
+      .profile-menu-toggle { gap: 5px; padding: 4px 7px 4px 5px; font-size: 11px; }
+      .profile-menu-toggle .avatar { width: 26px; height: 26px; }
+      .profile-menu-panel { min-width: 155px; }
+    }
+
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
   </style>
 </head>
@@ -801,7 +848,12 @@
   <main class="app" id="chatApp" aria-hidden="true" hidden>
     <header>
       <div class="brand">
-        <div class="logo">A</div>
+        <div class="brand-mark-stack">
+          <div class="logo">A</div>
+          <button class="btn messages-shortcut" id="openMessages" type="button" aria-label="Open messages" title="Messages">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3.5 2v-5.2A7.5 7.5 0 1 1 20 11.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11.5h8M8 14.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <div>
           <h1>ABRO CHAT</h1>
           <div class="subtitle">Real conversations.</div>
@@ -817,15 +869,25 @@
       <div><span>Signed in as</span> <strong id="meName"></strong></div>
       <div class="pactions">
         <button class="btn" id="returnHome" type="button" hidden>← Menu</button>
-        <button class="btn user-profile-btn" id="openMyProfile" type="button" aria-label="View my profile">
-          <span id="userAvatar"></span><span>My profile</span>
-        </button>
-        <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
-        <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
-        <button class="btn" id="enableBiometric" type="button" hidden>Enable fingerprint</button>
-        <button class="btn" id="logout" type="button">Log out</button>
+        <div class="profile-menu" id="profileMenu">
+          <button class="btn profile-menu-toggle" id="profileMenuToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="My profile menu">
+            <span id="userAvatar"></span><span>My profile</span>
+          </button>
+          <div class="profile-menu-panel" id="profileMenuPanel" hidden>
+            <button class="btn" id="openMyProfile" type="button">View profile</button>
+            <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
+            <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
+            <button class="btn" id="enableBiometric" type="button" hidden>Enable fingerprint</button>
+            <button class="btn" id="logout" type="button">Log out</button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <section class="panel messages-panel" id="messagesPanel" aria-label="Messages" hidden>
+      <div class="messages-heading">Messages</div>
+      <div id="chatList"></div>
+    </section>
 
     <section class="panel" id="homePanel" aria-label="My profile" hidden>
       <div class="profile-page">
@@ -853,8 +915,8 @@
     </section>
 
     <nav class="tabs" aria-label="Sections">
-      <button class="btn tab" id="tabFeed" type="button" aria-label="Feed" aria-current="page">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.2v-6.2H9.4V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg><small>Feed</small>
+      <button class="btn tab" id="tabFeed" type="button" aria-label="Home" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 10.7 12 3l9 7.7v9.1a1.2 1.2 0 0 1-1.2 1.2h-5.2v-6.2H9.4V21H4.2A1.2 1.2 0 0 1 3 19.8z"/></svg><small>Home</small>
       </button>
       <button class="btn tab" id="tabFriends" type="button" aria-label="Search people and friends">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 4.2 4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><small>Search</small><span class="badge" id="friendsBadge" hidden>0</span>
@@ -872,7 +934,6 @@
 
     <section class="panel" id="feedPanel" hidden aria-label="Community feed">
       <div class="feed-toolbar">
-        <h2>Feed</h2>
         <button class="btn primary feed-plus" id="openFeedCreate" type="button" aria-label="Create a post or story" hidden>＋</button>
       </div>
       <div class="stories-block">
@@ -1064,6 +1125,17 @@
     const MAX_MESSAGES_ON_SCREEN = 150;
 
     const $ = id => document.getElementById(id);
+    function syncVisibleViewport() {
+      if (!matchMedia("(max-width: 640px)").matches) return;
+      const viewport = window.visualViewport;
+      document.documentElement.style.setProperty("--visible-viewport-height", `${viewport?.height || window.innerHeight}px`);
+      document.documentElement.style.setProperty("--visible-viewport-top", `${viewport?.offsetTop || 0}px`);
+    }
+    syncVisibleViewport();
+    window.addEventListener("resize", syncVisibleViewport, { passive: true });
+    window.visualViewport?.addEventListener("resize", syncVisibleViewport, { passive: true });
+    window.visualViewport?.addEventListener("scroll", syncVisibleViewport, { passive: true });
+
     const AVATAR_PRESETS = {
       boy1: "👦🏻", boy2: "👨🏻‍🦱", boy3: "🧑🏻‍🎤", girl1: "👧🏻", girl2: "👩🏻‍🎤"
     };
@@ -1227,6 +1299,7 @@
     let searchId = 0;
     let lastResults = [];
     let feedLoadId = 0;
+    let chatListLoadId = 0;
     let feedPosts = [];
     let activeStories = [];
     let viewedStories = new Set();
@@ -1467,6 +1540,21 @@
       $("closeProfileView").focus();
     }
     function closeProfileView() { $("profileViewModal").hidden = true; }
+    function closeProfileMenu() {
+      $("profileMenuPanel").hidden = true;
+      $("profileMenuToggle").setAttribute("aria-expanded", "false");
+    }
+    $("profileMenuToggle").addEventListener("click", () => {
+      const opening = $("profileMenuPanel").hidden;
+      $("profileMenuPanel").hidden = !opening;
+      $("profileMenuToggle").setAttribute("aria-expanded", String(opening));
+    });
+    $("profileMenuPanel").addEventListener("click", e => {
+      if (e.target.closest("button")) closeProfileMenu();
+    });
+    document.addEventListener("click", e => {
+      if (!$("profileMenu").contains(e.target)) closeProfileMenu();
+    });
     function openProfilePost(post) {
       const image = $("profilePostPreviewImage");
       const text = $("profilePostPreviewText");
@@ -1512,6 +1600,7 @@
     });
     document.addEventListener("keydown", e => {
       if (e.key !== "Escape") return;
+      closeProfileMenu();
       if (!$("profileViewModal").hidden) closeProfileView();
       if (!$("profilePostModal").hidden) closeProfilePost();
       if (!$("profileSettingsModal").hidden) closeProfileSettings();
@@ -1629,6 +1718,9 @@
       $("onlineCount").textContent = String(state.online.size);
       if (state.view === "friends") renderFriends();
       if (state.view === "dm") updateChatHead();
+      messagesEl.querySelectorAll(".message-avatar[data-user-id]").forEach(avatar => {
+        avatar.classList.toggle("on", avatar.dataset.userId !== state.me.id && state.online.has(avatar.dataset.userId));
+      });
     }
 
     /* ================= typing ================= */
@@ -1683,11 +1775,20 @@
     const messagesEl = $("messages");
 
     function buildMessage(m) {
-      return h("article", { class: "message" + (m.mine ? " mine" : "") },
+      const content = h("div", { class: "message-content" },
         h("div", { class: "meta" },
           h("span", { class: "sender", text: m.name }),
           h("span", { class: "time", text: fmtTime(m.at) })),
         h("div", { class: "text", text: m.text }));
+      const message = h("article", { class: "message" + (m.mine ? " mine" : "") }, content);
+      if (m.profile) {
+        message.classList.add("with-avatar");
+        const avatar = avatarNode(m.profile, m.online);
+        avatar.classList.add("message-avatar");
+        if (m.profile.id) avatar.dataset.userId = m.profile.id;
+        message.prepend(avatar);
+      }
+      return message;
     }
     function scrollDown(smooth) {
       requestAnimationFrame(() => messagesEl.scrollTo({ top: messagesEl.scrollHeight, behavior: smooth ? "smooth" : "auto" }));
@@ -1712,10 +1813,14 @@
     }
 
     const fromLounge = r => ({ id: r.id, mine: r.sender === state.me.id, name: r.sender_name, text: r.body, at: r.created_at });
-    const fromDM = r => ({
-      id: r.id, mine: r.sender === state.me.id,
-      name: state.profiles.get(r.sender)?.username || "Friend", text: r.body, at: r.created_at
-    });
+    const fromDM = r => {
+      const mine = r.sender === state.me.id;
+      const profile = mine ? state.me : state.profiles.get(r.sender) || { id: r.sender, username: "Friend" };
+      return {
+        id: r.id, mine, profile, online: !mine && state.online.has(r.sender),
+        name: profile.username || "Friend", text: r.body, at: r.created_at
+      };
+    };
 
     function onLounge(row) {
       if (!state.me || loungeCache.some(m => m.id === row.id)) return;
@@ -1734,6 +1839,7 @@
       state.unread.set(peerId, (state.unread.get(peerId) || 0) + 1);
       updateBadge();
       if (state.view === "friends") renderFriends();
+      if (state.view === "messages") loadChatList();
       const p = state.profiles.get(peerId);
       if (p) toast(p.username, row.body.length > 70 ? row.body.slice(0, 70) + "…" : row.body, () => openDM(p));
       else loadFriendships();
@@ -1790,11 +1896,13 @@
       stopTyping();
       state.view = view;
       $("homePanel").hidden = view !== "home";
+      $("messagesPanel").hidden = view !== "messages";
+      $("openMessages").classList.toggle("active", view === "messages");
       $("returnHome").hidden = view === "home";
       $("friendsPanel").hidden = view !== "friends";
       $("feedPanel").hidden = view !== "feed";
       $("aiPanel").hidden = view !== "ai";
-      $("chatPanel").hidden = view === "home" || view === "friends" || view === "feed" || view === "ai";
+      $("chatPanel").hidden = view === "home" || view === "messages" || view === "friends" || view === "feed" || view === "ai";
       $("tabProfile").classList.toggle("active", view === "home");
       $("tabFeed").classList.toggle("active", view === "feed");
       $("tabFriends").classList.toggle("active", view === "friends");
@@ -1814,6 +1922,70 @@
       renderMyProfilePage();
       loadFeed();
     }
+    async function loadChatList() {
+      if (!state.me) return;
+      const id = ++chatListLoadId;
+      const container = $("chatList");
+      container.replaceChildren(h("div", { class: "note", text: "Loading chats…" }));
+      const me = state.me.id;
+      const [messageResult, loungeResult] = await Promise.all([
+        sb.from("messages").select("id,sender,recipient,body,created_at")
+          .or(`sender.eq.${me},recipient.eq.${me}`).order("created_at", { ascending: false }).limit(300),
+        sb.from("lounge_messages").select("sender_name,body,created_at")
+          .order("created_at", { ascending: false }).limit(1)
+      ]);
+      if (id !== chatListLoadId) return;
+      if (messageResult.error) {
+        console.error("Chat list error:", messageResult.error);
+        container.replaceChildren(h("div", { class: "note", text: "Couldn't load your chats." }));
+        return;
+      }
+      const latestByPeer = new Map();
+      (messageResult.data || []).forEach(message => {
+        const peerId = message.sender === me ? message.recipient : message.sender;
+        if (peerId && !latestByPeer.has(peerId)) latestByPeer.set(peerId, message);
+      });
+      const friendIds = state.friendships.filter(item => item.status === "accepted")
+        .map(item => item.requester === me ? item.addressee : item.requester);
+      const peerIds = [...new Set([...latestByPeer.keys(), ...friendIds])];
+      const missing = peerIds.filter(peerId => !state.profiles.has(peerId));
+      if (missing.length) {
+        const { data, error } = await sb.from("profiles").select("id,username,avatar,bio").in("id", missing);
+        if (!error) (data || []).forEach(profile => state.profiles.set(profile.id, profile));
+      }
+      if (id !== chatListLoadId) return;
+
+      const lounge = h("div", { class: "chat-list-row", role: "button", tabindex: "0" },
+        h("div", { class: "avatar", text: "🌐" }),
+        h("div", { class: "chat-list-copy" },
+          h("strong", { text: "Public Lounge" }),
+          h("small", { text: loungeResult.error ? "Open public chat" : loungeResult.data?.[0] ? `${loungeResult.data[0].sender_name}: ${loungeResult.data[0].body}` : "Everyone who is signed in" })));
+      const openLoungeFromRow = () => openLounge();
+      lounge.addEventListener("click", openLoungeFromRow);
+      lounge.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLoungeFromRow(); } });
+
+      const rows = peerIds.map(peerId => {
+        const profile = state.profiles.get(peerId) || { id: peerId, username: "Friend" };
+        const latest = latestByPeer.get(peerId);
+        const unread = state.unread.get(peerId) || 0;
+        const preview = latest ? `${latest.sender === me ? "You: " : ""}${latest.body}` : "Start a conversation";
+        const row = h("div", { class: "chat-list-row", role: "button", tabindex: "0" },
+          avatarNode(profile, state.online.has(peerId)),
+          h("div", { class: "chat-list-copy" }, h("strong", { text: profile.username }), h("small", { text: preview })),
+          unread ? h("span", { class: "chat-list-unread", text: String(unread) }) : null);
+        const open = () => openDM(profile);
+        row.addEventListener("click", open);
+        row.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+        return { row, at: latest ? Date.parse(latest.created_at) || 0 : 0 };
+      }).sort((a, b) => b.at - a.at).map(item => item.row);
+      container.replaceChildren(lounge, ...(rows.length ? rows : [h("div", { class: "note", text: "Your friend chats will appear here." })]));
+    }
+    function openMessages() {
+      state.peer = null;
+      setView("messages");
+      loadChatList();
+    }
+    $("openMessages").addEventListener("click", openMessages);
     $("returnHome").addEventListener("click", openHome);
     $("profileCreatePost").addEventListener("click", showFriends);
     $("profileEditButton").addEventListener("click", () => $("openProfileSettings").click());
@@ -2361,6 +2533,7 @@
 
       updateBadge();
       if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
+      if (state.view === "messages") loadChatList();
       if (state.view === "feed") loadFeed();
     }
     const scheduleFriendsReload = debounce(loadFriendships, 300);
