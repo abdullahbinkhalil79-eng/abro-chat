@@ -3629,6 +3629,7 @@
     const messagesEl = $("messages");
 
     function receiptText(message) {
+      if (message.pending) return "Sending…";
       if (message.read_at) return "✓✓ Seen";
       if (message.delivered_at) return "✓✓ Delivered";
       return "✓ Sent";
@@ -3733,7 +3734,17 @@
       const m = fromLounge(row);
       loungeCache.push(m);
       if (loungeCache.length > MAX_MESSAGES_ON_SCREEN) loungeCache.shift();
-      if (state.isChatOpen && !state.peer) pushMessage(m);
+      if (state.isChatOpen && !state.peer) {
+        if (row.sender_name === state.me.username) {
+          const pending = [...messagesEl.querySelectorAll('.message[data-message-id^="pending-"]')]
+            .find(item => item.querySelector(".text")?.textContent === row.body);
+          if (pending) {
+            shown.delete(pending.dataset.messageId);
+            pending.remove();
+          }
+        }
+        pushMessage(m);
+      }
     }
 
     function onDM(row) {
@@ -3771,35 +3782,49 @@
       e.preventDefault();
       const input = $("messageInput");
       const text = input.value.trim();
-      if (!text || !state.me) return;
+      if (!text || !state.me || $("send").disabled) return;
       if (Date.now() - lastSent < 800) { notice("Slow down a little."); return; }
       lastSent = Date.now();
       stopTyping();
       input.value = "";
+      const sentPeer = state.peer;
+      const wasChatOpen = state.isChatOpen;
+      const pendingId = `pending-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      if (wasChatOpen) {
+        pushMessage({
+          id: pendingId, mine: true, profile: state.me, name: state.me.username,
+          text, at: new Date().toISOString(), pending: true
+        });
+      }
       $("send").disabled = true;
       try {
-        if (!state.peer) {
-          // Public lounge
+        if (!sentPeer) {
           const { data, error } = await sb.from("lounge_messages")
             .insert({ sender_name: state.me.username, body: text }).select().single();
           if (error) throw error;
           onLounge(data);
         } else {
-          // DM with peer
           const { data, error } = await sb.from("messages")
-            .insert({ recipient: state.peer.id, body: text }).select().single();
+            .insert({ recipient: sentPeer.id, body: text }).select().single();
           if (error) throw error;
-          onDM(data);
+          if (wasChatOpen && state.isChatOpen && state.peer?.id === sentPeer.id) {
+            shown.delete(pendingId);
+            messagesEl.querySelector(`[data-message-id="${pendingId}"]`)?.remove();
+            pushMessage(fromDM(data));
+          }
+          if (state.view === "messages") loadChatList();
         }
         notice("");
       } catch (err) {
         console.error("Send error:", err);
-        input.value = text;
+        shown.delete(pendingId);
+        messagesEl.querySelector(`[data-message-id="${pendingId}"]`)?.remove();
+        input.value = input.value ? `${text} ${input.value}` : text;
         lastSent = 0;
         notice(err.code === "42501" ? "You can only message friends who accepted your request." : "Message could not be sent. Try again.");
       } finally {
         $("send").disabled = false;
-        input.focus();
+        if (state.isChatOpen) input.focus();
       }
     });
 
