@@ -1123,6 +1123,15 @@
       font-size: 10px;
       color: var(--text-muted);
     }
+    .receipt {
+      margin-left: auto;
+      color: rgba(226, 232, 240, 0.68);
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .receipt.seen {
+      color: #7dd3fc;
+    }
     .text {
       font-size: 14px;
       line-height: 1.55;
@@ -3528,6 +3537,7 @@
       channel = sb.channel("abro-live", { config: { presence: { key: state.me.id } } })
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "lounge_messages" }, p => onLounge(p.new))
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, p => onDM(p.new))
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages" }, p => onDMUpdate(p.new))
         .on("postgres_changes", { event: "UPDATE", schema: "public", table: "profiles" }, p => { onProfileUpdate(p.new); if (state.view === "feed") loadFeed(); })
         .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, () => { if (state.view === "feed") loadFeed(); })
         .on("postgres_changes", { event: "INSERT", schema: "public", table: "stories" }, () => { if (state.view === "feed") loadFeed(); })
@@ -3618,13 +3628,23 @@
        ========================================================================== */
     const messagesEl = $("messages");
 
+    function receiptText(message) {
+      if (message.read_at) return "✓✓ Seen";
+      if (message.delivered_at) return "✓✓ Delivered";
+      return "✓ Sent";
+    }
+
     function buildMessage(m) {
+      const meta = h("div", { class: "meta" },
+        h("span", { class: "sender", text: m.name }),
+        h("span", { class: "time", text: fmtTime(m.at) }));
+      if (m.mine && m.profile) {
+        meta.append(h("span", { class: "receipt" + (m.read_at ? " seen" : ""), text: receiptText(m), "aria-label": receiptText(m) }));
+      }
       const content = h("div", { class: "message-content" },
-        h("div", { class: "meta" },
-          h("span", { class: "sender", text: m.name }),
-          h("span", { class: "time", text: fmtTime(m.at) })),
+        meta,
         h("div", { class: "text", text: m.text }));
-      const message = h("article", { class: "message" + (m.mine ? " mine" : "") }, content);
+      const message = h("article", { class: "message" + (m.mine ? " mine" : ""), "data-message-id": m.id }, content);
       if (m.profile) {
         message.classList.add("with-avatar");
         const avatar = avatarNode(m.profile, m.online);
@@ -3662,9 +3682,51 @@
       const profile = mine ? state.me : state.profiles.get(r.sender) || { id: r.sender, username: "Friend" };
       return {
         id: r.id, mine, profile, online: !mine && state.online.has(r.sender),
-        name: profile.username || "Friend", text: r.body, at: r.created_at
+        name: profile.username || "Friend", text: r.body, at: r.created_at,
+        delivered_at: r.delivered_at || null, read_at: r.read_at || null
       };
     };
+
+    function updateMessageReceipt(row) {
+      const message = [...messagesEl.querySelectorAll(".message[data-message-id]")]
+        .find(item => item.dataset.messageId === String(row.id));
+      const receipt = message?.querySelector(".receipt");
+      if (!receipt) return;
+      receipt.textContent = receiptText(row);
+      receipt.classList.toggle("seen", !!row.read_at);
+      receipt.setAttribute("aria-label", receipt.textContent);
+    }
+
+    async function acknowledgeIncomingMessage(row, markRead = false) {
+      if (!state.me || row.sender === state.me.id || row.recipient !== state.me.id) return;
+      const timestamp = new Date().toISOString();
+      const changes = {};
+      if (!row.delivered_at) changes.delivered_at = timestamp;
+      if (markRead && !row.read_at) changes.read_at = timestamp;
+      if (!Object.keys(changes).length) return;
+      let query = sb.from("messages").update(changes).eq("id", row.id).eq("recipient", state.me.id);
+      if (changes.delivered_at) query = query.is("delivered_at", null);
+      if (changes.read_at) query = query.is("read_at", null);
+      const { error } = await query;
+      if (error) console.error("Message receipt update error:", error);
+    }
+
+    async function markConversationRead(peerId, messages) {
+      const incoming = messages.filter(message => message.sender === peerId && message.recipient === state.me.id);
+      state.unread.delete(peerId);
+      updateBadge();
+      const needsUpdate = incoming.some(message => !message.delivered_at || !message.read_at);
+      if (!needsUpdate) return;
+      const timestamp = new Date().toISOString();
+      const { error } = await sb.from("messages").update({ delivered_at: timestamp, read_at: timestamp })
+        .eq("sender", peerId).eq("recipient", state.me.id).is("read_at", null);
+      if (error) console.error("Mark conversation read error:", error);
+    }
+
+    function onDMUpdate(row) {
+      if (!state.me) return;
+      updateMessageReceipt(fromDM(row));
+    }
 
     function onLounge(row) {
       if (!state.me || loungeCache.some(m => m.id === row.id)) return;
@@ -3678,8 +3740,10 @@
       if (!state.me) return;
       const mine = row.sender === state.me.id;
       const peerId = mine ? row.recipient : row.sender;
-      if (state.isChatOpen && state.peer?.id === peerId) { pushMessage(fromDM(row)); return; }
       if (mine) return;
+      const isOpenConversation = state.isChatOpen && state.peer?.id === peerId;
+      acknowledgeIncomingMessage(row, isOpenConversation);
+      if (isOpenConversation) { pushMessage(fromDM(row)); return; }
       state.unread.set(peerId, (state.unread.get(peerId) || 0) + 1);
       updateBadge();
       if (state.view === "friends") renderFriends();
@@ -3692,13 +3756,15 @@
     async function loadConversation() {
       const me = state.me.id, peer = state.peer.id, id = ++loadId;
       const { data, error } = await sb.from("messages")
-        .select("id,sender,recipient,body,created_at")
+        .select("id,sender,recipient,body,created_at,delivered_at,read_at")
         .or(`and(sender.eq.${me},recipient.eq.${peer}),and(sender.eq.${peer},recipient.eq.${me})`)
         .order("created_at", { ascending: false })
         .limit(80);
       if (id !== loadId) return;
       if (error) { console.error(error); notice("Could not load this chat."); return; }
-      showMessages(data.reverse().map(fromDM), "No messages yet. Say hello!");
+      const messages = data || [];
+      showMessages(messages.reverse().map(fromDM), "No messages yet. Say hello!");
+      await markConversationRead(peer, messages);
     }
 
     $("chatForm").addEventListener("submit", async e => {
