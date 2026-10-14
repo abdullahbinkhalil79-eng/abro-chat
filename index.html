@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#070913">
+  <meta name="theme-color" content="#050711">
   <link rel="manifest" href="/manifest.json">
   <link rel="icon" type="image/svg+xml" href="/icon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -13,19 +13,19 @@
   <meta name="apple-mobile-web-app-title" content="ABRO CHAT">
   <meta name="application-name" content="ABRO CHAT">
   <title>ABRO CHAT</title>
-  <meta name="description" content="A premium, crystal-clear iOS 18 glassmorphic messaging and social experience featuring real-time chats, stories, feed, friends, and ABRO AI.">
+  <meta name="description" content="A futuristic sci-fi glassmorphic real-time messaging and social experience featuring full-screen fluid chat rooms, stories, feed, friends, and ABRO AI.">
   <meta property="og:title" content="ABRO CHAT">
-  <meta property="og:description" content="A premium, crystal-clear iOS 18 glassmorphic messaging and social experience featuring real-time chats, stories, feed, friends, and ABRO AI.">
+  <meta property="og:description" content="A futuristic sci-fi glassmorphic real-time messaging and social experience featuring full-screen fluid chat rooms, stories, feed, friends, and ABRO AI.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================================
-       ABRO CHAT — iOS 18 Glassmorphism Design System
+       ABRO CHAT — Futuristic Sci-Fi Glassmorphism Design System
        ========================================================================== */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -36,23 +36,25 @@
 
     :root {
       color-scheme: dark;
-      --bg: #070913;
-      --bg-deep: #04050b;
-      --surface-glass: rgba(18, 22, 40, 0.68);
-      --surface-glass-elevated: rgba(26, 32, 58, 0.82);
+      --bg: #050711;
+      --bg-deep: #030409;
+      --surface-glass: rgba(14, 19, 36, 0.68);
+      --surface-glass-elevated: rgba(22, 28, 54, 0.84);
       --surface-glass-subtle: rgba(255, 255, 255, 0.045);
       --surface-glass-hover: rgba(255, 255, 255, 0.09);
       --surface-glass-active: rgba(255, 255, 255, 0.14);
       --border-glass: rgba(255, 255, 255, 0.12);
       --border-glass-bright: rgba(255, 255, 255, 0.22);
       --border-glass-accent: rgba(167, 139, 250, 0.38);
+      --border-scifi-cyan: rgba(56, 189, 248, 0.45);
       --text-primary: #f8fafc;
       --text-secondary: rgba(248, 250, 252, 0.72);
       --text-muted: rgba(226, 232, 240, 0.48);
       --accent: #8b5cf6;
+      --accent-cyan: #38bdf8;
       --accent-light: #c4b5fd;
-      --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #7c3aed 52%, #6366f1 100%);
-      --accent-gradient-hover: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 52%, #7c3aed 100%);
+      --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #6366f1 100%);
+      --accent-gradient-hover: linear-gradient(135deg, #67e8f9 0%, #a78bfa 50%, #818cf8 100%);
       --apple-blue: #0a84ff;
       --apple-green: #30d158;
       --apple-red: #ff453a;
@@ -65,9 +67,10 @@
       --radius-lg: 20px;
       --radius-xl: 28px;
       --radius-full: 9999px;
-      --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Plus Jakarta Sans", system-ui, sans-serif;
+      --font-stack: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      --font-scifi: "Orbitron", "Plus Jakarta Sans", sans-serif;
       --ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
-      --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --ease-fluid: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html, body {
@@ -81,36 +84,36 @@
       touch-action: manipulation;
     }
 
-    /* Ambient iOS 18 Light Caustics */
+    /* Ambient Sci-Fi Cosmic Caustics */
     body::before, body::after {
       content: "";
       position: fixed;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(85px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.38;
+      opacity: 0.35;
       transform: translateZ(0);
-      animation: floatAmbient 20s ease-in-out infinite alternate;
+      animation: floatAmbient 22s ease-in-out infinite alternate;
     }
     body::before {
-      top: -10vw;
+      top: -12vw;
       left: -10vw;
-      width: clamp(320px, 55vw, 680px);
-      height: clamp(320px, 55vw, 680px);
-      background: radial-gradient(circle, rgba(124, 58, 237, 0.48), rgba(99, 102, 241, 0.24) 45%, transparent 70%);
+      width: clamp(340px, 55vw, 700px);
+      height: clamp(340px, 55vw, 700px);
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.35), rgba(124, 58, 237, 0.3) 45%, transparent 70%);
     }
     body::after {
       bottom: -15vw;
       right: -10vw;
-      width: clamp(360px, 60vw, 760px);
-      height: clamp(360px, 60vw, 760px);
-      background: radial-gradient(circle, rgba(14, 165, 233, 0.32), rgba(139, 92, 246, 0.22) 50%, transparent 70%);
-      animation-delay: -10s;
+      width: clamp(380px, 60vw, 780px);
+      height: clamp(380px, 60vw, 780px);
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.32), rgba(14, 165, 233, 0.25) 50%, transparent 70%);
+      animation-delay: -11s;
     }
     @keyframes floatAmbient {
       0% { transform: translate3d(0, 0, 0) scale(0.96); }
-      100% { transform: translate3d(4vw, 3vh, 0) scale(1.08); }
+      100% { transform: translate3d(3vw, 4vh, 0) scale(1.08); }
     }
 
     /* Form Controls & Global Focus */
@@ -154,8 +157,8 @@
     }
     input:focus, textarea:focus {
       background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(196, 181, 253, 0.65);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 0 0 3px rgba(139, 92, 246, 0.22);
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 0 0 3px rgba(56, 189, 248, 0.2);
     }
 
     /* Reusable Glass Button Styles */
@@ -190,11 +193,11 @@
       border: 1px solid rgba(255, 255, 255, 0.32);
       background: var(--accent-gradient);
       color: #fff;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 20px -2px rgba(124, 58, 237, 0.48);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 6px 20px -2px rgba(56, 189, 248, 0.4);
     }
     .btn.primary:hover:not(:disabled) {
       background: var(--accent-gradient-hover);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 24px -2px rgba(139, 92, 246, 0.58);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 8px 24px -2px rgba(124, 58, 237, 0.5);
     }
     .btn.danger {
       border-color: rgba(239, 68, 68, 0.35);
@@ -207,7 +210,121 @@
     }
 
     /* ==========================================================================
-       PASSCODE LOCK SCREEN & TOUCH ID (iOS 18)
+       FUTURISTIC SCI-FI GLASSY "A" LOGO & BRANDING (SIDE-BY-SIDE)
+       ========================================================================== */
+    .brand-combo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+
+    /* Sci-Fi Glassy "A" Badge */
+    .scifi-glass-logo {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.32) 0%, rgba(139, 92, 246, 0.45) 50%, rgba(14, 165, 233, 0.22) 100%);
+      border: 1px solid rgba(147, 197, 253, 0.55);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 
+        0 0 20px rgba(56, 189, 248, 0.45),
+        0 0 35px rgba(139, 92, 246, 0.3),
+        inset 0 1px 1px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      flex: none;
+      transition: transform 0.25s var(--ease-spring), box-shadow 0.25s ease;
+    }
+    .scifi-glass-logo:hover {
+      transform: translateY(-1px) scale(1.04);
+      box-shadow: 
+        0 0 26px rgba(56, 189, 248, 0.65),
+        0 0 45px rgba(168, 85, 247, 0.45),
+        inset 0 1px 2px rgba(255, 255, 255, 0.95);
+    }
+
+    /* Holographic glass reflection diagonal sheen */
+    .scifi-glass-sheen {
+      position: absolute;
+      top: -30%;
+      left: -30%;
+      width: 160%;
+      height: 70%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0) 65%);
+      transform: rotate(-25deg);
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* Holographic corner cyber circuit notch */
+    .scifi-corner-glow {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8, 0 0 14px #38bdf8;
+      animation: scifiPulse 2.2s infinite ease-in-out;
+    }
+    @keyframes scifiPulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.25); filter: drop-shadow(0 0 6px #38bdf8); }
+    }
+
+    /* Sci-Fi Letter "A" */
+    .scifi-logo-letter {
+      position: relative;
+      z-index: 2;
+      font-family: var(--font-scifi);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      background: linear-gradient(180deg, #ffffff 10%, #bae6fd 60%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.7));
+    }
+
+    /* Brand typography: side-by-side with logo */
+    .brand-title-wrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      line-height: 1.15;
+    }
+    .brand-title {
+      font-family: var(--font-scifi);
+      font-size: 19px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      background: linear-gradient(90deg, #ffffff 0%, #e0e7ff 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.35));
+    }
+    .brand-sub-badge {
+      font-family: var(--font-scifi);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: rgba(56, 189, 248, 0.85);
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    /* ==========================================================================
+       PASSCODE LOCK SCREEN & TOUCH ID
        ========================================================================== */
     .screen {
       position: fixed;
@@ -217,9 +334,9 @@
       place-items: center;
       overflow-y: auto;
       padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
-      background: radial-gradient(ellipse at 50% 20%, rgba(139, 92, 246, 0.22), transparent 45%),
-                  radial-gradient(ellipse at 80% 80%, rgba(14, 165, 233, 0.16), transparent 45%),
-                  rgba(7, 9, 19, 0.94);
+      background: radial-gradient(ellipse at 50% 20%, rgba(56, 189, 248, 0.22), transparent 45%),
+                  radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.18), transparent 45%),
+                  rgba(5, 7, 17, 0.95);
       backdrop-filter: blur(var(--blur-xl));
       -webkit-backdrop-filter: blur(var(--blur-xl));
       isolation: isolate;
@@ -248,30 +365,29 @@
     }
     .lock-brand {
       margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
-    .mark {
+    .lock-brand .scifi-glass-logo {
       width: 64px;
       height: 64px;
-      display: grid;
-      place-items: center;
-      margin: 0 auto 16px;
-      border: 1px solid rgba(255, 255, 255, 0.26);
       border-radius: 20px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.05));
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 12px 36px rgba(0, 0, 0, 0.35);
-      font-size: 26px;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 0 0 20px rgba(196, 181, 253, 0.6);
+    }
+    .lock-brand .scifi-logo-letter {
+      font-size: 34px;
     }
     .lock-brand h2 {
       margin: 0;
+      font-family: var(--font-scifi);
       font-size: 24px;
-      font-weight: 750;
-      letter-spacing: 2px;
-      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      background: linear-gradient(90deg, #ffffff, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.4));
     }
     .lock-prompt {
       margin: 0 0 18px;
@@ -293,12 +409,12 @@
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.06);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-      transition: transform 0.22s var(--ease-bounce), background 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, box-shadow 0.2s ease;
     }
     .pin-dot.filled {
       transform: scale(1.18);
-      background: #ffffff;
-      box-shadow: 0 0 16px rgba(255, 255, 255, 0.9), 0 0 32px rgba(167, 139, 250, 0.6);
+      background: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.9), 0 0 32px rgba(139, 92, 246, 0.6);
     }
     .lock-card.shake {
       animation: pinShake 0.42s ease-in-out;
@@ -317,7 +433,7 @@
       text-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
     }
 
-    /* iOS 18 Keypad */
+    /* Keypad */
     .keypad {
       width: min(100%, 290px);
       display: grid;
@@ -359,11 +475,11 @@
     }
     .key:hover {
       background: linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1));
-      border-color: rgba(255, 255, 255, 0.4);
+      border-color: rgba(56, 189, 248, 0.5);
     }
     .key:active {
       transform: scale(0.9);
-      background: rgba(255, 255, 255, 0.38);
+      background: rgba(56, 189, 248, 0.35);
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.24);
     }
     .key.utility {
@@ -404,27 +520,21 @@
       padding: 28px 24px;
       border: 1px solid var(--border-glass-bright);
       border-radius: var(--radius-xl);
-      background: linear-gradient(145deg, rgba(28, 34, 60, 0.85), rgba(14, 18, 34, 0.9));
+      background: linear-gradient(145deg, rgba(22, 28, 54, 0.88), rgba(10, 14, 30, 0.94));
       backdrop-filter: blur(var(--blur-lg));
       -webkit-backdrop-filter: blur(var(--blur-lg));
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), 0 24px 64px rgba(0, 0, 0, 0.45);
     }
-    .auth-card .mark, .auth-card h2, .auth-card .caption {
-      text-align: center;
-    }
-    .auth-card h2 {
-      margin: 0;
-      font-size: 26px;
-      font-weight: 750;
-      letter-spacing: -0.02em;
+    .auth-card .lock-brand {
+      margin-bottom: 12px;
     }
     .caption {
       margin: 8px 0 22px;
       color: var(--text-secondary);
       font-size: 14px;
       line-height: 1.4;
+      text-align: center;
     }
-    /* iOS 18 Segmented Switch */
     .auth-switch {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -482,7 +592,7 @@
     }
 
     /* ==========================================================================
-       MAIN APP SHELL (iOS 18 Glass Container)
+       MAIN APP SHELL (iOS 18 Sci-Fi Glass Container)
        ========================================================================== */
     .app {
       position: relative;
@@ -491,7 +601,7 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      background: linear-gradient(180deg, rgba(16, 20, 38, 0.88), rgba(8, 10, 20, 0.94));
+      background: linear-gradient(180deg, rgba(14, 18, 36, 0.9), rgba(6, 8, 18, 0.96));
       border-inline: 1px solid var(--border-glass);
       backdrop-filter: blur(var(--blur-lg));
       -webkit-backdrop-filter: blur(var(--blur-lg));
@@ -500,7 +610,7 @@
       z-index: 10;
     }
 
-    /* iOS 18 Glass Header */
+    /* Glass Header */
     header {
       position: relative;
       z-index: 30;
@@ -510,34 +620,23 @@
       justify-content: space-between;
       gap: 12px;
       border-bottom: 1px solid var(--border-glass);
-      background: rgba(14, 18, 34, 0.72);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: rgba(10, 14, 28, 0.78);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       min-width: 0;
     }
-    .brand-mark-stack {
+
+    /* Header Status Indicators & Navigation Shortcuts */
+    .pills {
       display: flex;
       align-items: center;
       gap: 8px;
       flex: none;
-    }
-    .logo {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      font-size: 20px;
-      font-weight: 850;
-      color: #fff;
-      background: var(--accent-gradient);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 8px 20px -2px rgba(124, 58, 237, 0.42);
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
     .messages-shortcut {
       width: 36px;
@@ -549,6 +648,7 @@
       color: var(--accent-light);
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid var(--border-glass);
+      transition: all 0.2s ease;
     }
     .messages-shortcut svg {
       width: 20px;
@@ -556,36 +656,14 @@
     }
     .messages-shortcut:hover {
       background: rgba(255, 255, 255, 0.12);
-      border-color: var(--border-glass-bright);
+      border-color: rgba(56, 189, 248, 0.5);
+      color: #38bdf8;
     }
     .messages-shortcut.active {
-      border-color: var(--accent-light);
-      background: rgba(139, 92, 246, 0.28);
+      border-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.22);
       color: #fff;
-      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 750;
-      letter-spacing: -0.01em;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    /* Header Status Indicators */
-    .pills {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: none;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
     }
     .pill {
       display: inline-flex;
@@ -628,7 +706,7 @@
       justify-content: space-between;
       gap: 12px;
       border-bottom: 1px solid var(--border-glass);
-      background: rgba(12, 16, 30, 0.55);
+      background: rgba(10, 14, 28, 0.6);
       font-size: 13px;
       color: var(--text-secondary);
     }
@@ -671,7 +749,7 @@
       padding: 8px;
       border: 1px solid var(--border-glass-bright);
       border-radius: var(--radius-lg);
-      background: rgba(22, 28, 52, 0.92);
+      background: rgba(18, 24, 48, 0.94);
       backdrop-filter: blur(32px);
       -webkit-backdrop-filter: blur(32px);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -707,9 +785,8 @@
     }
 
     /* ==========================================================================
-       BOTTOM NAVIGATION DOCK (iOS 18 Floating Glass Dock)
+       BOTTOM NAVIGATION DOCK
        ========================================================================== */
-    /* Clear iOS-style glass for the bottom navigation (Original style restored) */
     .tabs {
       position: absolute;
       z-index: 45;
@@ -721,11 +798,11 @@
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 0;
       padding: 7px 9px calc(7px + env(safe-area-inset-bottom));
-      border-top: 1px solid rgba(226, 220, 255, .28);
-      background: linear-gradient(180deg, rgba(94, 91, 130, .48), rgba(18, 20, 39, .80));
+      border-top: 1px solid rgba(226, 220, 255, .25);
+      background: linear-gradient(180deg, rgba(80, 85, 125, .48), rgba(14, 17, 36, .85));
       -webkit-backdrop-filter: saturate(190%) blur(28px);
       backdrop-filter: saturate(190%) blur(28px);
-      box-shadow: 0 -10px 34px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.18);
+      box-shadow: 0 -10px 34px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18);
     }
     .tabs::before {
       content: "";
@@ -734,7 +811,7 @@
       left: 12%;
       width: 76%;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.52), transparent);
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, .6), transparent);
       pointer-events: none;
     }
     .tab {
@@ -749,7 +826,7 @@
       border: 0;
       border-radius: 0;
       background: transparent;
-      color: rgba(239, 236, 255, .9);
+      color: rgba(239, 236, 255, .88);
       text-shadow: 0 1px 10px rgba(0,0,0,.35);
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -786,12 +863,12 @@
       filter: none;
     }
     .tab.active::before {
-      border-color: rgba(226, 216, 255, .34);
-      background: linear-gradient(145deg, rgba(203, 187, 255, .30), rgba(113, 89, 190, .22));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 4px 18px rgba(131, 94, 255, .22);
+      border-color: rgba(56, 189, 248, .45);
+      background: linear-gradient(145deg, rgba(56, 189, 248, .25), rgba(124, 58, 237, .25));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 18px rgba(56, 189, 248, .3);
     }
     .tab.active svg {
-      filter: drop-shadow(0 0 8px rgba(205,190,255,.72));
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, .85));
     }
     .tab.active small {
       font-weight: 700;
@@ -812,48 +889,119 @@
       font-size: 9px;
       font-weight: 700;
     }
-    .app:has(#chatPanel:not([hidden])) .tabs {
-      display: none;
-    }
 
     /* ==========================================================================
-       CONVERSATIONS & CHAT (Lounge & DM)
+       DEDICATED FULL-SCREEN FLUID CHAT LAYER (#chatPanel.chat-layer)
        ========================================================================== */
-    .chat-head {
+    #chatPanel.chat-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: #050711;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate3d(100%, 0, 0);
+      opacity: 0.95;
+      transition: transform 0.36s var(--ease-fluid), opacity 0.28s ease, visibility 0.36s;
+      will-change: transform, opacity;
+      box-shadow: -15px 0 45px rgba(0, 0, 0, 0.7);
+    }
+    #chatPanel.chat-layer.layer-active {
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+
+    /* Full-screen Chat Top Navigation Bar */
+    .chat-layer-head {
+      position: relative;
+      z-index: 20;
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 10px 18px;
+      padding: max(14px, env(safe-area-inset-top)) 16px 12px;
       border-bottom: 1px solid var(--border-glass);
-      background: rgba(14, 18, 34, 0.65);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 14, 28, 0.82);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
     }
-    .chat-head .titles {
+    .chat-back-btn {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: var(--radius-md);
+      font-size: 18px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-glass-bright);
+      flex: none;
+      transition: all 0.2s var(--ease-spring);
+    }
+    .chat-back-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: var(--accent-cyan);
+    }
+    .chat-back-btn:active {
+      transform: scale(0.92);
+    }
+    .chat-peer-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+    .chat-peer-avatar {
+      width: 38px;
+      height: 38px;
+      font-size: 16px;
+      flex: none;
+    }
+    .chat-layer-head .titles {
       flex: 1;
       min-width: 0;
     }
-    .chat-head strong {
+    .chat-layer-head strong {
       display: block;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #fff;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .chat-head small {
-      color: var(--text-muted);
+    .chat-layer-head small {
+      display: block;
+      color: #38bdf8;
       font-size: 12px;
+      font-weight: 500;
     }
-    #backBtn {
-      width: 34px;
-      height: 34px;
+    .chat-layer-head small.offline {
+      color: var(--text-muted);
+    }
+    .chat-head-action {
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
       padding: 0;
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      flex: none;
+    }
+    .chat-head-action:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     /* Chat Surface & Earth Canvas */
@@ -863,7 +1011,7 @@
       flex: 1;
       min-height: 0;
       overflow: hidden;
-      background: linear-gradient(180deg, rgba(6, 9, 20, 0.95), rgba(4, 6, 14, 0.98));
+      background: linear-gradient(180deg, rgba(6, 9, 20, 0.95), rgba(3, 5, 12, 0.98));
     }
     .earth-background, .earth-shade {
       position: absolute;
@@ -882,19 +1030,19 @@
     }
     .earth-shade {
       z-index: 1;
-      background: radial-gradient(circle at 50% 50%, rgba(5, 8, 18, 0.25), rgba(4, 6, 14, 0.88) 85%);
+      background: radial-gradient(circle at 50% 50%, rgba(5, 8, 18, 0.22), rgba(3, 5, 12, 0.9) 85%);
     }
 
-    /* Message Stream */
+    /* Message Stream in Fullscreen */
     #messages {
       position: absolute;
       inset: 0;
       z-index: 2;
       overflow-y: auto;
-      padding: 14px 18px 24px;
+      padding: 16px 18px 24px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       overscroll-behavior: contain;
     }
     #messages::-webkit-scrollbar {
@@ -917,30 +1065,30 @@
     /* Message Bubbles */
     .message {
       align-self: flex-start;
-      max-width: 82%;
-      padding: 11px 15px;
+      max-width: 84%;
+      padding: 12px 16px;
       border: 1px solid var(--border-glass);
       border-radius: 6px 18px 18px 18px;
-      background: linear-gradient(145deg, rgba(28, 34, 58, 0.78), rgba(18, 22, 42, 0.82));
+      background: linear-gradient(145deg, rgba(24, 30, 54, 0.85), rgba(14, 18, 38, 0.88));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.14);
       overflow-wrap: anywhere;
       animation: messageEnter 0.22s var(--ease-spring);
     }
     .message.with-avatar {
       display: flex;
       align-items: flex-end;
-      gap: 9px;
+      gap: 10px;
       max-width: 88%;
     }
     .message.with-avatar.mine {
       flex-direction: row-reverse;
     }
     .message-avatar {
-      width: 28px;
-      height: 28px;
-      font-size: 13px;
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
       flex: none;
     }
     .message-content {
@@ -949,9 +1097,9 @@
     .message.mine {
       align-self: flex-end;
       border-radius: 18px 6px 18px 18px;
-      border-color: rgba(196, 181, 253, 0.42);
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.65), rgba(99, 102, 241, 0.5));
-      box-shadow: 0 6px 20px -2px rgba(124, 58, 237, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+      border-color: rgba(56, 189, 248, 0.45);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(124, 58, 237, 0.55));
+      box-shadow: 0 6px 20px -2px rgba(56, 189, 248, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.38);
     }
     @keyframes messageEnter {
       from { opacity: 0; transform: translateY(8px) scale(0.97); }
@@ -966,7 +1114,10 @@
     .sender {
       font-size: 12px;
       font-weight: 700;
-      color: var(--accent-light);
+      color: #38bdf8;
+    }
+    .message.mine .sender {
+      color: #c4b5fd;
     }
     .time {
       font-size: 10px;
@@ -984,18 +1135,18 @@
       display: none;
       align-items: center;
       gap: 10px;
-      margin: 6px 18px 0;
-      padding: 6px 14px;
+      margin: 8px 18px 0;
+      padding: 7px 16px;
       width: fit-content;
       max-width: calc(100% - 36px);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-full);
-      background: rgba(22, 28, 50, 0.75);
+      background: rgba(18, 24, 46, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       color: var(--text-secondary);
       font-size: 12px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
     }
     .typing.show {
       display: flex;
@@ -1008,7 +1159,7 @@
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: var(--accent-light);
+      background: #38bdf8;
       animation: dotPulse 1.1s ease-in-out infinite;
     }
     .dots i:nth-child(2) { animation-delay: 0.18s; }
@@ -1018,26 +1169,33 @@
       30% { opacity: 1; transform: translateY(-4px); }
     }
 
-    /* Chat Form & Message Composer */
+    /* Chat Form & Message Composer in Full-screen */
     #chatForm {
       display: flex;
       gap: 10px;
-      padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      padding: 12px 16px max(14px, env(safe-area-inset-bottom));
       border-top: 1px solid var(--border-glass);
-      background: rgba(14, 18, 34, 0.85);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      background: rgba(10, 14, 28, 0.9);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
     }
     #messageInput {
       flex: 1;
       border-radius: var(--radius-full);
-      padding: 11px 18px;
-      font-size: 14px;
+      padding: 12px 20px;
+      font-size: 15px;
+      border-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.07);
+    }
+    #messageInput:focus {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
     }
     #send {
       border-radius: var(--radius-full);
-      padding: 0 18px;
+      padding: 0 20px;
       font-size: 14px;
+      font-weight: 700;
     }
 
     /* ==========================================================================
@@ -1053,6 +1211,9 @@
       font-weight: 750;
       color: #fff;
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .chat-list-row {
       display: flex;
@@ -1061,13 +1222,14 @@
       padding: 14px 20px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       cursor: pointer;
-      transition: background 0.16s ease;
+      transition: background 0.16s ease, transform 0.16s ease;
     }
     .chat-list-row:hover {
       background: rgba(255, 255, 255, 0.05);
     }
     .chat-list-row:active {
-      background: rgba(255, 255, 255, 0.09);
+      background: rgba(56, 189, 248, 0.1);
+      transform: scale(0.99);
     }
     .chat-list-copy {
       flex: 1;
@@ -1153,8 +1315,8 @@
       width: 106px;
       height: 106px;
       border-radius: 50%;
-      border: 2.5px solid #c084fc;
-      box-shadow: 0 0 26px rgba(168, 85, 247, 0.48), 0 4px 18px rgba(0, 0, 0, 0.35);
+      border: 2.5px solid #38bdf8;
+      box-shadow: 0 0 26px rgba(56, 189, 248, 0.48), 0 4px 18px rgba(0, 0, 0, 0.35);
       font-size: 44px;
       flex: none;
       overflow: hidden;
@@ -1254,7 +1416,6 @@
     .feed-toolbar {
       display: none;
     }
-    /* Stories Horizontal Shelf */
     .stories-block {
       margin: 0;
       padding: 14px 18px 6px;
@@ -1305,7 +1466,7 @@
       padding: 2.5px;
       border-radius: 50%;
       background: conic-gradient(from 215deg, #38bdf8, #a78bfa 35%, #ec4899 68%, #38bdf8);
-      box-shadow: 0 0 16px rgba(167, 139, 250, 0.4);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
       transition: filter 0.2s ease;
     }
     .story-ring::before {
@@ -1365,7 +1526,7 @@
       color: #fff;
       font-size: 16px;
       line-height: 1;
-      box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
       cursor: pointer;
     }
 
@@ -1398,7 +1559,7 @@
       margin-top: 12px;
     }
     .feed-upload {
-      color: var(--accent-light);
+      color: var(--accent-cyan);
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -1423,7 +1584,7 @@
       margin: 0 18px 16px;
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-xl);
-      background: linear-gradient(180deg, rgba(22, 28, 52, 0.72), rgba(14, 18, 36, 0.8));
+      background: linear-gradient(180deg, rgba(20, 26, 48, 0.72), rgba(12, 16, 32, 0.8));
       backdrop-filter: blur(28px);
       -webkit-backdrop-filter: blur(28px);
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
@@ -1483,7 +1644,7 @@
     }
     .comment-item strong {
       margin-right: 8px;
-      color: var(--accent-light);
+      color: #38bdf8;
       font-size: 12px;
       font-weight: 700;
     }
@@ -1526,7 +1687,7 @@
       padding: 24px 20px;
       border: 1px solid var(--border-glass-bright);
       border-radius: var(--radius-xl);
-      background: linear-gradient(145deg, rgba(30, 36, 68, 0.8), rgba(16, 20, 40, 0.86));
+      background: linear-gradient(145deg, rgba(24, 30, 58, 0.8), rgba(12, 16, 36, 0.86));
       backdrop-filter: blur(32px);
       -webkit-backdrop-filter: blur(32px);
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22);
@@ -1569,8 +1730,8 @@
       margin-top: 18px;
       padding: 16px;
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(167, 139, 250, 0.28);
-      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.1);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       color: #fff;
@@ -1636,7 +1797,7 @@
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: linear-gradient(145deg, #7c3aed, #4f46e5);
+      background: linear-gradient(145deg, #38bdf8, #7c3aed);
       color: #fff;
       font-weight: 750;
       overflow: hidden;
@@ -1656,7 +1817,7 @@
       height: 11px;
       border-radius: 50%;
       background: var(--apple-green);
-      border: 2px solid #070913;
+      border: 2px solid #050711;
       box-shadow: 0 0 10px var(--apple-green);
     }
     .pinfo {
@@ -1689,7 +1850,7 @@
     }
 
     /* ==========================================================================
-       MODALS, SHEETS & OVERLAYS (iOS 18 Translucent Sheets)
+       MODALS, SHEETS & OVERLAYS
        ========================================================================== */
     .modal-backdrop {
       position: fixed;
@@ -1698,7 +1859,7 @@
       display: grid;
       place-items: center;
       padding: 16px;
-      background: rgba(3, 5, 14, 0.72);
+      background: rgba(3, 5, 14, 0.75);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       animation: modalFadeIn 0.25s ease both;
@@ -1715,7 +1876,7 @@
       padding: 24px;
       border: 1px solid var(--border-glass-bright);
       border-radius: var(--radius-xl);
-      background: linear-gradient(160deg, rgba(30, 36, 68, 0.94), rgba(14, 18, 38, 0.96));
+      background: linear-gradient(160deg, rgba(24, 30, 58, 0.94), rgba(12, 16, 36, 0.96));
       backdrop-filter: blur(36px);
       -webkit-backdrop-filter: blur(36px);
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.28);
@@ -1769,8 +1930,8 @@
       width: 120px;
       height: 120px;
       margin: 20px auto 14px;
-      border: 2px solid var(--accent-light);
-      box-shadow: 0 0 32px rgba(139, 92, 246, 0.35);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 32px rgba(56, 189, 248, 0.4);
       font-size: 58px;
     }
     .profile-view-name {
@@ -1803,8 +1964,8 @@
       margin: 18px auto;
       border-radius: 50%;
       font-size: 40px;
-      border: 2px solid var(--accent-light);
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+      border: 2px solid var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
     }
     .avatar-options {
       display: grid;
@@ -1824,9 +1985,9 @@
       transition: all 0.2s var(--ease-spring);
     }
     .avatar-option.selected {
-      border-color: var(--accent-light);
-      background: rgba(139, 92, 246, 0.3);
-      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+      border-color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.25);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
     }
     .avatar-option .avatar {
       width: 44px;
@@ -1846,18 +2007,18 @@
       width: 100%;
       margin-top: 14px;
       padding: 14px;
-      border: 1.5px dashed rgba(196, 181, 253, 0.4);
+      border: 1.5px dashed rgba(56, 189, 248, 0.45);
       border-radius: var(--radius-md);
-      color: var(--accent-light);
-      background: rgba(139, 92, 246, 0.08);
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.08);
       font-weight: 600;
       font-size: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     .upload-label:hover {
-      background: rgba(139, 92, 246, 0.16);
-      border-color: var(--accent-light);
+      background: rgba(56, 189, 248, 0.16);
+      border-color: var(--accent-cyan);
     }
     .upload-label input {
       display: none;
@@ -1940,7 +2101,7 @@
       margin-bottom: 12px;
     }
 
-    /* Toast Notification (iOS 18 Dynamic Island Pill) */
+    /* Dynamic Island Toast Notification */
     .toast {
       position: fixed;
       z-index: 1300;
@@ -1954,10 +2115,10 @@
       padding: 12px 18px;
       border: 1px solid var(--border-glass-bright);
       border-radius: var(--radius-full);
-      background: rgba(20, 26, 48, 0.92);
+      background: rgba(16, 22, 44, 0.94);
       backdrop-filter: blur(36px);
       -webkit-backdrop-filter: blur(36px);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 92, 246, 0.25);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(56, 189, 248, 0.3);
       opacity: 0;
       visibility: hidden;
       transition: all 0.32s var(--ease-spring);
@@ -1978,7 +2139,7 @@
       background: var(--accent-gradient);
       color: #fff;
       font-size: 16px;
-      box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
     }
     .toast strong {
       display: block;
@@ -2001,8 +2162,112 @@
     }
 
     /* ==========================================================================
-       RESPONSIVE & ACCESSIBILITY SPECIFICATIONS
+       PWA INSTALLATION BANNER & OFFLINE INDICATOR
        ========================================================================== */
+    .pwa-install-banner {
+      position: fixed;
+      bottom: calc(74px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      width: min(92%, 500px);
+      padding: 10px 14px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(18, 24, 52, 0.96), rgba(8, 12, 28, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.3);
+      animation: bannerSlideUp 0.35s var(--ease-spring);
+    }
+    @keyframes bannerSlideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(22px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .pwa-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pwa-banner-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      font-size: 19px;
+      flex: none;
+    }
+    .pwa-banner-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .pwa-banner-text strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pwa-banner-text small {
+      display: block;
+      font-size: 11px;
+      color: rgba(226, 232, 240, 0.72);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pwa-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: none;
+    }
+    .pwa-install-btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+    .pwa-dismiss-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      background: transparent;
+    }
+    .pwa-dismiss-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Offline Indicator Badge */
+    .offline-banner {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(245, 158, 11, 0.92);
+      color: #030409;
+      font-size: 12px;
+      font-weight: 700;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.45);
+      animation: modalFadeIn 0.2s ease both;
+    }
+
+    /* Responsive */
     @media (max-width: 640px) {
       .app {
         position: fixed;
@@ -2040,7 +2305,11 @@
   <section class="screen" id="lockScreen" aria-label="Enter app PIN">
     <form class="screen-content lock-card" id="lockForm" autocomplete="off">
       <div class="lock-brand">
-        <div class="mark" aria-hidden="true">A</div>
+        <div class="scifi-glass-logo" aria-hidden="true">
+          <div class="scifi-glass-sheen"></div>
+          <span class="scifi-logo-letter">A</span>
+          <div class="scifi-corner-glow"></div>
+        </div>
         <h2>ABRO CHAT</h2>
       </div>
       <p class="lock-prompt">Enter Passcode</p>
@@ -2071,8 +2340,14 @@
   <!-- AUTH SCREEN (Sign up, Log in, Link account) -->
   <section class="screen" id="authScreen" aria-label="Account access" hidden>
     <form class="screen-content auth-card" id="authForm" autocomplete="on">
-      <div class="mark" aria-hidden="true">A</div>
-      <h2>ABRO CHAT</h2>
+      <div class="lock-brand">
+        <div class="scifi-glass-logo" aria-hidden="true">
+          <div class="scifi-glass-sheen"></div>
+          <span class="scifi-logo-letter">A</span>
+          <div class="scifi-corner-glow"></div>
+        </div>
+        <h2>ABRO CHAT</h2>
+      </div>
       <p class="caption" id="authCaption">Create an account to keep your profile safe</p>
       <div class="auth-switch" id="authSwitch" role="tablist" aria-label="Account access mode">
         <button class="active" id="authSignupTab" type="button" role="tab" aria-selected="true">Sign up</button>
@@ -2099,21 +2374,25 @@
 
   <!-- MAIN APP CONTAINER -->
   <main class="app" id="chatApp" aria-hidden="true" hidden>
-    <!-- Header -->
+    <!-- Header with Sci-Fi Glassy "A" Logo and "ABRO CHAT" Side-by-Side (Install button removed from top) -->
     <header>
       <div class="brand">
-        <div class="brand-mark-stack">
-          <div class="logo">A</div>
-          <button class="btn messages-shortcut" id="openMessages" type="button" aria-label="Open messages" title="Messages">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3.5 2v-5.2A7.5 7.5 0 1 1 20 11.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11.5h8M8 14.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          </button>
-        </div>
-        <div>
-          <h1>ABRO CHAT</h1>
+        <div class="brand-combo">
+          <div class="scifi-glass-logo" aria-label="ABRO CHAT Sci-Fi Logo">
+            <div class="scifi-glass-sheen"></div>
+            <span class="scifi-logo-letter">A</span>
+            <div class="scifi-corner-glow"></div>
+          </div>
+          <div class="brand-title-wrap">
+            <span class="brand-title">ABRO CHAT</span>
+            <span class="brand-sub-badge">SCI-FI NETWORK</span>
+          </div>
         </div>
       </div>
       <div class="pills">
-        <button class="btn" id="headerInstallBtn" type="button" style="padding:4px 10px;font-size:11px;border-radius:20px;background:linear-gradient(135deg,rgba(167,139,250,0.25),rgba(124,58,237,0.35));border-color:rgba(196,181,253,0.4);color:#fff;font-weight:600" title="Install ABRO CHAT App">📲 Install App</button>
+        <button class="btn messages-shortcut" id="openMessages" type="button" aria-label="Open messages" title="Messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H7l-3.5 2v-5.2A7.5 7.5 0 1 1 20 11.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 11.5h8M8 14.5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
         <div class="pill" aria-live="polite"><span><strong id="onlineCount">0</strong> online</span></div>
         <div class="pill" id="connection">Connecting</div>
       </div>
@@ -2131,7 +2410,7 @@
           <div class="profile-menu-panel" id="profileMenuPanel" hidden>
             <button class="btn" id="openMyProfile" type="button">View profile</button>
             <button class="btn" id="openProfileSettings" type="button" aria-label="Customize profile picture">Edit photo</button>
-            <button class="btn" id="installAppMenuBtn" type="button" style="color:var(--accent-light);font-weight:600">📲 Install App</button>
+            <button class="btn" id="installAppMenuBtn" type="button" style="color:var(--accent-cyan);font-weight:600">📲 Install App</button>
             <button class="btn" id="changePasscodeBtn" type="button">🔑 Change Passcode</button>
             <button class="btn" id="secureAccount" type="button" hidden>Secure account</button>
             <button class="btn" id="enableBiometric" type="button" hidden>Enable biometric</button>
@@ -2143,7 +2422,10 @@
 
     <!-- Messages List Panel -->
     <section class="panel messages-panel" id="messagesPanel" aria-label="Messages" hidden>
-      <div class="messages-heading">Messages</div>
+      <div class="messages-heading">
+        <span>Messages</span>
+        <button class="btn primary" id="openLoungeShortcut" type="button" style="padding:6px 12px;font-size:12px;border-radius:20px;">🌐 Public Lounge</button>
+      </div>
       <div id="chatList"></div>
     </section>
 
@@ -2235,30 +2517,6 @@
       <div id="friendList"></div>
     </section>
 
-    <!-- Chat Panel (Lounge or DM) -->
-    <section class="panel" id="chatPanel" aria-label="Conversation">
-      <div class="chat-head">
-        <button class="btn" id="backBtn" type="button" hidden aria-label="Back to friends">←</button>
-        <div class="titles">
-          <strong id="chatTitle">🌐 Public Lounge</strong>
-          <small id="chatSub">Everyone who is signed in</small>
-        </div>
-      </div>
-      <div class="surface">
-        <div class="earth-background" id="earthBackground" aria-hidden="true"></div>
-        <div class="earth-shade" aria-hidden="true"></div>
-        <section id="messages" aria-live="polite"></section>
-      </div>
-      <div class="typing" id="typing" aria-live="polite">
-        <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span id="typingLabel"></span>
-      </div>
-      <form id="chatForm">
-        <input id="messageInput" type="text" maxlength="500" placeholder="Write a message…" autocomplete="off" aria-label="Your message" required>
-        <button class="btn primary" id="send" type="submit">Send ↗</button>
-      </form>
-    </section>
-
     <!-- iOS 18 Bottom Navigation Dock -->
     <nav class="tabs" aria-label="Sections">
       <button class="btn tab" id="tabFeed" type="button" aria-label="Home" aria-current="page">
@@ -2280,6 +2538,44 @@
 
     <div id="notice" role="status"></div>
   </main>
+
+  <!-- ==========================================================================
+       DEDICATED FULL-SCREEN FLUID CHAT LAYER (Covers Entire Phone Display)
+       ========================================================================== -->
+  <section class="chat-layer" id="chatPanel" aria-label="Full-screen Conversation">
+    <div class="chat-layer-head">
+      <button class="btn chat-back-btn" id="backBtn" type="button" aria-label="Back to conversations">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="chat-peer-info" id="chatPeerInfo" role="button" tabindex="0" title="View details">
+        <div class="avatar chat-peer-avatar" id="chatHeadAvatar">💬</div>
+        <div class="titles">
+          <strong id="chatTitle">🌐 Public Lounge</strong>
+          <small id="chatSub">Everyone who is signed in</small>
+        </div>
+      </div>
+      <button class="btn chat-head-action" id="chatHeadInfoBtn" type="button" aria-label="Chat options" title="Info">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="surface">
+      <div class="earth-background" id="earthBackground" aria-hidden="true"></div>
+      <div class="earth-shade" aria-hidden="true"></div>
+      <section id="messages" aria-live="polite"></section>
+    </div>
+    <div class="typing" id="typing" aria-live="polite">
+      <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span id="typingLabel"></span>
+    </div>
+    <form id="chatForm">
+      <input id="messageInput" type="text" maxlength="500" placeholder="Write a message…" autocomplete="off" aria-label="Your message" required>
+      <button class="btn primary" id="send" type="submit">Send ↗</button>
+    </form>
+  </section>
 
   <!-- Create Post / Story Modal -->
   <div class="modal-backdrop" id="feedCreateModal" hidden>
@@ -2374,33 +2670,76 @@
     </section>
   </div>
 
+  <!-- Offline Connectivity Indicator -->
+  <div class="offline-banner" id="offlineBanner" hidden role="status" aria-live="polite">
+    <span style="font-size:14px">⚡</span>
+    <span>Offline Mode — Cached data is active</span>
+  </div>
+
   <!-- Dynamic Island Toast Notification -->
   <div class="toast" id="toast" role="status" aria-live="polite">
     <span class="toast-icon" aria-hidden="true">✦</span>
     <div><strong id="toastTitle"></strong><span class="msg" id="toastMsg"></span></div>
   </div>
 
-  <!-- Mobile / iOS Install Guide Modal -->
-  <div class="modal-backdrop" id="iosInstallModal" hidden>
-    <section class="profile-modal" style="width:min(100%, 390px);text-align:center" role="dialog" aria-modal="true" aria-labelledby="iosInstallTitle">
+  <!-- Ambient PWA Download Banner (Chrome / Desktop / Mobile) -->
+  <div class="pwa-install-banner" id="pwaInstallBanner" hidden>
+    <div class="pwa-banner-content">
+      <div class="scifi-glass-logo pwa-banner-icon">
+        <span class="scifi-logo-letter" style="font-size:18px">A</span>
+      </div>
+      <div class="pwa-banner-text">
+        <strong>Install ABRO CHAT App</strong>
+        <small>Download from Chrome for native full-screen experience</small>
+      </div>
+      <div class="pwa-banner-actions">
+        <button class="btn primary pwa-install-btn" id="bannerInstallBtn" type="button">📥 Download</button>
+        <button class="btn pwa-dismiss-btn" id="bannerDismissBtn" type="button" aria-label="Dismiss banner">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Chrome & Mobile Install Guide Modal -->
+  <div class="modal-backdrop" id="installAppModal" hidden>
+    <section class="profile-modal" style="width:min(100%, 430px);text-align:center" role="dialog" aria-modal="true" aria-labelledby="installModalTitle">
       <div class="profile-modal-head">
-        <h2 id="iosInstallTitle">Install ABRO CHAT</h2>
-        <button class="btn" id="closeIosInstall" type="button" aria-label="Close guide">✕</button>
+        <h2 id="installModalTitle">Download & Install App</h2>
+        <button class="btn" id="closeInstallModal" type="button" aria-label="Close guide">✕</button>
       </div>
-      <div style="font-size:46px;margin:12px auto 8px">📲</div>
-      <p style="color:#fff;font-size:16px;font-weight:700;margin:0 0 4px">Add to Mobile Home Screen</p>
-      <p style="color:var(--text-muted);font-size:12px;margin:0 0 14px">Install as a native full-screen app on Android or iPhone</p>
-      <div style="text-align:left;background:rgba(255,255,255,0.05);padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:1.6;color:var(--text-secondary);margin:12px 0 16px">
-        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
-          <span style="font-size:16px">1️⃣</span>
-          <span>ব্রাউজারের <strong>Share</strong> (📤) অথবা ৩-ডট (⋮) মেনুতে ট্যাপ করুন।</span>
+      <div class="scifi-glass-logo" style="width:68px;height:68px;margin:12px auto 10px;border-radius:20px;">
+        <div class="scifi-glass-sheen"></div>
+        <span class="scifi-logo-letter" style="font-size:36px">A</span>
+        <div class="scifi-corner-glow"></div>
+      </div>
+      <p style="color:#fff;font-size:17px;font-weight:750;margin:0 0 4px">Install ABRO CHAT as an Application</p>
+      <p style="color:var(--text-secondary);font-size:13px;margin:0 0 16px">Chrome ও ফোনে প্রোপার নেটিভ অ্যাপের মতো ফুল-স্ক্রিনে ব্যবহার করুন</p>
+
+      <button class="btn primary" id="modalDirectInstallBtn" type="button" style="width:100%;padding:13px;font-size:14px;margin-bottom:16px;box-shadow:0 0 20px rgba(56,189,248,0.4)">
+        📥 One-Click Install in Chrome
+      </button>
+
+      <div style="text-align:left;background:rgba(255,255,255,0.05);padding:14px 16px;border-radius:16px;border:1px solid rgba(255,255,255,0.1);font-size:13px;line-height:1.6;color:var(--text-secondary);margin-bottom:16px">
+        <div style="margin-bottom:10px">
+          <strong style="color:#38bdf8;display:block;margin-bottom:3px">💻 Chrome (ডেস্কটপ / ল্যাপটপ):</strong>
+          <span>Chrome এর অ্যাড্রেস বারের (URL Bar) ডানপাশে থাকা <strong>📥 বা ⊕ Install</strong> আইকনে ক্লিক করুন, অথবা ৩-ডট (⋮) মেনু থেকে <strong>"Install ABRO CHAT"</strong> চাপুন।</span>
         </div>
-        <div style="display:flex;align-items:flex-start;gap:10px">
-          <span style="font-size:16px">2️⃣</span>
-          <span>নিচে স্ক্রোল করে <strong>"Add to Home Screen"</strong> (➕) সিলেক্ট করুন।</span>
+        <div style="margin-bottom:10px">
+          <strong style="color:#a78bfa;display:block;margin-bottom:3px">📱 Android (Chrome):</strong>
+          <span>Chrome ব্রাউজারের ৩-ডট (⋮) মেনু ট্যাপ করে <strong>"Install app"</strong> বা <strong>"Add to Home screen"</strong> সিলেক্ট করুন।</span>
+        </div>
+        <div>
+          <strong style="color:#f472b6;display:block;margin-bottom:3px">🍏 iPhone & iPad (Safari):</strong>
+          <span>ব্রাউজারের <strong>Share (📤)</strong> বাটনে ট্যাপ করে নিচে <strong>"Add to Home Screen (➕)"</strong> নির্বাচন করুন।</span>
         </div>
       </div>
-      <button class="btn primary" id="gotItIosInstall" type="button" style="width:100%;padding:12px">Got it!</button>
+
+      <div style="text-align:left;font-size:12px;color:rgba(255,255,255,0.65);padding:0 6px 14px">
+        <div>✓ ফুল-স্ক্রিন অ্যাপ উইন্ডো (কোনো অ্যাড্রেস বার থাকবে না)</div>
+        <div>✓ সরাসরি ডেস্কটপ / হোম স্ক্রিন থেকে দ্রুত চালু হবে</div>
+        <div>✓ অফলাইন ক্যাশিং ও পুশ নোটিফিকেশন রেডি</div>
+      </div>
+
+      <button class="btn" id="gotItInstallBtn" type="button" style="width:100%;padding:11px">Close</button>
     </section>
   </div>
 
@@ -2413,68 +2752,101 @@
     const notice = msg => { const n = $("notice"); if (n) n.textContent = msg || ""; };
 
     /* ==========================================================================
-       PWA SERVICE WORKER & APP INSTALLATION
+       PWA SERVICE WORKER & CHROME APP INSTALLATION
        ========================================================================== */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-          console.warn('PWA service worker registration notice:', err);
-        });
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(reg => {
+            console.log('[PWA] Service Worker registered with scope:', reg.scope);
+          })
+          .catch(err => {
+            console.warn('[PWA] Service worker registration notice:', err);
+          });
       });
     }
 
     let deferredPrompt = null;
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator && window.navigator.standalone === true);
 
+    function updateInstallUI() {
+      if (isStandalone) {
+        $('pwaInstallBanner')?.remove();
+        const menuBtn = $('installAppMenuBtn');
+        if (menuBtn) menuBtn.hidden = true;
+      }
+    }
+
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       deferredPrompt = e;
-      if (!isStandalone) {
-        const headerBtn = $('headerInstallBtn');
-        if (headerBtn) headerBtn.hidden = false;
+      if (!isStandalone && !sessionStorage.getItem('abro_pwa_banner_dismissed')) {
+        const banner = $('pwaInstallBanner');
+        if (banner) banner.hidden = false;
       }
     });
 
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
-      const headerBtn = $('headerInstallBtn');
-      if (headerBtn) headerBtn.hidden = true;
+      $('pwaInstallBanner')?.remove();
       const menuBtn = $('installAppMenuBtn');
       if (menuBtn) menuBtn.hidden = true;
-      notice('ABRO CHAT app installed successfully on your device!');
+      const modal = $('installAppModal');
+      if (modal) modal.hidden = true;
+      toast('Application Installed', 'ABRO CHAT app is installed on your device! You can now use it like a proper desktop/mobile application.');
     });
 
     async function triggerAppInstall() {
       if (deferredPrompt) {
-        await deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        if (choice.outcome === 'accepted') {
-          notice('Installing ABRO CHAT…');
+        try {
+          await deferredPrompt.prompt();
+          const choice = await deferredPrompt.userChoice;
+          if (choice.outcome === 'accepted') {
+            toast('Installing App', 'ABRO CHAT is installing on your system…');
+            $('pwaInstallBanner')?.remove();
+          }
+          deferredPrompt = null;
+        } catch (err) {
+          console.warn('Install prompt error:', err);
+          const modal = $('installAppModal');
+          if (modal) modal.hidden = false;
         }
-        deferredPrompt = null;
       } else {
-        const modal = $('iosInstallModal');
+        const modal = $('installAppModal');
         if (modal) modal.hidden = false;
       }
     }
 
-    $('headerInstallBtn')?.addEventListener('click', triggerAppInstall);
-    $('installAppMenuBtn')?.addEventListener('click', triggerAppInstall);
-    $('closeIosInstall')?.addEventListener('click', () => { const m = $('iosInstallModal'); if (m) m.hidden = true; });
-    $('gotItIosInstall')?.addEventListener('click', () => { const m = $('iosInstallModal'); if (m) m.hidden = true; });
-    $('iosInstallModal')?.addEventListener('click', e => {
-      if (e.target === $('iosInstallModal')) $('iosInstallModal').hidden = true;
+    $('bannerInstallBtn')?.addEventListener('click', triggerAppInstall);
+    $('bannerDismissBtn')?.addEventListener('click', () => {
+      const banner = $('pwaInstallBanner');
+      if (banner) banner.hidden = true;
+      sessionStorage.setItem('abro_pwa_banner_dismissed', '1');
     });
 
-    if (isStandalone) {
-      const headerBtn = $('headerInstallBtn');
-      if (headerBtn) headerBtn.hidden = true;
-      const menuBtn = $('installAppMenuBtn');
-      if (menuBtn) menuBtn.hidden = true;
-    }
+    $('modalDirectInstallBtn')?.addEventListener('click', triggerAppInstall);
+    $('installAppMenuBtn')?.addEventListener('click', triggerAppInstall);
+    $('closeInstallModal')?.addEventListener('click', () => { const m = $('installAppModal'); if (m) m.hidden = true; });
+    $('gotItInstallBtn')?.addEventListener('click', () => { const m = $('installAppModal'); if (m) m.hidden = true; });
+    $('installAppModal')?.addEventListener('click', e => {
+      if (e.target === $('installAppModal')) $('installAppModal').hidden = true;
+    });
+
+    // Offline / Online Network Status
+    window.addEventListener('offline', () => {
+      const b = $('offlineBanner');
+      if (b) b.hidden = false;
+    });
+    window.addEventListener('online', () => {
+      const b = $('offlineBanner');
+      if (b) b.hidden = true;
+      toast('Connection Restored', 'Back online and synchronized.');
+    });
+
+    updateInstallUI();
 
     /* ==========================================================================
-       CONFIG & ENVIRONMENT (Preserved exactly as existing)
+       CONFIG & ENVIRONMENT
        ========================================================================== */
     const SUPABASE_URL = "https://tmazfyakptuzquhqwrmb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_pk4zCnWtmMg_3IR_fA8rkw_4wsBl8ie";
@@ -2714,12 +3086,14 @@
        ========================================================================== */
     const state = {
       me: null,                    // { id, username, avatar, bio }
-      view: "lounge",              // lounge | friends | dm | home | feed | ai | messages
-      peer: null,                  // profile of open friend
+      view: "feed",                // feed | home | messages | friends | ai
+      previousView: "feed",        // view to return to when closing chat layer
+      peer: null,                  // profile of open friend (null = lounge)
       profiles: new Map(),         // id -> { id, username, avatar, bio }
       friendships: [],
       unread: new Map(),           // friend id -> count
-      online: new Set()            // user ids currently online
+      online: new Set(),           // user ids currently online
+      isChatOpen: false            // whether the dedicated full-screen chat layer is open
     };
     let channel = null;
     let everSubscribed = false;
@@ -3061,6 +3435,7 @@
       if (!$("profileViewModal").hidden) closeProfileView();
       if (!$("profilePostModal").hidden) closeProfilePost();
       if (!$("profileSettingsModal").hidden) closeProfileSettings();
+      if (state.isChatOpen) closeChatLayer();
     });
     $("avatarOptions").addEventListener("click", e => {
       const option = e.target.closest("[data-avatar]");
@@ -3120,6 +3495,7 @@
       if (state.view === "friends") { renderFriends(); renderSearchResults(lastResults); }
       if (profile.id === state.me?.id) renderMyProfilePage();
       if ($("profileSettingsModal") && !$("profileSettingsModal").hidden && profile.id === state.me?.id) updateAvatarPreview();
+      if (state.peer?.id === profile.id) updateChatHead();
     }
 
     function teardown() {
@@ -3132,6 +3508,9 @@
       typers.clear();
       state.me = null; state.peer = null; state.friendships = [];
       state.unread.clear(); state.online = new Set();
+      state.isChatOpen = false;
+      const chatPanel = $("chatPanel");
+      chatPanel?.classList.remove("layer-active");
       document.body.classList.remove("chat-open");
       document.title = "ABRO CHAT";
       $("onlineCount").textContent = "0";
@@ -3168,7 +3547,9 @@
 
     async function resync() {
       await loadFriendships();
-      if (state.view === "dm" && state.peer) loadConversation();
+      if (state.isChatOpen) {
+        if (state.peer) loadConversation();
+      }
       if (state.view === "feed") loadFeed();
     }
 
@@ -3176,7 +3557,7 @@
       state.online = new Set(Object.keys(channel.presenceState()));
       $("onlineCount").textContent = String(state.online.size);
       if (state.view === "friends") renderFriends();
-      if (state.view === "dm") updateChatHead();
+      if (state.isChatOpen) updateChatHead();
       messagesEl.querySelectorAll(".message-avatar[data-user-id]").forEach(avatar => {
         avatar.classList.toggle("on", avatar.dataset.userId !== state.me.id && state.online.has(avatar.dataset.userId));
       });
@@ -3188,7 +3569,7 @@
     const typers = new Map();
     let typingOn = false, typingTimer = null, lastTypingSent = 0;
 
-    const currentCtx = () => state.view === "lounge" ? "lounge" : state.view === "dm" ? state.peer?.id : null;
+    const currentCtx = () => !state.isChatOpen ? null : state.peer ? state.peer.id : "lounge";
 
     function sendTyping(on) {
       const ctx = currentCtx();
@@ -3233,7 +3614,7 @@
     }
 
     /* ==========================================================================
-       CHAT MESSAGING
+       CHAT MESSAGING & FULL-SCREEN CHAT LAYER
        ========================================================================== */
     const messagesEl = $("messages");
 
@@ -3290,14 +3671,14 @@
       const m = fromLounge(row);
       loungeCache.push(m);
       if (loungeCache.length > MAX_MESSAGES_ON_SCREEN) loungeCache.shift();
-      if (state.view === "lounge") pushMessage(m);
+      if (state.isChatOpen && !state.peer) pushMessage(m);
     }
 
     function onDM(row) {
       if (!state.me) return;
       const mine = row.sender === state.me.id;
       const peerId = mine ? row.recipient : row.sender;
-      if (state.view === "dm" && state.peer?.id === peerId) { pushMessage(fromDM(row)); return; }
+      if (state.isChatOpen && state.peer?.id === peerId) { pushMessage(fromDM(row)); return; }
       if (mine) return;
       state.unread.set(peerId, (state.unread.get(peerId) || 0) + 1);
       updateBadge();
@@ -3331,12 +3712,14 @@
       input.value = "";
       $("send").disabled = true;
       try {
-        if (state.view === "lounge") {
+        if (!state.peer) {
+          // Public lounge
           const { data, error } = await sb.from("lounge_messages")
             .insert({ sender_name: state.me.username, body: text }).select().single();
           if (error) throw error;
           onLounge(data);
-        } else if (state.view === "dm") {
+        } else {
+          // DM with peer
           const { data, error } = await sb.from("messages")
             .insert({ recipient: state.peer.id, body: text }).select().single();
           if (error) throw error;
@@ -3355,9 +3738,89 @@
     });
 
     /* ==========================================================================
+       FULL SCREEN CHAT LAYER OPEN / CLOSE (FLUID TRANSITION)
+       ========================================================================== */
+    function updateChatHead() {
+      const sub = $("chatSub");
+      if (!state.peer) {
+        $("chatTitle").textContent = "🌐 Public Lounge";
+        sub.textContent = "Everyone who is signed in";
+        sub.classList.remove("offline");
+        $("chatHeadAvatar").replaceChildren(h("span", { text: "🌐" }));
+      } else {
+        $("chatTitle").textContent = state.peer.username;
+        const isOnline = state.online.has(state.peer.id);
+        sub.textContent = isOnline ? "Online now" : "Offline";
+        sub.classList.toggle("offline", !isOnline);
+        $("chatHeadAvatar").replaceChildren(...avatarNode(state.peer, isOnline).childNodes);
+      }
+    }
+
+    function openChatLayer() {
+      state.isChatOpen = true;
+      const chatLayer = $("chatPanel");
+      // Trigger fluid slide-in transition
+      requestAnimationFrame(() => {
+        chatLayer.classList.add("layer-active");
+      });
+      updateChatHead();
+      renderTyping();
+      setTimeout(() => {
+        scrollDown(true);
+        $("messageInput").focus();
+      }, 200);
+    }
+
+    function closeChatLayer() {
+      if (!state.isChatOpen) return;
+      stopTyping();
+      state.isChatOpen = false;
+      const chatLayer = $("chatPanel");
+      chatLayer.classList.remove("layer-active");
+      state.peer = null;
+      renderTyping();
+      // If we came from messages or friends, refresh chat list / friends list
+      if (state.view === "messages") loadChatList();
+      else if (state.view === "friends") renderFriends();
+    }
+
+    $("backBtn").addEventListener("click", closeChatLayer);
+    $("chatPeerInfo").addEventListener("click", () => {
+      if (state.peer) openProfileView(state.peer);
+    });
+    $("chatHeadInfoBtn").addEventListener("click", () => {
+      if (state.peer) openProfileView(state.peer);
+      else toast("Public Lounge", "Open public chat room for all ABRO CHAT members.");
+    });
+
+    function openDM(peer) {
+      state.previousView = state.view;
+      state.peer = peer;
+      state.unread.delete(peer.id);
+      updateBadge();
+      $("messageInput").placeholder = `Message ${peer.username}…`;
+      messagesEl.replaceChildren(h("div", { class: "empty", text: "Loading conversation…" }));
+      openChatLayer();
+      loadConversation();
+    }
+
+    function openLounge() {
+      state.previousView = state.view;
+      state.peer = null;
+      $("messageInput").placeholder = "Write a message in Public Lounge…";
+      showMessages(loungeCache, "It's quiet here… Start the first conversation ✨");
+      openChatLayer();
+    }
+
+    $("openLoungeShortcut")?.addEventListener("click", openLounge);
+
+    /* ==========================================================================
        VIEW ROUTING & SWITCHING
        ========================================================================== */
     function setView(view) {
+      if (state.isChatOpen) {
+        closeChatLayer();
+      }
       stopTyping();
       state.view = view;
       $("homePanel").hidden = view !== "home";
@@ -3367,7 +3830,6 @@
       $("friendsPanel").hidden = view !== "friends";
       $("feedPanel").hidden = view !== "feed";
       $("aiPanel").hidden = view !== "ai";
-      $("chatPanel").hidden = view === "home" || view === "messages" || view === "friends" || view === "feed" || view === "ai";
       $("tabProfile").classList.toggle("active", view === "home");
       $("tabFeed").classList.toggle("active", view === "feed");
       $("tabFriends").classList.toggle("active", view === "friends");
@@ -3376,13 +3838,10 @@
         if (tab.classList.contains("active")) tab.setAttribute("aria-current", "page");
         else tab.removeAttribute("aria-current");
       });
-      $("backBtn").hidden = view !== "dm";
-      renderTyping();
       notice("");
     }
 
     function openHome() {
-      state.peer = null;
       setView("home");
       renderMyProfilePage();
       loadFeed();
@@ -3448,7 +3907,6 @@
     }
 
     function openMessages() {
-      state.peer = null;
       setView("messages");
       loadChatList();
     }
@@ -3465,15 +3923,6 @@
       } catch (error) { if (error.name !== "AbortError") notice("Couldn't share your profile."); }
     });
     $("tabProfile").addEventListener("click", openHome);
-
-    function openLounge() {
-      setView("lounge");
-      state.peer = null;
-      $("chatTitle").textContent = "🌐 Public Lounge";
-      $("chatSub").textContent = "Everyone who is signed in";
-      $("messageInput").placeholder = "Write a message…";
-      showMessages(loungeCache, "It's quiet here… Start the first conversation ✨");
-    }
 
     function showFriends() {
       setView("friends");
@@ -3495,7 +3944,6 @@
     }
 
     function openFeed() {
-      state.peer = null;
       setView("feed");
       loadFeed();
     }
@@ -3908,24 +4356,6 @@
       finally { button.disabled = false; }
     });
 
-    function updateChatHead() {
-      if (!state.peer) return;
-      $("chatTitle").textContent = `🔒 ${state.peer.username}`;
-      $("chatSub").textContent = state.online.has(state.peer.id) ? "Online now" : "Offline";
-    }
-
-    function openDM(peer) {
-      setView("dm");
-      state.peer = peer;
-      state.unread.delete(peer.id);
-      updateBadge();
-      updateChatHead();
-      $("messageInput").placeholder = `Message ${peer.username}…`;
-      messagesEl.replaceChildren(h("div", { class: "empty", text: "Loading…" }));
-      loadConversation();
-      $("messageInput").focus();
-    }
-
     $("tabFeed").addEventListener("click", openFeed);
     $("tabFriends").addEventListener("click", showFriends);
     $("openLoungeFromSearch").addEventListener("click", openLounge);
@@ -3935,6 +4365,7 @@
       $("closeFeedCreate").focus();
     });
     $("tabAI").addEventListener("click", () => {
+      if (state.isChatOpen) closeChatLayer();
       state.peer = null;
       setView("ai");
       $("aiInput").focus();
@@ -3968,7 +4399,6 @@
         button.disabled = false;
       }
     });
-    $("backBtn").addEventListener("click", showFriends);
 
     /* ==========================================================================
        FRIENDS & SOCIAL RELATIONSHIPS
@@ -4153,7 +4583,7 @@
       const glow = new THREE.ShaderMaterial({
         transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.FrontSide,
         vertexShader: "varying vec3 n; varying vec3 p; void main(){ vec4 w = modelMatrix*vec4(position,1.0); p = w.xyz; n = normalize(mat3(modelMatrix)*normal); gl_Position = projectionMatrix*viewMatrix*w; }",
-        fragmentShader: "varying vec3 n; varying vec3 p; void main(){ float r = pow(1.0 - max(dot(normalize(n), normalize(cameraPosition-p)), 0.0), 3.0); gl_FragColor = vec4(0.24,0.42,1.0, r*0.36); }"
+        fragmentShader: "varying vec3 n; varying vec3 p; void main(){ float r = pow(1.0 - max(dot(normalize(n), normalize(cameraPosition-p)), 0.0), 3.0); gl_FragColor = vec4(0.22,0.65,1.0, r*0.38); }"
       });
       group.add(new THREE.Mesh(new THREE.SphereGeometry(1.075, 48, 32), glow));
       scene.add(new THREE.AmbientLight(0x7894bd, 0.9));
