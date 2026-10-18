@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#050711">
-  <meta name="google-site-verification" content="25ZkZijYq0X6r1ECnF2ky7q_YnmovCI2IHEWKw81wSo" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%2338bdf8'/><text x='50%' y='65%' font-family='sans-serif' font-weight='900' font-size='56' fill='%23ffffff' text-anchor='middle'>A</text></svg>">
   <title>ABRO CHAT — AI Bridge</title>
   <meta name="description" content="Futuristic sci-fi glassmorphic real-time messaging and social network with ABRO AI Bridge automatic two-way multilingual translation between Bangla, Banglish, German, English, and more.">
@@ -1862,6 +1861,56 @@ input:checked + .toggle-slider:before {
   backdrop-filter: blur(16px);
 }
 
+.chat-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chat-tool-btn {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-glass);
+  border-radius: 50%;
+  color: #dbeafe;
+  background: rgba(255,255,255,.07);
+  font-size: 16px;
+}
+.chat-search-row {
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--border-glass-bright);
+  border-radius: var(--radius-lg);
+  background: rgba(10,14,28,.96);
+}
+.chat-search-row input { padding: 8px 12px; }
+.message-tools {
+  display: flex;
+  gap: 6px;
+  margin-top: 7px;
+}
+.message-tools button {
+  padding: 3px 7px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  background: rgba(255,255,255,.06);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.message-pin {
+  color: #fde68a !important;
+}
+.low-data-mode .earth-background,
+.low-data-mode .feed-photo,
+.low-data-mode .story-ring img { display: none !important; }
+.low-data-mode .feed-photo { visibility: hidden; }
+
 @media (max-width: 640px) {
   .app {
     position: fixed;
@@ -1990,6 +2039,9 @@ input:checked + .toggle-slider:before {
             <button class="btn" id="changePasscodeBtn" type="button">🔑 Change Passcode</button>
             <button class="btn" id="secureAccount" type="button" hidden>🔒 Secure account</button>
             <button class="btn" id="enableBiometric" type="button" hidden>👆 Enable biometric</button>
+            <button class="btn" id="enableNotifications" type="button">🔔 Enable notifications</button>
+            <button class="btn" id="toggleLowData" type="button">📉 Low-data mode</button>
+            <button class="btn" id="shareInvite" type="button">🔗 Invite a friend</button>
             <button class="btn" id="logout" type="button">🚪 Log out</button>
           </div>
         </div>
@@ -2144,6 +2196,10 @@ input:checked + .toggle-slider:before {
     <div class="surface">
       <div class="earth-background" id="earthBackground" aria-hidden="true"></div>
       <div class="earth-shade" aria-hidden="true"></div>
+      <div class="chat-search-row" id="chatSearchRow" hidden>
+        <input id="chatSearchInput" type="search" placeholder="Search loaded messages…" aria-label="Search messages">
+        <button class="btn" id="closeChatSearch" type="button" aria-label="Close search">✕</button>
+      </div>
       <section id="messages" aria-live="polite"></section>
     </div>
     <div class="typing" id="typing" aria-live="polite">
@@ -2151,6 +2207,11 @@ input:checked + .toggle-slider:before {
       <span id="typingLabel"></span>
     </div>
     <form id="chatForm">
+      <div class="chat-tools">
+        <button class="chat-tool-btn" id="voiceInputBtn" type="button" aria-label="Dictate a message" title="Voice to text">🎙️</button>
+        <button class="chat-tool-btn" id="shareLocationBtn" type="button" aria-label="Share current location" title="Share location">📍</button>
+        <button class="chat-tool-btn" id="searchMessagesBtn" type="button" aria-label="Search messages" title="Search messages">⌕</button>
+      </div>
       <input id="messageInput" type="text" maxlength="500" placeholder="Write a message…" autocomplete="off" aria-label="Your message" required>
       <button class="btn primary" id="send" type="submit">Send ↗</button>
     </form>
@@ -2184,6 +2245,11 @@ input:checked + .toggle-slider:before {
           <span class="toggle-slider"></span>
         </label>
       </div>
+
+      <label class="bridge-toggle-row" style="justify-content:flex-start;cursor:pointer">
+        <input type="checkbox" id="bridgeLearningModeCheck" style="width:auto;accent-color:#38bdf8">
+        <span><strong style="display:block;font-size:14px;color:#fff">Language learning mode</strong><small style="color:var(--text-muted);font-size:11px">Keep the original text visible beside translations</small></span>
+      </label>
 
       <div class="section-title" style="padding:4px 0 6px">My Preferred Language</div>
       <div class="bridge-lang-grid" id="bridgeLangGrid">
@@ -2856,6 +2922,8 @@ input:checked + .toggle-slider:before {
     selectedModalLang = state.languagePrefs.preferredLang;
     const autoCheck = $("bridgeAutoTranslateCheck");
     if (autoCheck) autoCheck.checked = state.languagePrefs.autoTranslate;
+    const learningCheck = $("bridgeLearningModeCheck");
+    if (learningCheck) learningCheck.checked = !!state.languagePrefs.learningMode;
     renderBridgeModalLangOptions();
     const m = $("bridgeConfigModal");
     if (m) m.hidden = false;
@@ -2877,9 +2945,11 @@ input:checked + .toggle-slider:before {
   $("saveBridgeModal")?.addEventListener("click", () => {
     const autoCheck = $("bridgeAutoTranslateCheck");
     const autoTranslate = autoCheck ? autoCheck.checked : true;
+    const learningCheck = $("bridgeLearningModeCheck");
     state.languagePrefs = bridge.saveLanguagePrefs({
       preferredLang: selectedModalLang,
-      autoTranslate
+      autoTranslate,
+      learningMode: !!learningCheck?.checked
     }, state.me?.id);
     updateBridgeHeaderPill();
     closeBridgeConfigModal();
@@ -3028,6 +3098,38 @@ input:checked + .toggle-slider:before {
     if (message.delivered_at) return "\u2713\u2713 Delivered";
     return "\u2713 Sent";
   }
+  const messagePrefsKey = () => `abro_message_tools_${state.me?.id || "guest"}`;
+  function getMessagePrefs() {
+    try { return JSON.parse(localStorage.getItem(messagePrefsKey()) || "{}"); }
+    catch { return {}; }
+  }
+  function isMessagePinned(id) { return !!getMessagePrefs().pins?.[id]; }
+  function readMessageReactions(id) { return getMessagePrefs().reactions?.[id] || ""; }
+  function updateMessagePref(type, id, value) {
+    const prefs = getMessagePrefs();
+    prefs[type] ||= {};
+    if (value) prefs[type][id] = value;
+    else delete prefs[type][id];
+    try { localStorage.setItem(messagePrefsKey(), JSON.stringify(prefs)); } catch {}
+  }
+  messagesEl?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-message-action]");
+    if (!button) return;
+    const message = button.closest("[data-message-id]");
+    if (!message) return;
+    const id = message.dataset.messageId;
+    if (button.dataset.messageAction === "react") {
+      const next = readMessageReactions(id) ? "" : "❤️";
+      updateMessagePref("reactions", id, next);
+      button.textContent = next || "♡ React";
+    } else {
+      const pinned = !isMessagePinned(id);
+      updateMessagePref("pins", id, pinned ? "1" : "");
+      button.classList.toggle("message-pin", pinned);
+      button.textContent = pinned ? "📌 Pinned" : "📌 Pin";
+      if (pinned) toast("Message pinned", "Pinned on this device only.");
+    }
+  });
   function buildMessage(m) {
     const meta = h(
       "div",
@@ -3040,7 +3142,11 @@ input:checked + .toggle-slider:before {
     }
     const textEl = h("div", { class: "text", text: m.text });
     const translationStrip = h("div", { class: "translation-strip", style: "display:none" });
-    const content = h("div", { class: "message-content" }, meta, textEl, translationStrip);
+    const tools = h("div", { class: "message-tools" },
+      h("button", { type: "button", "data-message-action": "react", text: readMessageReactions(m.id) || "♡ React" }),
+      h("button", { type: "button", "data-message-action": "pin", class: isMessagePinned(m.id) ? "message-pin" : "", text: isMessagePinned(m.id) ? "📌 Pinned" : "📌 Pin" })
+    );
+    const content = h("div", { class: "message-content" }, meta, textEl, translationStrip, tools);
     const message = h("article", { class: "message" + (m.mine ? " mine" : ""), "data-message-id": m.id }, content);
     if (m.profile) {
       message.classList.add("with-avatar");
@@ -3091,6 +3197,9 @@ input:checked + .toggle-slider:before {
     <button class="toggle-original-btn" type="button">Show original</button>
   `;
     const toggleBtn = stripEl.querySelector(".toggle-original-btn");
+    if (state.languagePrefs.learningMode) {
+      stripEl.append(h("span", { text: `Original: ${originalText}`, style: "color:var(--text-secondary);font-size:10px;overflow-wrap:anywhere" }));
+    }
     toggleBtn?.addEventListener("click", () => {
       showingOriginal = !showingOriginal;
       if (showingOriginal) {
@@ -3158,6 +3267,7 @@ input:checked + .toggle-slider:before {
   function onLounge(row) {
     if (!state.me || loungeCache.some((m2) => m2.id === row.id)) return;
     const m = fromLounge(row);
+    if (row.sender !== state.me.id) notificationFor(`Public Lounge · ${m.name}`, m.text.slice(0, 140));
     loungeCache.push(m);
     if (loungeCache.length > MAX_MESSAGES_ON_SCREEN) loungeCache.shift();
     if (state.isChatOpen && !state.peer) {
@@ -3171,6 +3281,7 @@ input:checked + .toggle-slider:before {
     if (mine) return;
     const isOpenConversation = state.isChatOpen && state.peer?.id === peerId;
     acknowledgeIncomingMessage(row, isOpenConversation);
+    notificationFor(state.profiles.get(peerId)?.username || "New message", row.body || "You received a message.");
     if (isOpenConversation) {
       pushMessage(fromDM(row));
       return;
@@ -3655,7 +3766,124 @@ input:checked + .toggle-slider:before {
       if (ans) ans.textContent = "AI service error: " + err.message;
     }
   });
+  function notificationFor(title, body) {
+    if (document.hidden && "Notification" in window && Notification.permission === "granted") {
+      try { new Notification(title, { body, tag: "abro-chat-message" }); } catch {}
+    }
+  }
+  function updateNotificationButton() {
+    const button = $("enableNotifications");
+    if (!button) return;
+    if (!("Notification" in window)) {
+      button.textContent = "🔔 Notifications unavailable";
+      button.disabled = true;
+    } else if (Notification.permission === "granted") {
+      button.textContent = "✅ Notifications enabled";
+    } else if (Notification.permission === "denied") {
+      button.textContent = "🔔 Notifications blocked in browser";
+      button.disabled = true;
+    }
+  }
+  $("enableNotifications")?.addEventListener("click", async () => {
+    if (!("Notification" in window)) return updateNotificationButton();
+    try {
+      const permission = await Notification.requestPermission();
+      updateNotificationButton();
+      toast(permission === "granted" ? "Notifications enabled" : "Notifications not enabled",
+        permission === "granted" ? "You can receive alerts while this page is open in the background." : "You can change this in your browser site settings.");
+    } catch { toast("Notifications unavailable", "This browser could not request notification permission."); }
+  });
+  updateNotificationButton();
+
+  const lowDataKey = "abro_low_data_mode";
+  function applyLowDataMode(enabled) {
+    document.body.classList.toggle("low-data-mode", enabled);
+    try { localStorage.setItem(lowDataKey, enabled ? "1" : "0"); } catch {}
+    const button = $("toggleLowData");
+    if (button) button.textContent = enabled ? "✅ Low-data mode on" : "📉 Low-data mode";
+  }
+  applyLowDataMode(localStorage.getItem(lowDataKey) === "1");
+  $("toggleLowData")?.addEventListener("click", () => {
+    applyLowDataMode(!document.body.classList.contains("low-data-mode"));
+  });
+
+  $("shareInvite")?.addEventListener("click", async () => {
+    closeProfileMenu();
+    const invite = { title: "Join me on ABRO CHAT", text: "Chat with me on ABRO CHAT — with Bangla and multilingual translation.", url: location.href.split("#")[0] };
+    try {
+      if (navigator.share) await navigator.share(invite);
+      else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(invite.url);
+        toast("Invite link copied", "Share it with a friend to invite them.");
+      } else toast("Invite link", invite.url);
+    } catch (error) {
+      if (error.name !== "AbortError") toast("Could not share", "Copy this page's address to invite a friend.");
+    }
+  });
+
+  $("voiceInputBtn")?.addEventListener("click", () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      toast("Voice input unavailable", "Use a browser that supports speech recognition, or type your message.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = ({ bn: "bn-BD", "bn-Latn": "bn-BD", de: "de-DE", en: "en-US", hi: "hi-IN", ar: "ar-SA", es: "es-ES", fr: "fr-FR" })[state.languagePrefs.preferredLang] || "bn-BD";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    const button = $("voiceInputBtn");
+    button.disabled = true;
+    recognition.onresult = (event) => {
+      const input = $("messageInput");
+      const transcript = event.results?.[0]?.[0]?.transcript || "";
+      if (input && transcript) {
+        input.value = `${input.value}${input.value ? " " : ""}${transcript}`.slice(0, 500);
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    };
+    recognition.onerror = () => toast("Voice input failed", "Check microphone permission and try again.");
+    recognition.onend = () => { button.disabled = false; };
+    try { recognition.start(); }
+    catch { button.disabled = false; toast("Voice input unavailable", "Could not start microphone recognition."); }
+  });
+  $("shareLocationBtn")?.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      toast("Location unavailable", "This browser does not provide location access.");
+      return;
+    }
+    if (!window.confirm("Share your current location in this chat?")) return;
+    navigator.geolocation.getCurrentPosition((position) => {
+      const { latitude, longitude } = position.coords;
+      const input = $("messageInput");
+      if (input) {
+        input.value = `📍 My location: https://maps.google.com/?q=${latitude.toFixed(5)},${longitude.toFixed(5)}`;
+        $("chatForm")?.requestSubmit();
+      }
+    }, () => toast("Location not shared", "Allow location access in your browser and try again."), { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
+  });
+  $("searchMessagesBtn")?.addEventListener("click", () => {
+    const row = $("chatSearchRow");
+    row.hidden = !row.hidden;
+    if (!row.hidden) $("chatSearchInput")?.focus();
+    else {
+      if ($("chatSearchInput")) $("chatSearchInput").value = "";
+      messagesEl?.querySelectorAll(".message").forEach((message) => { message.hidden = false; });
+    }
+  });
+  $("closeChatSearch")?.addEventListener("click", () => {
+    $("chatSearchRow").hidden = true;
+    $("chatSearchInput").value = "";
+    messagesEl?.querySelectorAll(".message").forEach((message) => { message.hidden = false; });
+  });
+  $("chatSearchInput")?.addEventListener("input", (event) => {
+    const query = event.target.value.trim().toLocaleLowerCase();
+    messagesEl?.querySelectorAll(".message").forEach((message) => {
+      message.hidden = !!query && !message.querySelector(".text")?.textContent.toLocaleLowerCase().includes(query);
+    });
+  });
+
   function initEarth() {
+    if (document.body.classList.contains("low-data-mode")) return;
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const s = document.createElement("script");
     s.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
